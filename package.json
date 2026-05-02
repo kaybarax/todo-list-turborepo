@@ -47,9 +47,11 @@
     "//_api": "=== API SERVICE SCRIPTS ===",
     "dev:api": "pnpm --filter @todo/api dev",
     "build:api": "turbo run build --filter=@todo/api",
+
     "//_ingestion": "=== INGESTION SERVICE SCRIPTS ===",
     "dev:ingestion": "pnpm --filter @todo/ingestion dev",
     "build:ingestion": "turbo run build --filter=@todo/ingestion",
+
     "//_blockchain": "=== BLOCKCHAIN & SMART CONTRACTS ===",
     "dev:blockchain": "./scripts/dev-blockchain.sh",
     "build:contracts": "./scripts/build-contracts.sh",
@@ -69,15 +71,18 @@
     "blockchain:tools:install": "./scripts/install-blockchain-tools.sh",
     "blockchain:help": "./scripts/blockchain-help.sh",
     "blockchain:help:interactive": "./scripts/interactive-help.sh",
+
     "//_design_system": "=== DESIGN SYSTEM ===",
     "design-system:build": "pnpm tokens:build && pnpm storybook:build:web",
     "design-system:test": "pnpm --filter @todo/ui-web test:visual",
+
     "//_db": "=== DATABASE SCRIPTS ===",
     "db:setup": "node db/setup.js",
     "db:migrate": "node db/migrate.js up",
     "db:seed": "node db/seed-todos.js",
     "db:reset": "node db/setup.js reset",
     "db:rebuild": "pnpm db:reset && pnpm db:setup",
+
     "//_grouped_build": "=== GROUPED BUILD SCRIPTS ===",
     "dev:frontend": "./scripts/dev-frontend.sh",
     "dev:backend": "./scripts/dev-backend.sh",
@@ -95,6 +100,7 @@
     "build:packages:config-ts": "turbo run build --filter=\"./packages/config-ts\"",
     "build:packages:config-release": "turbo run build --filter=\"./packages/config-release\"",
     "build:utils": "pnpm --filter @todo/utils build",
+
     "//_testing": "=== TESTING SCRIPTS ===",
     "test:unit": "turbo run test:unit",
     "test:integration": "turbo run test:integration",
@@ -102,6 +108,7 @@
     "test:e2e": "turbo run test:e2e",
     "test:deps": "./test/dependency-management/run-tests.sh",
     "test:packages": "./scripts/test-package-installation.sh",
+
     "//_docker": "=== DOCKER & INFRASTRUCTURE ===",
     "docker:clean": "docker system prune -f && docker image prune -f",
     "docker:build": "./scripts/build.sh",
@@ -112,6 +119,7 @@
     "infra:compose:build": "docker compose -f docker-compose.dev.yml build",
     "infra:compose:up": "docker compose -f docker-compose.dev.yml up -d",
     "infra:compose:down": "docker compose -f docker-compose.dev.yml down",
+
     "//_deployment": "=== DEPLOYMENT SCRIPTS ===",
     "deploy": "./scripts/deploy.sh",
     "deploy:dev": "./scripts/deploy-development.sh",
@@ -120,6 +128,7 @@
     "deploy:k8s": "./scripts/deploy.sh",
     "deploy:k8s:dry-run": "./scripts/deploy.sh --dry-run",
     "deploy:docker": "./scripts/deploy.sh --docker-compose",
+    
     "//_pkg_mgmt": "=== PACKAGE MANAGEMENT ===",
     "prepare": "husky",
     "changeset": "changeset",
