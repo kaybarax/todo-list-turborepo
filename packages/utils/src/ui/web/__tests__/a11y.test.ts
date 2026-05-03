@@ -49,8 +49,8 @@ describe('a11y utilities', () => {
     });
 
     it('should handle object refs', () => {
-      const ref1 = { current: null };
-      const ref2 = { current: null };
+      const ref1: { current: HTMLDivElement | null } = { current: null };
+      const ref2: { current: HTMLDivElement | null } = { current: null };
       const mergedRef = mergeRefs(ref1, ref2);
       const element = document.createElement('div');
 
@@ -62,8 +62,8 @@ describe('a11y utilities', () => {
 
     it('should handle mixed ref types', () => {
       const callbackRef = vi.fn();
-      const objectRef = { current: null };
-      const mergedRef = mergeRefs(callbackRef, objectRef);
+      const objectRef: { current: HTMLDivElement | null } = { current: null };
+      const mergedRef = mergeRefs<HTMLDivElement>(callbackRef, objectRef);
       const element = document.createElement('div');
 
       mergedRef(element);
@@ -82,7 +82,7 @@ describe('a11y utilities', () => {
     });
 
     it('should handle readonly object refs gracefully', () => {
-      const readonlyRef = Object.freeze({ current: null });
+      const readonlyRef = Object.freeze({ current: null as HTMLDivElement | null });
       const normalRef = vi.fn();
       const mergedRef = mergeRefs(readonlyRef, normalRef);
       const element = document.createElement('div');

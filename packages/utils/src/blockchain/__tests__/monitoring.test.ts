@@ -223,7 +223,7 @@ describe('TransactionMonitor', () => {
 
       mockGetStatusFn.mockResolvedValue(pendingReceipt);
 
-      const _promise = monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
+      monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
 
       // Check initial status
       expect(monitor.getStatus('0x123')).toBe(TransactionStatus.PENDING);
@@ -257,7 +257,7 @@ describe('TransactionMonitor', () => {
 
       mockGetStatusFn.mockResolvedValue(mockReceipt);
 
-      const _promise = monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
+      monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
 
       vi.advanceTimersByTime(5000);
       await Promise.resolve();
@@ -274,7 +274,7 @@ describe('TransactionMonitor', () => {
     it('should stop monitoring a transaction', async () => {
       mockGetStatusFn.mockResolvedValue(null);
 
-      const _promise = monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
+      monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
 
       // Start monitoring
       vi.advanceTimersByTime(1000);
@@ -293,7 +293,7 @@ describe('TransactionMonitor', () => {
 
       mockGetStatusFn.mockResolvedValue(null);
 
-      const _promise = monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
+      monitor.monitorTransaction('0x123', BlockchainNetwork.POLYGON, mockGetStatusFn);
 
       // Start monitoring
       vi.advanceTimersByTime(1000);

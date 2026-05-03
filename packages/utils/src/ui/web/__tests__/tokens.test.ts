@@ -73,7 +73,7 @@ describe('token utilities', () => {
     });
 
     it('should handle single-level paths', () => {
-      expect(getToken({ test: 'value' }, 'test')).toBe('value');
+      expect(getToken({ test: 'value' } as any, 'test')).toBe('value');
     });
   });
 
@@ -128,12 +128,12 @@ describe('token utilities', () => {
         },
       };
 
-      const css = generateCSSCustomProperties(tokens);
+      const css = generateCSSCustomProperties(tokens as any);
       expect(css).toContain('--font-size-base-large: 1.25rem;');
     });
 
     it('should handle empty tokens', () => {
-      const css = generateCSSCustomProperties({});
+      const css = generateCSSCustomProperties({} as any);
       expect(css).toBe(':root {\n\n}');
     });
   });
