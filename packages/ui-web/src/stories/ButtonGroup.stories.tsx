@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ButtonGroup, Button } from '@todo/ui-web';
+import { ButtonGroup, Button } from '../index';
 
 const meta: Meta<typeof ButtonGroup> = {
   title: 'Components/ButtonGroup',

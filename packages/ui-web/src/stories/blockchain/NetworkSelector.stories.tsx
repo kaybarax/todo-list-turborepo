@@ -17,7 +17,7 @@ export const Default: Story = {
   args: {
     networks: ['solana', 'polkadot', 'polygon', 'moonbeam', 'base'],
     selectedNetwork: 'solana',
-    onSelect: network => console.log('Selected network:', network),
+    onSelect: network => console.info('Selected network:', network),
   },
 };
 
@@ -25,7 +25,7 @@ export const WithCustomLabel: Story = {
   args: {
     networks: ['ethereum', 'binance-smart-chain', 'avalanche', 'fantom'],
     selectedNetwork: 'ethereum',
-    onSelect: network => console.log('Selected network:', network),
+    onSelect: network => console.info('Selected network:', network),
     'aria-label': 'Choose blockchain network',
     id: 'custom-network-selector',
   },
