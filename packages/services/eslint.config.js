@@ -4,6 +4,7 @@ const globals = require('globals');
 module.exports = [
   ...baseConfig,
   {
+    files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
