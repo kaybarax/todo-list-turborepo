@@ -13,14 +13,12 @@ const server = Bun.serve({
 console.info(`🦊 Bun API is running at ${server.url}`);
 
 // Handle graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('\n🛑 SIGINT received. Shutting down...');
-  await disconnectFromDatabase();
-  process.exit(0);
+process.on('SIGINT', () => {
+  console.info('\n🛑 SIGINT received. Shutting down...');
+  void disconnectFromDatabase().then(() => process.exit(0));
 });
 
-process.on('SIGTERM', async () => {
-  console.log('\n🛑 SIGTERM received. Shutting down...');
-  await disconnectFromDatabase();
-  process.exit(0);
+process.on('SIGTERM', () => {
+  console.info('\n🛑 SIGTERM received. Shutting down...');
+  void disconnectFromDatabase().then(() => process.exit(0));
 });

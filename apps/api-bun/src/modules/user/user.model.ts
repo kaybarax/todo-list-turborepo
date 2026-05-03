@@ -1,5 +1,6 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import mongoose, { Schema, type Document, type Model } from 'mongoose';
+
 import { defaultSchemaOptions } from '../../db/utils';
 
 export interface IUser {

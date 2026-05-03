@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, type Document } from 'mongoose';
+
 import { defaultSchemaOptions } from '../../db/utils';
 
 export interface ITodo {

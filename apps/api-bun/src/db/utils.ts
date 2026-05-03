@@ -11,7 +11,7 @@ export const isValidObjectId = (id: string): boolean => {
  * Helper to ensure consistent model serialization
  * Converts _id to id and removes __v and password if present
  */
-export const transformModel = (doc: any, ret: any) => {
+export const transformModel = (_doc: any, ret: any) => {
   ret.id = ret._id.toString();
   delete ret._id;
   delete ret.__v;

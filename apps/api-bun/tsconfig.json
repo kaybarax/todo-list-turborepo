@@ -1,5 +1,5 @@
 {
-  "extends": "@todo/config-ts/node.json",
+  "extends": "@todo/config-ts/bun.json",
   "compilerOptions": {
     "baseUrl": "./",
     "skipLibCheck": true,

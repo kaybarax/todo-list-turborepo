@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
+
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
-import { User } from '../src/modules/user/user.model';
+
 import { Todo } from '../src/modules/todo/todo.model';
+import { User } from '../src/modules/user/user.model';
 
 describe('Database Smoke Test', () => {
   let mongod: MongoMemoryServer;
@@ -36,7 +38,7 @@ describe('Database Smoke Test', () => {
     expect(isMatch).toBe(true);
 
     // Verify serialization
-    const json = user.toJSON();
+    const json = user.toJSON() as any;
     expect(json.id).toBe(user.id);
     expect(json._id).toBeUndefined();
     expect(json.password).toBeUndefined();
@@ -58,7 +60,7 @@ describe('Database Smoke Test', () => {
     expect(todo.completed).toBe(false);
 
     // Verify serialization
-    const json = todo.toJSON();
+    const json = todo.toJSON() as any;
     expect(json.id).toBe(todo.id);
     expect(json._id).toBeUndefined();
   });

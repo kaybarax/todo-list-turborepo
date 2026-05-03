@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
+
 import { config } from '../config/env';
 
 export async function connectToDatabase() {
   try {
     const conn = await mongoose.connect(config.MONGODB_URI);
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    console.info(`✅ MongoDB Connected: ${conn.connection.host}`);
 
     mongoose.connection.on('error', err => {
       console.error(`❌ MongoDB connection error: ${err}`);
@@ -24,7 +25,7 @@ export async function connectToDatabase() {
 export async function disconnectFromDatabase() {
   try {
     await mongoose.disconnect();
-    console.log('✅ MongoDB disconnected gracefully');
+    console.info('✅ MongoDB disconnected gracefully');
   } catch (error) {
     console.error(`❌ Error during MongoDB disconnection: ${error}`);
   }
