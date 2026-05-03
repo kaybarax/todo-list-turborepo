@@ -1,54 +1,39 @@
-# Kubernetes Configuration
+# Kubernetes Configuration (Non-Production / Reference)
 
-This directory contains Kubernetes manifests for deploying the Todo App to a Kubernetes cluster.
+> [!WARNING]
+> **These Kubernetes manifests are NOT the primary production deployment path.**
+> Production deployment for this repository uses AWS ECS Fargate for the API and Ingestion workers, and Vercel for the Web app.
+> These manifests remain in the repository strictly for reference, local development, or legacy platform compatibility. Do not wire production CI pipelines to these manifests.
 
 ## Contents
 
 - `namespace.yaml`: Defines the `todo-app` namespace where all resources will be deployed
-- `web-deployment.yaml`: Deployment configuration for the web frontend
-- `web-service.yaml`: Service configuration for the web frontend
-- `api-deployment.yaml`: Deployment configuration for the API backend
-- `api-service.yaml`: Service configuration for the API backend
-- `mongodb-secret.yaml`: Secret containing MongoDB connection URI
-- `ingress.yaml`: Ingress configuration for external access
+- `web-deployment.yaml` / `web-service.yaml`: Web frontend
+- `api-deployment.yaml` / `api-service.yaml`: API backend
+- `ingestion-deployment.yaml`: Ingestion worker
+- `redis-deployment.yaml` / `mongodb-deployment.yaml`: Local stateful services
+- `secrets.yaml`: ExternalSecrets configuration examples for AWS Secrets Manager integration
+- `configmap.yaml`: App configuration
+- `ingress.yaml`: Ingress routing examples
+- `rbac.yaml`: Service accounts and roles
+- `monitoring.yaml`: Prometheus/Grafana service monitors
+- `resource-management.yaml`: Quotas and limits
 
-## Deployment
+## Usage
 
-To deploy the application to Kubernetes:
+If you are evaluating these manifests for a non-production Kubernetes environment:
 
-1. Make sure you have `kubectl` installed and configured to connect to your cluster
-2. Run the deployment script:
-
-```bash
-../../scripts/deploy.sh
-```
-
-## Cleanup
-
-To remove all deployed resources:
-
-```bash
-../../scripts/cleanup.sh
-```
-
-## Manual Deployment
-
-If you prefer to deploy manually, you can apply each manifest individually:
+1. Setup an ingress controller (e.g. NGINX Ingress Controller)
+2. Deploy External Secrets Operator to resolve `secrets.yaml` integrations
+3. Update `<your-domain.com>` in `configmap.yaml` and `ingress.yaml`
+4. Provide templated image tags (e.g., `export TODO_API_IMAGE=...`) and run `envsubst` before applying
 
 ```bash
 kubectl apply -f namespace.yaml
-kubectl apply -f mongodb-secret.yaml
-kubectl apply -f api-deployment.yaml
-kubectl apply -f api-service.yaml
-kubectl apply -f web-deployment.yaml
-kubectl apply -f web-service.yaml
+# (apply envsubst on deployments)
+kubectl apply -f secrets.yaml
+kubectl apply -f configmap.yaml
+kubectl apply -f rbac.yaml
+kubectl apply -f services.yaml
 kubectl apply -f ingress.yaml
 ```
-
-## Configuration
-
-Before deploying to production, make sure to:
-
-1. Update the `mongodb-secret.yaml` with your actual MongoDB connection URI (base64 encoded)
-2. Update the `ingress.yaml` with your actual domain name
-3. Configure TLS certificates for secure connections

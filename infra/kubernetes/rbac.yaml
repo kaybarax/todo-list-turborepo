@@ -20,25 +20,25 @@ metadata:
     app.kubernetes.io/component: rbac
     app.kubernetes.io/part-of: todo-monorepo
 rules:
-# Allow reading ConfigMaps and Secrets
-- apiGroups: [""]
-  resources: ["configmaps", "secrets"]
-  verbs: ["get", "list", "watch"]
+  # Allow reading ConfigMaps and Secrets
+  - apiGroups: ['']
+    resources: ['configmaps', 'secrets']
+    verbs: ['get', 'list', 'watch']
 
-# Allow reading Services for service discovery
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get", "list", "watch"]
+  # Allow reading Services for service discovery
+  - apiGroups: ['']
+    resources: ['services']
+    verbs: ['get', 'list', 'watch']
 
-# Allow reading Pods for health checks
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list", "watch"]
+  # Allow reading Pods for health checks
+  - apiGroups: ['']
+    resources: ['pods']
+    verbs: ['get', 'list', 'watch']
 
-# Allow creating Events for logging
-- apiGroups: [""]
-  resources: ["events"]
-  verbs: ["create", "patch"]
+  # Allow creating Events for logging
+  - apiGroups: ['']
+    resources: ['events']
+    verbs: ['create', 'patch']
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -51,85 +51,10 @@ metadata:
     app.kubernetes.io/component: rbac
     app.kubernetes.io/part-of: todo-monorepo
 subjects:
-- kind: ServiceAccount
-  name: todo-app-service-account
-  namespace: todo-app
+  - kind: ServiceAccount
+    name: todo-app-service-account
+    namespace: todo-app
 roleRef:
   kind: Role
   name: todo-app-role
   apiGroup: rbac.authorization.k8s.io
-
----
-# Pod Security Policy (if PSP is enabled)
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: todo-app-psp
-  labels:
-    app.kubernetes.io/name: todo-app
-    app.kubernetes.io/component: security
-    app.kubernetes.io/part-of: todo-monorepo
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-    - ALL
-  volumes:
-    - 'configMap'
-    - 'emptyDir'
-    - 'projected'
-    - 'secret'
-    - 'downwardAPI'
-    - 'persistentVolumeClaim'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-  fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-  readOnlyRootFilesystem: true
-
----
-# ClusterRole for PSP (if PSP is enabled)
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: todo-app-psp-user
-  labels:
-    app.kubernetes.io/name: todo-app
-    app.kubernetes.io/component: security
-    app.kubernetes.io/part-of: todo-monorepo
-rules:
-- apiGroups: ['policy']
-  resources: ['podsecuritypolicies']
-  verbs: ['use']
-  resourceNames:
-  - todo-app-psp
-
----
-# ClusterRoleBinding for PSP (if PSP is enabled)
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: todo-app-psp-user-binding
-  labels:
-    app.kubernetes.io/name: todo-app
-    app.kubernetes.io/component: security
-    app.kubernetes.io/part-of: todo-monorepo
-roleRef:
-  kind: ClusterRole
-  name: todo-app-psp-user
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-- kind: ServiceAccount
-  name: todo-app-service-account
-  namespace: todo-app

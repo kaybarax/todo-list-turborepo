@@ -8,98 +8,98 @@ metadata:
     app.kubernetes.io/component: ingress
     app.kubernetes.io/part-of: todo-monorepo
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rate-limit: "100"
-    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://todo-app.example.com"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+    nginx.ingress.kubernetes.io/rate-limit: '100'
+    nginx.ingress.kubernetes.io/rate-limit-window: '1m'
+    nginx.ingress.kubernetes.io/enable-cors: 'true'
+    nginx.ingress.kubernetes.io/cors-allow-origin: 'https://<your-domain.com>'
+    nginx.ingress.kubernetes.io/cors-allow-methods: 'GET, POST, PUT, DELETE, OPTIONS'
+    nginx.ingress.kubernetes.io/cors-allow-headers: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    nginx.ingress.kubernetes.io/proxy-body-size: '10m'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '300'
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   rules:
-  - host: todo-app.example.com
-    http:
-      paths:
-      # API routes
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: api-service
-            port:
-              number: 3001
-      
-      # WebSocket routes
-      - path: /socket.io
-        pathType: Prefix
-        backend:
-          service:
-            name: api-service
-            port:
-              number: 3001
-      
-      # Mobile web app
-      - path: /mobile
-        pathType: Prefix
-        backend:
-          service:
-            name: mobile-web-service
-            port:
-              number: 80
-      
-      # Monitoring endpoints
-      - path: /jaeger
-        pathType: Prefix
-        backend:
-          service:
-            name: jaeger-service
-            port:
-              number: 16686
-      
-      # Main web application (catch-all)
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-service
-            port:
-              number: 3000
-  
-  # Additional hosts for different environments
-  - host: api.todo-app.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: api-service
-            port:
-              number: 3001
-  
-  - host: mobile.todo-app.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: mobile-web-service
-            port:
-              number: 80
-  
+    - host: <your-domain.com>
+      http:
+        paths:
+          # API routes
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 3001
+
+          # WebSocket routes
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 3001
+
+          # Mobile web app
+          - path: /mobile
+            pathType: Prefix
+            backend:
+              service:
+                name: mobile-web-service
+                port:
+                  number: 80
+
+          # Monitoring endpoints
+          - path: /jaeger
+            pathType: Prefix
+            backend:
+              service:
+                name: jaeger-service
+                port:
+                  number: 16686
+
+          # Main web application (catch-all)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-service
+                port:
+                  number: 3000
+
+    # Additional hosts for different environments
+    - host: api.<your-domain.com>
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 3001
+
+    - host: mobile.<your-domain.com>
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mobile-web-service
+                port:
+                  number: 80
+
   tls:
-  - hosts:
-    - todo-app.example.com
-    - api.todo-app.example.com
-    - mobile.todo-app.example.com
-    secretName: tls-secret
+    - hosts:
+        - <your-domain.com>
+        - api.<your-domain.com>
+        - mobile.<your-domain.com>
+      secretName: tls-secret
 
 ---
 # Network Policy for security
@@ -115,65 +115,65 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  # Allow ingress from nginx
-  - from:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: nginx
-    ports:
-    - protocol: TCP
-      port: 3000
-    - protocol: TCP
-      port: 3001
-  
-  # Allow ingress within namespace
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: todo-app
-  
+    # Allow ingress from nginx
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: nginx
+      ports:
+        - protocol: TCP
+          port: 3000
+        - protocol: TCP
+          port: 3001
+
+    # Allow ingress within namespace
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: todo-app
+
   egress:
-  # Allow egress to databases
-  - to:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/component: database
-    ports:
-    - protocol: TCP
-      port: 27017
-  
-  - to:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/component: cache
-    ports:
-    - protocol: TCP
-      port: 6379
-  
-  # Allow egress to monitoring
-  - to:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/component: tracing
-    ports:
-    - protocol: TCP
-      port: 14268
-    - protocol: TCP
-      port: 4317
-    - protocol: TCP
-      port: 4318
-  
-  # Allow egress to external services (DNS, etc.)
-  - to: []
-    ports:
-    - protocol: UDP
-      port: 53
-    - protocol: TCP
-      port: 53
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 80
+    # Allow egress to databases
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: database
+      ports:
+        - protocol: TCP
+          port: 27017
+
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: cache
+      ports:
+        - protocol: TCP
+          port: 6379
+
+    # Allow egress to monitoring
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/component: tracing
+      ports:
+        - protocol: TCP
+          port: 14268
+        - protocol: TCP
+          port: 4317
+        - protocol: TCP
+          port: 4318
+
+    # Allow egress to external services (DNS, etc.)
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80

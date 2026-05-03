@@ -131,7 +131,7 @@ show_urls() {
     print_status "Application URLs:"
     
     # Get ingress host
-    ingress_host=$(kubectl get ingress todo-app-ingress -n "$NAMESPACE" -o jsonpath='{.spec.rules[0].host}' 2>/dev/null || echo "todo-app.example.com")
+    ingress_host=$(kubectl get ingress todo-app-ingress -n "$NAMESPACE" -o jsonpath='{.spec.rules[0].host}' 2>/dev/null || echo "<your-domain.com>")
     
     echo "Main Application: https://$ingress_host"
     echo "API: https://$ingress_host/api"

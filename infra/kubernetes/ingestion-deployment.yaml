@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: ingestion
     app.kubernetes.io/component: worker
     app.kubernetes.io/part-of: todo-monorepo
-    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/version: '1.0.0'
 spec:
   replicas: 2
   strategy:
@@ -26,9 +26,9 @@ spec:
         app.kubernetes.io/component: worker
         app.kubernetes.io/part-of: todo-monorepo
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9090"
-        prometheus.io/path: "/metrics"
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9090'
+        prometheus.io/path: '/metrics'
     spec:
       serviceAccountName: todo-app-service-account
       securityContext:
@@ -36,115 +36,115 @@ spec:
         runAsUser: 1001
         fsGroup: 1001
       containers:
-      - name: ingestion
-        image: todo-ingestion:latest
-        imagePullPolicy: Always
-        ports:
-        - name: metrics
-          containerPort: 9090
-          protocol: TCP
-        resources:
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-          requests:
-            cpu: "250m"
-            memory: "256Mi"
-        env:
-        # Configuration from ConfigMap
-        - name: NODE_ENV
-          valueFrom:
-            configMapKeyRef:
-              name: todo-app-config
-              key: NODE_ENV
-        - name: LOG_LEVEL
-          valueFrom:
-            configMapKeyRef:
-              name: todo-app-config
-              key: LOG_LEVEL
-        - name: INGESTION_BATCH_SIZE
-          valueFrom:
-            configMapKeyRef:
-              name: todo-app-config
-              key: INGESTION_BATCH_SIZE
-        - name: INGESTION_RETRY_ATTEMPTS
-          valueFrom:
-            configMapKeyRef:
-              name: todo-app-config
-              key: INGESTION_RETRY_ATTEMPTS
-        - name: INGESTION_RETRY_DELAY
-          valueFrom:
-            configMapKeyRef:
-              name: todo-app-config
-              key: INGESTION_RETRY_DELAY
-        - name: OTEL_SERVICE_NAME
-          value: "todo-ingestion"
-        
-        # Secrets
-        - name: MONGODB_URI
-          valueFrom:
-            secretKeyRef:
-              name: todo-app-secrets
-              key: MONGODB_URI
-        - name: REDIS_URI
-          valueFrom:
-            secretKeyRef:
-              name: todo-app-secrets
-              key: REDIS_URI
-        - name: API_URL
-          value: "http://api-service:3001"
-        
-        # Health checks
-        livenessProbe:
-          exec:
-            command:
-            - node
-            - -e
-            - "console.log('healthy')"
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          exec:
-            command:
-            - node
-            - -e
-            - "console.log('ready')"
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-        
-        # Security context
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          runAsUser: 1001
-          capabilities:
-            drop:
-            - ALL
-        
-        # Volume mounts
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp
-      
+        - name: ingestion
+          image: ${TODO_INGESTION_IMAGE}
+          imagePullPolicy: Always
+          ports:
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          resources:
+            limits:
+              cpu: '500m'
+              memory: '512Mi'
+            requests:
+              cpu: '250m'
+              memory: '256Mi'
+          env:
+            # Configuration from ConfigMap
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: NODE_ENV
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: LOG_LEVEL
+            - name: INGESTION_BATCH_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: INGESTION_BATCH_SIZE
+            - name: INGESTION_RETRY_ATTEMPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: INGESTION_RETRY_ATTEMPTS
+            - name: INGESTION_RETRY_DELAY
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: INGESTION_RETRY_DELAY
+            - name: OTEL_SERVICE_NAME
+              value: 'todo-ingestion'
+
+            # Secrets
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: todo-app-secrets
+                  key: MONGODB_URI
+            - name: REDIS_URI
+              valueFrom:
+                secretKeyRef:
+                  name: todo-app-secrets
+                  key: REDIS_URI
+            - name: API_URL
+              value: 'http://api-service:3001'
+
+          # Health checks
+          livenessProbe:
+            exec:
+              command:
+                - node
+                - -e
+                - "console.log('healthy')"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - node
+                - -e
+                - "console.log('ready')"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Security context
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            capabilities:
+              drop:
+                - ALL
+
+          # Volume mounts
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+
       volumes:
-      - name: tmp
-        emptyDir: {}
-      
+        - name: tmp
+          emptyDir: {}
+
       # Pod anti-affinity
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values:
-                  - ingestion
-              topologyKey: kubernetes.io/hostname
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - ingestion
+                topologyKey: kubernetes.io/hostname
