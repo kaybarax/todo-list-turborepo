@@ -7,7 +7,18 @@ import { logger } from './utils/logger';
 // Load environment variables
 dotenv.config();
 
+function validateEnv() {
+  const required = ['MONGODB_URI', 'MONGODB_DB_NAME'];
+  const missing = required.filter(key => !process.env[key]);
+
+  if (missing.length > 0) {
+    logger.error('Missing required environment variables:', { missing });
+    process.exit(1);
+  }
+}
+
 async function main() {
+  validateEnv();
   try {
     logger.info('Starting data ingestion service...');
 
