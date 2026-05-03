@@ -10,6 +10,6 @@
     },
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src/**/*", "*.config.ts", "*.config.js"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "build", "coverage"]
 }
