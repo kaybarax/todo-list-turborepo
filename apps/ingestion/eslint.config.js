@@ -3,6 +3,7 @@ const baseConfig = require('@todo/config-eslint/base');
 module.exports = [
   ...baseConfig,
   {
+    files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.json',

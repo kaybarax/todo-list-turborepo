@@ -9,7 +9,7 @@ module.exports = [
   },
   // Ensure ESLint uses this package's TS project and relax the strictest rules to warnings
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
@@ -38,6 +38,14 @@ module.exports = [
       '@typescript-eslint/consistent-type-imports': 'warn',
       '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
       'react/function-component-definition': 'off',
+    },
+  },
+  {
+    files: ['**/*.{js,jsx,mjs,cjs}'],
+    languageOptions: {
+      parserOptions: {
+        project: null,
+      },
     },
   },
   // Tests: be lenient with any/unsafe operations and type-style rules
