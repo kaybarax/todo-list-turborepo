@@ -1,0 +1,16 @@
+{
+  "extends": "@todo/config-ts/node.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "skipLibCheck": true,
+    "types": ["bun"],
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@todo/*": ["../../packages/*/src"]
+    }
+  },
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
