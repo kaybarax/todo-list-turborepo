@@ -1,4 +1,4 @@
-import { Type as t, Static } from '@sinclair/typebox';
+import { Type as t, type Static } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 
 const EnvSchema = t.Object({
@@ -18,17 +18,16 @@ const EnvSchema = t.Object({
   JWT_SECRET: t.String({ minLength: 1 }),
   REDIS_URI: t.Optional(t.String()),
   CORS_ORIGIN: t.Optional(t.String({ default: 'http://localhost:3000,http://localhost:5173' })),
-
   JAEGER_ENDPOINT: t.Optional(t.String()),
 });
 
 type Env = Static<typeof EnvSchema>;
 
 function validateEnv(): Env {
-  const env: any = { ...process.env };
+  const env: Record<string, unknown> = { ...process.env };
 
   if (env.PORT) {
-    env.PORT = parseInt(env.PORT, 10);
+    env.PORT = parseInt(env.PORT as string, 10);
   } else {
     delete env.PORT;
   }
@@ -45,7 +44,7 @@ function validateEnv(): Env {
     process.exit(1);
   }
 
-  return Value.Cast(EnvSchema, env) as Env;
+  return Value.Cast(EnvSchema, env);
 }
 
 export const config = validateEnv();

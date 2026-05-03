@@ -6,4 +6,4 @@ const server = Bun.serve({
   fetch: app.handle,
 });
 
-console.log(`🦊 Bun API is running at ${server.url}`);
+console.info(`🦊 Bun API is running at ${server.url}`);
