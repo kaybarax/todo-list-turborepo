@@ -1,10 +1,8 @@
 import { app } from './app';
+import { config } from './config/env';
 
-const port = process.env.PORT || 3002;
-
-// @ts-ignore - Temporary mock until Elysia is added
 const server = Bun.serve({
-  port,
+  port: config.PORT,
   fetch: app.handle,
 });
 

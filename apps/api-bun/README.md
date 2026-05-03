@@ -10,7 +10,12 @@ pnpm dev:api-bun
 
 ## Environment Variables
 
-- `PORT`: (Optional) Port for the server. Defaults to 3002.
-- `MONGODB_URI`: (Required) MongoDB connection string.
-- `JWT_SECRET`: (Required) Secret for signing JWT tokens.
-- `REDIS_URI`: (Optional) Redis connection string for caching.
+| Variable          | Description                                               | Default                                       | Required |
+| ----------------- | --------------------------------------------------------- | --------------------------------------------- | -------- |
+| `NODE_ENV`        | Environment name (development, production, test, staging) | `development`                                 | No       |
+| `PORT`            | Port for the server                                       | `3002`                                        | No       |
+| `MONGODB_URI`     | MongoDB connection string                                 | -                                             | **Yes**  |
+| `JWT_SECRET`      | Secret for signing JWT tokens                             | -                                             | **Yes**  |
+| `REDIS_URI`       | Redis connection string for caching                       | -                                             | No       |
+| `CORS_ORIGIN`     | Allowed CORS origins (comma-separated)                    | `http://localhost:3000,http://localhost:5173` | No       |
+| `JAEGER_ENDPOINT` | OpenTelemetry Jaeger endpoint for tracing                 | -                                             | No       |
