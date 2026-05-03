@@ -1,19 +1,12 @@
-import { DaisyUITheme, DaisyUIThemeColors } from './types';
+import type { DaisyUITheme, DaisyUIThemeColors } from './types';
 
 // Import generated theme tokens for validation
 let daisyuiThemes: Record<string, any> = {};
 try {
-  // Prefer CommonJS build if available
-  daisyuiThemes = require('../../dist/tokens/daisyui-themes.cjs');
-} catch (errorCjs) {
-  try {
-    // Fallback to JS build produced by Style Dictionary
-    // Note: depending on output format this may still be CJS.
-    // Keep in try/catch to avoid hard build failures during library bundling.
-    daisyuiThemes = require('../../dist/tokens/daisyui-themes.js');
-  } catch (errorJs) {
-    console.warn('DaisyUI themes not found. Run token build first.');
-  }
+  const generatedThemes = require('../../dist/tokens/daisyui-themes.js');
+  daisyuiThemes = generatedThemes.themeObjects ?? generatedThemes;
+} catch {
+  console.warn('DaisyUI themes not found. Run token build first.');
 }
 
 export interface ThemeValidationResult {
