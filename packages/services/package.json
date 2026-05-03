@@ -14,7 +14,8 @@
     "dev": "tsup src/index.ts --format esm,cjs --watch --dts --tsconfig tsconfig.build.json",
     "lint": "eslint \"src/**/*.{ts,tsx}\" --ignore-pattern \"**/*.d.ts\" --ignore-pattern \"**/*.map\" --ignore-pattern \"**/__tests__/**\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --ignore-pattern \"**/*.d.ts\" --ignore-pattern \"**/*.map\" --ignore-pattern \"**/__tests__/**\" --fix",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@todo/config-eslint": "workspace:*",

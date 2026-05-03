@@ -51,7 +51,7 @@
     "build-storybook": "npm run tokens:build && storybook build",
     "test-storybook": "test-storybook",
   "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
-    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "bundle-analyze": "vite build --config bundle-analyzer.config.js",
     "size-check": "bundlesize",
     "visual-test": "npm run build-storybook && npm run chromatic",
