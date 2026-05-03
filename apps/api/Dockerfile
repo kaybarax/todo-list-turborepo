@@ -1,14 +1,13 @@
 # Multi-stage build for NestJS API
 FROM node:22-alpine AS base
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Set working directory
 WORKDIR /app
 
 # Development stage
 FROM base AS development
+
+# Install pnpm for development
+RUN npm install -g pnpm
 
 # Copy source code and install deps
 COPY . .
@@ -26,12 +25,18 @@ CMD ["pnpm", "dev:api"]
 # Production dependencies stage
 FROM base AS prod-deps
 
+# Install pnpm temporarily for dependency installation
+RUN npm install -g pnpm
+
 # Copy full workspace and install only production dependencies
 COPY . .
 RUN pnpm install --no-frozen-lockfile --prod
 
 # Production build stage
 FROM base AS build
+
+# Install pnpm for build
+RUN npm install -g pnpm
 
 # Copy source code and install deps
 COPY . .
@@ -43,8 +48,8 @@ RUN pnpm build:api
 # Production stage
 FROM node:22-alpine AS production
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install curl for health checks (ECS requires a reliable health check)
+RUN apk add --no-cache curl
 
 # Create app directory
 WORKDIR /app
@@ -72,9 +77,10 @@ USER nestjs
 # Expose port
 EXPOSE 3001
 
-# Health check
+# Health check - uses curl to check the health endpoint
+# Non-mutating: only reads from /api/v1/health
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "fetch('http://localhost:3001/api/v1/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+  CMD curl -f http://localhost:3001/api/v1/health || exit 1
 
 # Start the application
 CMD ["node", "apps/api/dist/main.js"]

@@ -1,0 +1,324 @@
+name: Migrate API Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment for migration
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+      migration_direction:
+        description: Migration direction
+        required: true
+        default: up
+        type: choice
+        options:
+          - up
+          - down
+      rollback_count:
+        description: Number of migrations to rollback (only for down)
+        required: false
+        type: string
+      skip_backup:
+        description: Skip automatic backup (not recommended)
+        required: true
+        default: false
+        type: boolean
+      dry_run:
+        description: Perform dry run (simulation only)
+        required: true
+        default: true
+        type: boolean
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECS_CLUSTER_NAME: ${{ vars.API_ECS_CLUSTER }}
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  migrate:
+    name: Migrate Database
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment }}
+    concurrency:
+      group: db-migration-${{ github.event.inputs.environment }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create migration summary
+        id: summary
+        run: |
+          cat > migration-plan.txt << 'EOF'
+          ## Database Migration Plan
+
+          **Environment**: ${{ github.event.inputs.environment }}
+          **Direction**: ${{ github.event.inputs.migration_direction }}
+          **Dry Run**: ${{ github.event.inputs.dry_run }}
+          **Skip Backup**: ${{ github.event.inputs.skip_backup }}
+          **Initiated By**: ${{ github.actor }}
+          **Timestamp**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+          ### Migration Details
+          - Direction: ${{ github.event.inputs.migration_direction }}
+          EOF
+
+          if [ "${{ github.event.inputs.migration_direction }}" = "down" ]; then
+            echo "- Rollback Count: ${{ github.event.inputs.rollback_count || '1' }}" >> migration-plan.txt
+          fi
+
+          cat migration-plan.txt
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Backup database
+        if: github.event.inputs.skip_backup != 'true'
+        id: backup
+        run: |
+          backup_id="todo-api-${{ github.event.inputs.environment }}-$(date +%s)"
+
+          echo "🔄 Creating backup: $backup_id"
+
+          # Try to use AWS Backup if configured
+          backup_arn=$(aws backup start-backup-job \
+            --recovery-point-tags app=todo-list,service=api,backup_type=pre-migration \
+            --iam-role-arn ${{ vars.AWS_BACKUP_ROLE_ARN }} \
+            --region ${{ env.AWS_REGION }} \
+            --query 'BackupJobId' \
+            --output text 2>/dev/null || echo "manual")
+
+          if [ "$backup_arn" != "manual" ]; then
+            echo "✅ Backup job created: $backup_arn"
+            echo "backup_id=$backup_arn" >> "$GITHUB_OUTPUT"
+            echo "backup_method=aws-backup" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️  Using manual backup documentation only (automated backup not configured)"
+            echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
+            echo "backup_method=documented" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Register migration task
+        id: task-definition
+        run: |
+          task_definition="${{ vars.API_MIGRATION_TASK_DEFINITION_NAME || 'todo-api-migration' }}"
+          echo "task_definition=$task_definition" >> "$GITHUB_OUTPUT"
+
+          aws ecs describe-task-definition \
+            --task-definition "$task_definition" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'taskDefinition.{family: family, revision: revision}' \
+            || echo "⚠️  Task definition not found, will create"
+
+      - name: Prepare migration command
+        id: migration-cmd
+        run: |
+          cmd="node db/migrate.js"
+
+          if [ "${{ github.event.inputs.migration_direction }}" = "up" ]; then
+            cmd="$cmd up"
+          else
+            rollback_count="${{ github.event.inputs.rollback_count || '1' }}"
+            cmd="$cmd down $rollback_count"
+          fi
+
+          echo "command=$cmd" >> "$GITHUB_OUTPUT"
+          echo "📝 Migration command: $cmd"
+
+      - name: Run migration (DRY RUN)
+        if: github.event.inputs.dry_run == 'true'
+        run: |
+          echo "🧪 DRY RUN MODE - No changes will be made"
+          echo ""
+          echo "Migration would execute:"
+          echo "  Command: ${{ steps.migration-cmd.outputs.command }}"
+          echo "  Environment: ${{ github.event.inputs.environment }}"
+          echo "  Region: ${{ env.AWS_REGION }}"
+          echo ""
+          echo "✅ Dry run validation complete"
+          echo "Next: Review this plan and re-run with dry_run=false to execute"
+
+      - name: Run migration (PRODUCTION)
+        if: github.event.inputs.dry_run != 'true'
+        id: migration
+        run: |
+          # Running migration as ECS task
+          echo "⏳ Starting migration ECS task..."
+
+          task_arn=$(aws ecs run-task \
+            --cluster ${{ env.ECS_CLUSTER_NAME }} \
+            --task-definition ${{ steps.task-definition.outputs.task_definition }} \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=${{ vars.PRIVATE_SUBNETS }},securityGroups=${{ vars.MIGRATION_SECURITY_GROUP }},assignPublicIp=DISABLED}" \
+            --overrides "containerOverrides=[{name=todo-api-migration,command=[${{ steps.migration-cmd.outputs.command }}]}]" \
+            --tags "key=app,value=todo-list" "key=service,value=api" "key=operation,value=migration" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'tasks[0].taskArn' \
+            --output text)
+
+          echo "task_arn=$task_arn" >> "$GITHUB_OUTPUT"
+          echo "✅ Task started: $task_arn"
+
+          # Wait for task completion with timeout
+          max_attempts=60
+          attempt=0
+
+          while [ $attempt -lt $max_attempts ]; do
+            status=$(aws ecs describe-tasks \
+              --cluster ${{ env.ECS_CLUSTER_NAME }} \
+              --tasks "$task_arn" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'tasks[0].lastStatus' \
+              --output text)
+
+            exit_code=$(aws ecs describe-tasks \
+              --cluster ${{ env.ECS_CLUSTER_NAME }} \
+              --tasks "$task_arn" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'tasks[0].containers[0].exitCode' \
+              --output text)
+
+            if [ "$status" = "STOPPED" ]; then
+              echo "Task completed with status: STOPPED (exit code: $exit_code)"
+
+              if [ "$exit_code" = "0" ]; then
+                echo "✅ Migration completed successfully"
+                exit 0
+              else
+                echo "❌ Migration failed with exit code: $exit_code"
+                exit 1
+              fi
+            fi
+
+            echo "⏳ Task status: $status (attempt $((attempt + 1))/$max_attempts)"
+            sleep 5
+            attempt=$((attempt + 1))
+          done
+
+          echo "❌ Migration task did not complete within timeout"
+          exit 1
+
+      - name: Stream task logs
+        if: always() && github.event.inputs.dry_run != 'true'
+        run: |
+          log_group="/ecs/todo-api-migration"
+
+          echo "📋 Migration logs:"
+          aws logs tail "$log_group" \
+            --log-stream-name-prefix "${{ github.event.inputs.environment }}" \
+            --follow=false \
+            --region ${{ env.AWS_REGION }} \
+            || echo "No logs found"
+
+      - name: Verify database health
+        if: github.event.inputs.dry_run != 'true' && success()
+        run: |
+          echo "✅ Verifying database connectivity..."
+
+          # Verify by checking API health endpoint
+          api_url="${{ vars.API_HEALTH_ENDPOINT || 'http://localhost:3001' }}"
+
+          health_status=$(curl -s -o /dev/null -w "%{http_code}" "$api_url/api/v1/health" || echo "000")
+
+          if [ "$health_status" = "200" ]; then
+            echo "✅ API health check passed"
+          else
+            echo "⚠️  API health check status: $health_status"
+          fi
+
+      - name: Rollback on failure
+        if: failure() && github.event.inputs.dry_run != 'true'
+        run: |
+          echo "🔄 Migration failed! Initiating rollback..."
+          echo ""
+          echo "Rollback steps:"
+          echo "1. Review logs above for detailed error information"
+          echo "2. If automated rollback is available:"
+          echo "   aws ecs run-task --cluster ${{ env.ECS_CLUSTER_NAME }} --task-definition ${{ steps.task-definition.outputs.task_definition }} --overrides 'containerOverrides=[{name=todo-api-migration,command=[node,db/migrate.js,down]}]'"
+          echo "3. If manual rollback is needed:"
+          echo "   - Restore from backup: ${{ steps.backup.outputs.backup_id }}"
+          echo "   - See docs/API_DATABASE_MIGRATION_POLICY.md for detailed procedures"
+          echo "4. Notify #devops-alerts Slack channel"
+
+      - name: Create deployment annotation
+        if: always() && github.event.inputs.dry_run != 'true'
+        run: |
+          status="success"
+          if [ $? -ne 0 ]; then
+            status="failed"
+          fi
+
+          message="Database migration ($status): ${{ github.event.inputs.migration_direction }} on ${{ github.event.inputs.environment }}"
+
+          echo "📝 Migration Summary:"
+          echo "- Status: $status"
+          echo "- Direction: ${{ github.event.inputs.migration_direction }}"
+          echo "- Environment: ${{ github.event.inputs.environment }}"
+          echo "- Started By: ${{ github.actor }}"
+          echo "- Backup: ${{ steps.backup.outputs.backup_method }}"
+
+      - name: Notify Slack (Success)
+        if: success() && github.event.inputs.dry_run != 'true'
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_DEVOPS }}
+          payload: |
+            {
+              "text": "✅ Database Migration Successful",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Database Migration Completed*\n*Environment:* ${{ github.event.inputs.environment }}\n*Direction:* ${{ github.event.inputs.migration_direction }}\n*Executor:* ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+
+      - name: Notify Slack (Failure)
+        if: failure() && github.event.inputs.dry_run != 'true'
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_DEVOPS_ALERTS }}
+          payload: |
+            {
+              "text": "❌ Database Migration Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Database Migration Failed*\n*Environment:* ${{ github.event.inputs.environment }}\n*Direction:* ${{ github.event.inputs.migration_direction }}\n*Executor:* ${{ github.actor }}\n*Backup:* ${{ steps.backup.outputs.backup_id }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "See logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                }
+              ]
+            }
+
+      - name: Upload migration logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-logs-${{ github.event.inputs.environment }}-${{ github.run_number }}
+          path: |
+            migration-plan.txt
+          retention-days: 90

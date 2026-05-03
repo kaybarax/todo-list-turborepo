@@ -134,6 +134,52 @@ jobs:
           cluster: ${{ env.API_ECS_CLUSTER }}
           wait-for-service-stability: true
 
+      - name: Get ALB endpoint
+        id: alb-endpoint
+        run: |
+          # Get the load balancer ARN from the service
+          service_arn=$(aws ecs describe-services --cluster "$API_ECS_CLUSTER" --services "$API_ECS_SERVICE" --query 'services[0].loadBalancers[0].loadBalancerName' --output text)
+
+          if [ "$service_arn" != "None" ]; then
+            lb_dns=$(aws elbv2 describe-load-balancers --query "LoadBalancers[?LoadBalancerName=='$service_arn'].DNSName" --output text)
+            echo "endpoint=http://${lb_dns}/api/v1" >> "$GITHUB_OUTPUT"
+          else
+            echo "endpoint=${{ vars.API_HEALTH_ENDPOINT || 'http://localhost:3001/api/v1' }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run API smoke tests
+        id: smoke-test
+        run: |
+          max_retries=10
+          retry_count=0
+          health_endpoint="${{ steps.alb-endpoint.outputs.endpoint }}/health"
+          docs_endpoint="${{ steps.alb-endpoint.outputs.endpoint }}/docs"
+
+          echo "🧪 Running smoke tests..."
+          echo "Health endpoint: $health_endpoint"
+          echo "Docs endpoint: $docs_endpoint"
+
+          # Test health endpoint
+          while [ $retry_count -lt $max_retries ]; do
+            echo "  Attempt $((retry_count + 1))/$max_retries - Testing health endpoint..."
+
+            health_status=$(curl -s -o /dev/null -w "%{http_code}" "$health_endpoint")
+            docs_status=$(curl -s -o /dev/null -w "%{http_code}" "$docs_endpoint")
+
+            if [ "$health_status" = "200" ] && [ "$docs_status" = "200" ]; then
+              echo "✅ Health check passed (HTTP $health_status)"
+              echo "✅ Docs endpoint passed (HTTP $docs_status)"
+              exit 0
+            fi
+
+            echo "  ⏳ Waiting for API to be ready... (Health: $health_status, Docs: $docs_status)"
+            retry_count=$((retry_count + 1))
+            sleep 10
+          done
+
+          echo "❌ Smoke test failed after $max_retries attempts"
+          exit 1
+
       - name: Write build metadata
         if: always()
         run: |
