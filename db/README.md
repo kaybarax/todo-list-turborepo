@@ -298,6 +298,7 @@ The seeding script creates:
    ```
 
 3. **Reset development data**:
+
    ```bash
    # Clear and reseed database
    node db/setup.js reset
@@ -336,6 +337,7 @@ NODE_ENV=test node db/seed-todos.js clear
    - Use TLS/SSL for connections
 
 3. **Backup**:
+
    ```bash
    # Create backup before deployment
    mongodump --uri="$MONGODB_URI" --out=backup-$(date +%Y%m%d)
