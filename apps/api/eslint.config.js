@@ -1,6 +1,5 @@
-const globals = require('globals');
-
 const nestjsConfig = require('@todo/config-eslint/nestjs');
+const globals = require('globals');
 
 module.exports = [
   ...nestjsConfig,

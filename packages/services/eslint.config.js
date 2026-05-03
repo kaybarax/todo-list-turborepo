@@ -1,6 +1,5 @@
-const globals = require('globals');
-
 const baseConfig = require('../config-eslint/base.js');
+const globals = require('globals');
 
 module.exports = [
   ...baseConfig,
