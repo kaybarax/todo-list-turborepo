@@ -1,0 +1,17 @@
+project     = "todo-list"
+environment = "shared"
+aws_region  = "eu-central-1"
+
+# S3 bucket names are globally unique; set this if the default name is unavailable.
+# bucket_name = "todo-list-shared-123456789012-terraform-state"
+
+state_access_principal_arns = [
+  "arn:aws:iam::123456789012:role/todo-list-dev-github-actions",
+  "arn:aws:iam::123456789012:role/todo-list-staging-github-actions",
+  "arn:aws:iam::123456789012:role/todo-list-prod-github-actions",
+  "arn:aws:iam::123456789012:role/todo-list-terraform-operators",
+]
+
+state_admin_principal_arns = [
+  "arn:aws:iam::123456789012:role/todo-list-terraform-admins",
+]
