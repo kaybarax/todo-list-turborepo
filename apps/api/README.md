@@ -99,7 +99,7 @@ pnpm dev:backend
 pnpm install
 
 # Start databases
-docker-compose -f docker-compose.dev.yml up -d mongodb redis
+docker compose -f docker-compose.dev.yml up -d mongodb redis
 
 # Setup database
 pnpm db:setup
@@ -579,7 +579,7 @@ mongosh $MONGODB_URI
 redis-cli -u $REDIS_URI ping
 
 # View database logs
-docker-compose logs mongodb redis
+docker compose logs mongodb redis
 ```
 
 #### Authentication Issues

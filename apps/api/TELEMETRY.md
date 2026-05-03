@@ -31,7 +31,7 @@ OTEL_SERVICE_VERSION=1.0.0
 1. Start the development infrastructure:
 
    ```bash
-   docker-compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.dev.yml up -d
    ```
 
    This will start:
