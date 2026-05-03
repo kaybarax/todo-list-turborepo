@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # Todo App Kubernetes Deployment Script
-# This script deploys the Todo App to a Kubernetes cluster
+# [LEGACY] This script and the manifests in this directory are legacy.
+# The project has migrated to AWS ECS, Vercel, and Expo EAS.
+# Infrastructure is now managed via Terraform/Terragrunt.
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -11,6 +13,21 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# Legacy warning function
+show_legacy_warning() {
+    echo -e "${RED}╔══════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${RED}║                                   WARNING                                    ║${NC}"
+    echo -e "${RED}╠══════════════════════════════════════════════════════════════════════════════╣${NC}"
+    echo -e "${RED}║ This script and the Kubernetes manifests are LEGACY.                         ║${NC}"
+    echo -e "${RED}║ The project has moved to AWS (ECS), Vercel, and EAS (Expo).                  ║${NC}"
+    echo -e "${RED}║ Infrastructure is now managed via Terraform/Terragrunt in /infra.            ║${NC}"
+    echo -e "${RED}╚══════════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+}
+
+# Call legacy warning immediately
+show_legacy_warning
 
 # Configuration
 NAMESPACE="todo-app"

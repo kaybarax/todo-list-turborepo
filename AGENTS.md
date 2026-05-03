@@ -11,7 +11,7 @@
 ### Development Environment
 
 - **Full dev setup**: `pnpm dev` (runs `scripts/startDev.sh` - starts Docker infra + all apps)
-- **Service isolation**: `pnpm dev:web|api|mobile|ingestion` (uses `scripts/dev-services.sh`)
+- **Service isolation**: `pnpm dev:web|api|mobile|ingestion` (uses `turbo run dev --filter`)
 - **Database**: `pnpm db:setup` (MongoDB migrations + seed), `pnpm db:reset` (clean rebuild)
 - **Blockchain tools**: `pnpm blockchain:deps:check` (diagnoses missing Rust/Solana/Anchor), `pnpm blockchain:deps:fix` (auto-installs)
 

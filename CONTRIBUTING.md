@@ -40,7 +40,7 @@ Before contributing, ensure you have:
    # Open in VS Code and select "Reopen in Container"
 
    # Option 2: Local development
-   docker-compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.dev.yml up -d
    pnpm db:setup
    ```
 

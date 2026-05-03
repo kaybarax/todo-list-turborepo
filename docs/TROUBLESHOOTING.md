@@ -212,18 +212,18 @@ cat packages/*/package.json | grep -A 5 "exports"
 
 #### Issue: Docker containers won't start
 
-**Symptoms**: docker-compose up fails
+**Symptoms**: docker compose up fails
 
 **Solutions**:
 
 ```bash
 # Clean Docker environment
-docker-compose down -v
+docker compose down -v
 docker system prune -f
 docker volume prune -f
 
 # Rebuild containers
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # Check Docker resources
 docker system df
@@ -260,7 +260,7 @@ pnpm db:reset
 pnpm db:setup
 
 # Check MongoDB container
-docker-compose logs mongodb
+docker compose logs mongodb
 
 # Verify connection string
 cat apps/api/.env.example
@@ -530,7 +530,7 @@ curl -I https://api.github.com
 cat build.log
 
 # Check container logs
-docker-compose logs
+docker compose logs
 
 # Check application logs
 tail -f apps/api/logs/app.log

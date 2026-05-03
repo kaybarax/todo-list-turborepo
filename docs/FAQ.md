@@ -759,7 +759,7 @@ pnpm install
 cp .env.example .env.local
 
 # Start databases
-docker-compose up -d mongodb redis
+docker compose up -d mongodb redis
 
 # Run database setup
 pnpm db:setup

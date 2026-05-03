@@ -243,7 +243,7 @@ The project includes automated setup for blockchain development tools:
    # Open in VS Code and select "Reopen in Container"
 
    # Option 2: Local development
-   docker-compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.dev.yml up -d
    pnpm db:setup  # Setup database with sample data
    pnpm dev       # Start all development servers
    ```
@@ -570,7 +570,7 @@ make colima-deploy-api  # Build and deploy API to local Colima cluster
 pnpm build:production
 
 # Deploy with Docker Compose
-docker-compose up -d
+docker compose up -d
 
 # Or deploy individual services
 docker run -d todo-api:latest
@@ -683,10 +683,10 @@ pnpm install
 
 ```bash
 # Solution: Reset Docker environment
-docker-compose down -v
+docker compose down -v
 docker system prune -f
 pnpm db:setup
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 **Problem**: Database connection issues
