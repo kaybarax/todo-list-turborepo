@@ -10,6 +10,15 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/types/**/*.d.ts"],
-  "exclude": ["node_modules", "../api/node_modules", "../../node_modules/@types/hapi*"],
+  "exclude": [
+    "node_modules",
+    "../api/node_modules",
+    "../../node_modules/@types/hapi*",
+    "**/__tests__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "e2e/**",
+    "playwright.config.ts"
+  ],
   "references": [{ "path": "../../packages/ui-web" }, { "path": "../../packages/services" }]
 }
