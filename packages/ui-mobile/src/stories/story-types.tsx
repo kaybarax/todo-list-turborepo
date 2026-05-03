@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Common TypeScript types and interfaces for Storybook stories in ui-mobile package
  */

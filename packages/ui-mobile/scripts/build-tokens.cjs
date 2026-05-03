@@ -42,12 +42,13 @@ StyleDictionary.registerFormat({
       let out = '';
       for (const key of Object.keys(obj)) {
         const val = obj[key];
+        const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : `'${key}'`;
         if (val && typeof val === 'object') {
-          out += `${pad}${key}: {\n`;
+          out += `${pad}${safeKey}: {\n`;
           out += generateInterface(val, indent + 2);
           out += `${pad}};\n`;
         } else {
-          out += `${pad}${key}: string;\n`;
+          out += `${pad}${safeKey}: string;\n`;
         }
       }
       return out;

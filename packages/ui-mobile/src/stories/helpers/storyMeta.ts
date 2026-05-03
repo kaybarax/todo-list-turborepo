@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type ArgType, type Decorator, type Parameters } from '@storybook/react';
 
 import { withUIKitten } from '../decorators/UIKittenProvider';

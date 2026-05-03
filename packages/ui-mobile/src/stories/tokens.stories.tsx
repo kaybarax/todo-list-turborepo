@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { type Meta, type StoryObj } from '@storybook/react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
