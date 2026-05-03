@@ -57,6 +57,11 @@ resource "github_repository_environment" "env" {
       users = var.reviewer_users
     }
   }
+
+  deployment_branch_policy {
+    protected_branches     = true
+    custom_branch_policies = false
+  }
 }
 
 locals {

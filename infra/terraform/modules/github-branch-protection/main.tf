@@ -34,6 +34,28 @@ variable "tags" {
   default     = {}
 }
 
+resource "github_branch_protection" "main" {
+  for_each      = var.protected_branches
+  repository_id = var.github_repository
+  pattern       = each.value
+
+  enforce_admins = true
+
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = true
+    required_approving_review_count = 1
+    require_code_owner_reviews      = true
+  }
+
+  required_status_checks {
+    strict   = true
+    contexts = ["build", "lint", "typecheck", "test"] # Generic names, should match GHA jobs
+  }
+
+  allows_force_pushes = false
+  allows_deletions    = false
+}
+
 locals {
   module_name = "github-branch-protection"
 }
