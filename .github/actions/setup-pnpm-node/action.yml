@@ -1,0 +1,51 @@
+name: Setup pnpm and Node
+description: Checkout the repository, install pnpm and Node, restore caches, and install dependencies.
+
+inputs:
+  fetch-depth:
+    description: Git fetch depth for actions/checkout.
+    default: '1'
+  install:
+    description: Run pnpm install after tool setup.
+    default: 'true'
+  node-version:
+    description: Node.js version to install.
+    default: '22.18.0'
+  pnpm-version:
+    description: pnpm version to install.
+    default: '9.12.0'
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - name: Restore Turbo cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          .turbo/cache
+          node_modules/.cache/turbo
+        key: ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}-turbo-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}-turbo-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-
+
+    - name: Install dependencies
+      if: inputs.install == 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile
