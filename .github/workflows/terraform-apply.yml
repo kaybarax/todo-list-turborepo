@@ -1,0 +1,110 @@
+name: Terraform Apply
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to apply.
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      image_tag:
+        description: Optional release tag to record in apply metadata.
+        required: false
+        type: string
+      skip_tests:
+        description: Emergency use only. Skips fmt/validate before apply.
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  apply:
+    name: Apply
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    concurrency:
+      group: terraform-apply-${{ github.event.inputs.environment }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ vars.TERRAFORM_VERSION || '1.9.8' }}
+
+      - name: Install Terragrunt
+        run: |
+          version="$(cat .terragrunt-version)"
+          curl -fsSL "https://github.com/gruntwork-io/terragrunt/releases/download/v${version}/terragrunt_linux_amd64" -o terragrunt
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/terragrunt
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_TERRAFORM_ROLE_ARN || vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Select Terragrunt environment
+        id: tg-env
+        run: |
+          environment="${{ github.event.inputs.environment }}"
+          if [ "$environment" = "production" ]; then
+            environment="prod"
+          fi
+          echo "name=$environment" >> "$GITHUB_OUTPUT"
+
+      - name: Terraform fmt
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        run: terraform fmt -check -recursive infra/terraform
+
+      - name: Terragrunt hclfmt
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        run: terragrunt hclfmt --terragrunt-check
+        working-directory: infra/terragrunt
+
+      - name: Validate
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        run: terragrunt run-all validate --terragrunt-non-interactive
+        working-directory: infra/terragrunt/${{ steps.tg-env.outputs.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN || github.token }}
+
+      - name: Apply
+        run: terragrunt run-all apply --terragrunt-non-interactive
+        working-directory: infra/terragrunt/${{ steps.tg-env.outputs.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN || github.token }}
+
+      - name: Capture Terraform outputs
+        if: always()
+        run: |
+          mkdir -p terraform-metadata
+          terragrunt run-all output -json --terragrunt-non-interactive > terraform-metadata/raw-outputs.json || true
+          jq 'walk(if type == "object" and has("sensitive") and .sensitive == true then .value = "REDACTED" else . end)' terraform-metadata/raw-outputs.json > terraform-metadata/outputs-redacted.json || echo '{}' > terraform-metadata/outputs-redacted.json
+          jq -n \
+            --arg environment "${{ github.event.inputs.environment }}" \
+            --arg git_sha "$GITHUB_SHA" \
+            --arg release_tag "${{ github.event.inputs.image_tag }}" \
+            '{environment: $environment, git_sha: $git_sha, release_tag: $release_tag}' \
+            > terraform-metadata/apply.json
+        working-directory: infra/terragrunt/${{ steps.tg-env.outputs.name }}
+
+      - name: Upload Terraform metadata
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terraform-apply-${{ steps.tg-env.outputs.name }}-metadata
+          path: infra/terragrunt/${{ steps.tg-env.outputs.name }}/terraform-metadata
+          if-no-files-found: ignore

@@ -1,11 +1,8 @@
-name: Full CI
+name: Affected CI
 
 on:
-  push:
+  pull_request:
     branches: [main]
-  schedule:
-    - cron: '23 3 * * *'
-  workflow_dispatch:
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -13,8 +10,8 @@ env:
   TURBO_REMOTE_ONLY: true
 
 jobs:
-  quality:
-    name: Lint, Typecheck, Test, Build
+  affected:
+    name: Affected Lint, Typecheck, Test
     runs-on: ubuntu-latest
     services:
       mongodb:
@@ -37,25 +34,16 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Lint
-        run: pnpm turbo run lint --continue
-
-      - name: Typecheck
-        run: pnpm turbo run typecheck --continue
-
-      - name: Test
-        run: pnpm turbo run test --continue
+      - name: Run affected tasks
+        run: pnpm turbo run lint typecheck test --filter=...[origin/${{ github.base_ref }}] --continue
         env:
           MONGODB_URI: mongodb://root:password@localhost:27017/todos_test?authSource=admin
           REDIS_URI: redis://localhost:6379
-
-      - name: Build
-        run: pnpm turbo run build --continue
 
       - name: Upload Turbo summary
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: full-ci-turbo-summary
+          name: affected-ci-turbo-summary
           path: .turbo/runs/*.json
           if-no-files-found: ignore

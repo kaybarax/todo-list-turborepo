@@ -1,0 +1,159 @@
+name: Deploy API to AWS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/api/**
+      - packages/services/**
+      - packages/utils/**
+      - pnpm-lock.yaml
+      - package.json
+      - turbo.json
+      - .github/actions/setup-pnpm-node/**
+      - .github/workflows/deploy-api-aws.yml
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment.
+        required: true
+        default: production
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      image_tag:
+        description: Optional immutable image tag, such as a semver release tag.
+        required: false
+        type: string
+      skip_tests:
+        description: Emergency use only. Skips predeploy validation.
+        required: true
+        default: false
+        type: boolean
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_REMOTE_ONLY: true
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  API_ECR_REPOSITORY_URL: ${{ vars.API_ECR_REPOSITORY_URL }}
+  API_ECS_CLUSTER: ${{ vars.API_ECS_CLUSTER }}
+  API_ECS_SERVICE: ${{ vars.API_ECS_SERVICE }}
+  API_ECS_CONTAINER_NAME: ${{ vars.API_ECS_CONTAINER_NAME || 'todo-api' }}
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    concurrency:
+      group: deploy-api-${{ github.event.inputs.environment || 'production' }}
+      cancel-in-progress: false
+    steps:
+      - name: Bootstrap local actions
+        uses: actions/checkout@v4
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-pnpm-node
+
+      - name: Validate API
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        run: pnpm turbo run lint typecheck test --filter=@todo/api... --continue
+
+      - name: Build API
+        run: pnpm turbo run build --filter=@todo/api...
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Prepare image tags
+        id: image-tags
+        run: |
+          environment="${{ github.event.inputs.environment || 'production' }}"
+          short_sha="${GITHUB_SHA::12}"
+          {
+            echo "tags<<EOF"
+            echo "${API_ECR_REPOSITORY_URL}:${GITHUB_SHA}"
+            echo "${API_ECR_REPOSITORY_URL}:${environment}-${short_sha}"
+            if [ -n "${{ github.event.inputs.image_tag }}" ]; then
+              echo "${API_ECR_REPOSITORY_URL}:${{ github.event.inputs.image_tag }}"
+            fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        id: build-image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./apps/api/Dockerfile
+          push: true
+          tags: ${{ steps.image-tags.outputs.tags }}
+          cache-from: type=registry,ref=${{ env.API_ECR_REPOSITORY_URL }}:buildcache
+          cache-to: type=registry,ref=${{ env.API_ECR_REPOSITORY_URL }}:buildcache,mode=max
+          provenance: false
+
+      - name: Export image URI
+        id: image
+        run: echo "uri=${API_ECR_REPOSITORY_URL}@${{ steps.build-image.outputs.digest }}" >> "$GITHUB_OUTPUT"
+
+      - name: Download current ECS task definition
+        run: |
+          task_definition_arn="$(aws ecs describe-services --cluster "$API_ECS_CLUSTER" --services "$API_ECS_SERVICE" --query 'services[0].taskDefinition' --output text)"
+          aws ecs describe-task-definition --task-definition "$task_definition_arn" --query 'taskDefinition' > task-definition.json
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-definition.json > task-definition-renderable.json
+
+      - name: Render ECS task definition
+        id: render-task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition-renderable.json
+          container-name: ${{ env.API_ECS_CONTAINER_NAME }}
+          image: ${{ steps.image.outputs.uri }}
+
+      - name: Deploy to AWS ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+          service: ${{ env.API_ECS_SERVICE }}
+          cluster: ${{ env.API_ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      - name: Write build metadata
+        if: always()
+        run: |
+          mkdir -p deployment-metadata
+          jq -n \
+            --arg service api \
+            --arg environment "${{ github.event.inputs.environment || 'production' }}" \
+            --arg git_sha "$GITHUB_SHA" \
+            --arg image_digest "${{ steps.build-image.outputs.digest }}" \
+            --arg image_uri "${{ steps.image.outputs.uri }}" \
+            --argjson tags "$(printf '%s\n' '${{ steps.image-tags.outputs.tags }}' | jq -R . | jq -s .)" \
+            '{service: $service, environment: $environment, git_sha: $git_sha, image_digest: $image_digest, image_uri: $image_uri, tags: $tags}' \
+            > deployment-metadata/api.json
+
+      - name: Upload build metadata
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deploy-api-metadata
+          path: |
+            deployment-metadata/api.json
+            .turbo/runs/*.json
+          if-no-files-found: ignore

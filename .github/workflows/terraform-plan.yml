@@ -1,0 +1,90 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - infra/terraform/**
+      - infra/terragrunt/**
+      - .terraform-version
+      - .terragrunt-version
+      - .github/workflows/terraform-plan.yml
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to plan.
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ vars.TERRAFORM_VERSION || '1.9.8' }}
+
+      - name: Install Terragrunt
+        run: |
+          version="$(cat .terragrunt-version)"
+          curl -fsSL "https://github.com/gruntwork-io/terragrunt/releases/download/v${version}/terragrunt_linux_amd64" -o terragrunt
+          chmod +x terragrunt
+          sudo mv terragrunt /usr/local/bin/terragrunt
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_TERRAFORM_ROLE_ARN || vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive infra/terraform
+
+      - name: Terragrunt hclfmt
+        run: terragrunt hclfmt --terragrunt-check
+        working-directory: infra/terragrunt
+
+      - name: Select Terragrunt environment
+        id: tg-env
+        run: |
+          environment="${{ github.event.inputs.environment || 'dev' }}"
+          if [ "$environment" = "production" ]; then
+            environment="prod"
+          fi
+          echo "name=$environment" >> "$GITHUB_OUTPUT"
+
+      - name: Validate
+        run: terragrunt run-all validate --terragrunt-non-interactive
+        working-directory: infra/terragrunt/${{ steps.tg-env.outputs.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN || github.token }}
+
+      - name: Plan
+        run: terragrunt run-all plan --terragrunt-non-interactive | tee "$GITHUB_WORKSPACE/tfplan.txt"
+        working-directory: infra/terragrunt/${{ steps.tg-env.outputs.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN || github.token }}
+
+      - name: Upload Terraform plan
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terraform-plan-${{ steps.tg-env.outputs.name }}
+          path: tfplan.txt
+          if-no-files-found: ignore

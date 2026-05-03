@@ -1,0 +1,96 @@
+name: Deploy Mobile with EAS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/mobile/**
+      - packages/ui-mobile/**
+      - packages/services/**
+      - packages/utils/**
+      - pnpm-lock.yaml
+      - package.json
+      - turbo.json
+      - .github/actions/setup-pnpm-node/**
+      - .github/workflows/deploy-mobile-eas.yml
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment.
+        required: true
+        default: production
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      image_tag:
+        description: Optional release tag to record in deployment metadata.
+        required: false
+        type: string
+      skip_tests:
+        description: Emergency use only. Skips predeploy validation.
+        required: true
+        default: false
+        type: boolean
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_REMOTE_ONLY: true
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN || secrets.EAS_TOKEN }}
+
+jobs:
+  build:
+    name: EAS Build
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    concurrency:
+      group: deploy-mobile-${{ github.event.inputs.environment || 'production' }}
+      cancel-in-progress: false
+    steps:
+      - name: Bootstrap local actions
+        uses: actions/checkout@v4
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-pnpm-node
+
+      - name: Validate mobile
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        run: pnpm turbo run typecheck test --filter=@todo/mobile... --continue
+
+      - name: Select EAS profile
+        id: profile
+        run: |
+          case "${{ github.event.inputs.environment || 'production' }}" in
+            dev) echo "name=development" >> "$GITHUB_OUTPUT" ;;
+            staging) echo "name=preview" >> "$GITHUB_OUTPUT" ;;
+            *) echo "name=production" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Run EAS builds
+        run: pnpm dlx eas-cli build --platform all --profile ${{ steps.profile.outputs.name }} --non-interactive --no-wait
+        working-directory: apps/mobile
+
+      - name: Write build metadata
+        if: always()
+        run: |
+          mkdir -p deployment-metadata
+          jq -n \
+            --arg service mobile \
+            --arg environment "${{ github.event.inputs.environment || 'production' }}" \
+            --arg eas_profile "${{ steps.profile.outputs.name }}" \
+            --arg git_sha "$GITHUB_SHA" \
+            --arg release_tag "${{ github.event.inputs.image_tag }}" \
+            '{service: $service, environment: $environment, eas_profile: $eas_profile, git_sha: $git_sha, release_tag: $release_tag}' \
+            > deployment-metadata/mobile.json
+
+      - name: Upload build metadata
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deploy-mobile-metadata
+          path: |
+            deployment-metadata/mobile.json
+            .turbo/runs/*.json
+          if-no-files-found: ignore
