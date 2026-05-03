@@ -460,6 +460,7 @@ mongorestore --uri="$MONGODB_URI" backup-20240101/
    ```
 
 2. **Index Optimization**:
+
    ```bash
    # Analyze query patterns
    mongosh "$MONGODB_URI" --eval "db.todos.explain('executionStats').find({userId: ObjectId('...')})"
