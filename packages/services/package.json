@@ -21,6 +21,7 @@
     "@todo/config-eslint": "workspace:*",
     "@todo/config-jest": "workspace:*",
     "@todo/config-ts": "workspace:*",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.17.2",
     "eslint": "^9.33.0",
     "jest": "^30.0.5",
@@ -28,13 +29,13 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@polkadot/api": "^16.4.4",
+    "@polkadot/util": "^13.2.3",
+    "@solana/web3.js": "^1.98.4",
     "@todo/utils": "workspace:*",
     "axios": "^1.11.0",
     "date-fns": "^4.1.0",
-    "zod": "^4.0.17",
     "ethers": "^6.15.0",
-    "@solana/web3.js": "^1.98.4",
-    "@polkadot/api": "^16.4.4",
-    "@polkadot/util": "^13.2.3"
+    "zod": "^4.0.17"
   }
 }

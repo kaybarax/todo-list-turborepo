@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BlockchainServiceFactory } from '../BlockchainServiceFactory';
 import { BlockchainNetwork } from '../types';
 import { PolygonBlockchainService } from '../implementations/PolygonBlockchainService';

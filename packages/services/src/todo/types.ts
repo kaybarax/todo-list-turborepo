@@ -53,7 +53,7 @@ export const createTodoSchema = todoSchema.omit({
 /**
  * Type for creating a new todo
  */
-export type CreateTodoInput = z.infer<typeof createTodoSchema>;
+export type CreateTodoInput = z.input<typeof createTodoSchema>;
 
 /**
  * Schema for updating an existing todo
@@ -63,7 +63,7 @@ export const updateTodoSchema = createTodoSchema.partial();
 /**
  * Type for updating an existing todo
  */
-export type UpdateTodoInput = z.infer<typeof updateTodoSchema>;
+export type UpdateTodoInput = z.input<typeof updateTodoSchema>;
 
 /**
  * Schema for todo query parameters

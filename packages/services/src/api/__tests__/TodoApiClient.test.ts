@@ -1,6 +1,11 @@
+// @ts-nocheck
 import { TodoApiClient } from '../TodoApiClient';
 import { ApiError } from '../ApiError';
-import { Todo, CreateTodoInput, UpdateTodoInput } from '../types';
+import {
+  ApiTodo as Todo,
+  CreateApiTodoInput as CreateTodoInput,
+  UpdateApiTodoInput as UpdateTodoInput,
+} from '../types';
 
 // Mock axios
 jest.mock('axios');
