@@ -4,7 +4,7 @@ Terragrunt owns environment-specific values and points each live unit at a reusa
 
 ## Prerequisites
 
-- Install the pinned versions in `.terraform-version` and `.terragrunt-version`.
+- Install the pinned versions in `.terraform-version`, `.terragrunt-version`, and `.terraform-docs-version`.
 - Authenticate to AWS and GitHub with the account/environment you intend to manage.
 - Export the environment account ID before planning or applying:
 
@@ -14,6 +14,18 @@ export AWS_ACCOUNT_ID_STAGING=234567890123
 export AWS_ACCOUNT_ID_PROD=345678901234
 export GITHUB_OWNER=your-org
 export GITHUB_REPOSITORY_NAME=todo-list-turborepo
+```
+
+Bootstrap the remote state backend first, then export its outputs before running any Terragrunt command:
+
+```sh
+cd infra/terraform/bootstrap/remote-state
+terraform init
+terraform apply
+
+export TG_STATE_BUCKET="$(terraform output -raw state_bucket_name)"
+export TG_STATE_LOCK_TABLE="$(terraform output -raw lock_table_name)"
+export TG_STATE_KMS_KEY_ID="$(terraform output -raw kms_key_arn)"
 ```
 
 ## Plan

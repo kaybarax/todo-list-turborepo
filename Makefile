@@ -4,7 +4,7 @@ NAMESPACE ?= $(shell ns=$$(kubectl config view --minify --output 'jsonpath={..na
 TAG ?= dev
 TERRAFORM_MODULE_DIRS := $(shell find infra/terraform -type f -name '*.tf' -exec dirname {} \; 2>/dev/null | sort -u)
 
-.PHONY: help colima-deploy colima-deploy-web colima-deploy-api colima-deploy-mobile-web colima-registry colima-urls terraform-fmt terraform-validate terragrunt-hclfmt tflint infra-iac-fmt infra-iac-check
+.PHONY: help colima-deploy colima-deploy-web colima-deploy-api colima-deploy-mobile-web colima-registry colima-urls terraform-fmt terraform-validate terragrunt-hclfmt tflint terraform-docs infra-iac-fmt infra-iac-check
 
 help:
 	@echo "Colima targets:"
@@ -21,6 +21,7 @@ help:
 	@echo "  make terraform-validate        Initialize and validate Terraform modules"
 	@echo "  make terragrunt-hclfmt         Format Terragrunt HCL under infra/terragrunt"
 	@echo "  make tflint                    Run TFLint recursively under infra/terraform"
+	@echo "  make terraform-docs            Generate Terraform module README tables"
 	@echo "  make infra-iac-check           Run Terraform validate and TFLint"
 
 colima-deploy: colima-deploy-web
@@ -86,6 +87,13 @@ terragrunt-hclfmt:
 tflint:
 	@if ! command -v tflint >/dev/null 2>&1; then echo "tflint is not installed"; exit 1; fi
 	cd infra/terraform && tflint --recursive
+
+terraform-docs:
+	@if ! command -v terraform-docs >/dev/null 2>&1; then echo "terraform-docs is not installed"; exit 1; fi
+	@for dir in $(TERRAFORM_MODULE_DIRS); do \
+		echo "terraform-docs $$dir"; \
+		terraform-docs --config .terraform-docs.yml $$dir; \
+	done
 
 infra-iac-fmt: terraform-fmt terragrunt-hclfmt
 
