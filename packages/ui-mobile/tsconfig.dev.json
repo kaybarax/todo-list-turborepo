@@ -13,6 +13,6 @@
     "noUnusedParameters": false
   },
   // Typecheck library, stories, and tests in dev
-  "include": ["lib/**/*", "src/**/*", "__tests__/**/*"],
+  "include": ["lib/**/*", "src/**/*", "__tests__/**/*", "*.config.ts", "*.config.js", "*.config.cjs"],
   "exclude": ["node_modules", "dist"]
 }

@@ -52,6 +52,7 @@ export default [
   },
   ...reactNativeConfig,
   {
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.dev.json',
@@ -64,6 +65,14 @@ export default [
           alwaysTryTypes: true,
           project: './tsconfig.dev.json',
         },
+      },
+    },
+  },
+  {
+    files: ['**/*.{js,jsx,mjs,cjs}'],
+    languageOptions: {
+      parserOptions: {
+        project: null,
       },
     },
   },
