@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type DaisyUITheme =
+  | 'todo-light'
+  | 'todo-dark'
   | 'light'
   | 'dark'
   | 'cupcake'
@@ -46,8 +48,8 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const THEME_STORAGE_KEY = 'daisyui-theme';
-const DEFAULT_LIGHT_THEME: DaisyUITheme = 'light';
-const DEFAULT_DARK_THEME: DaisyUITheme = 'dark';
+const DEFAULT_LIGHT_THEME: DaisyUITheme = 'todo-light';
+const DEFAULT_DARK_THEME: DaisyUITheme = 'todo-dark';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -137,6 +139,8 @@ export function useTheme() {
 // Theme validation and utility functions
 function isValidTheme(theme: string): theme is DaisyUITheme {
   const validThemes: DaisyUITheme[] = [
+    'todo-light',
+    'todo-dark',
     'light',
     'dark',
     'cupcake',
@@ -175,6 +179,7 @@ function isValidTheme(theme: string): theme is DaisyUITheme {
 
 function isDark(theme: DaisyUITheme): boolean {
   const darkThemes: DaisyUITheme[] = [
+    'todo-dark',
     'dark',
     'synthwave',
     'halloween',

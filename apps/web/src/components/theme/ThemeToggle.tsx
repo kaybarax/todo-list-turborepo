@@ -42,7 +42,7 @@ export function ThemeToggle({
   size = 'md',
   className,
   showLabel = false,
-  cycleThrough = 'mode',
+  cycleThrough: _cycleThrough = 'mode',
   customIcons,
   'data-testid': testId,
 }: ThemeToggleProps) {
@@ -96,6 +96,7 @@ export function ThemeToggle({
 
   const isDarkTheme = (themeName: string) => {
     const darkThemes = [
+      'todo-dark',
       'dark',
       'synthwave',
       'halloween',
