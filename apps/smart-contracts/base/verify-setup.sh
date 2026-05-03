@@ -13,6 +13,7 @@ echo ""
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
@@ -22,7 +23,8 @@ if [ -f .env ]; then
     echo -e "${GREEN}✓${NC} .env file exists"
     
     # Source the .env file
-    source .env
+    # shellcheck disable=SC1091
+source .env
     
     # Check if required variables are set
     if [ -z "$BASE_PRIVATE_KEY" ] || [ "$BASE_PRIVATE_KEY" = "your_private_key_here_without_0x_prefix" ]; then
@@ -65,7 +67,7 @@ fi
 
 echo ""
 echo "3. Checking RPC connection..."
-CHAIN_ID=$(cast chain-id --rpc-url $BASE_SEPOLIA_RPC_URL 2>/dev/null || echo "failed")
+CHAIN_ID=$(cast chain-id --rpc-url "$BASE_SEPOLIA_RPC_URL" 2>/dev/null || echo "failed")
 if [ "$CHAIN_ID" = "84532" ]; then
     echo -e "${GREEN}✓${NC} Connected to Base Sepolia (Chain ID: 84532)"
 else
@@ -77,7 +79,7 @@ fi
 
 echo ""
 echo "4. Checking deployer account..."
-DEPLOYER_ADDRESS=$(cast wallet address $BASE_PRIVATE_KEY 2>/dev/null || echo "failed")
+DEPLOYER_ADDRESS=$(cast wallet address "$BASE_PRIVATE_KEY" 2>/dev/null || echo "failed")
 if [ "$DEPLOYER_ADDRESS" = "failed" ]; then
     echo -e "${RED}✗${NC} Failed to derive address from private key"
     echo "  Check your BASE_PRIVATE_KEY in .env"
@@ -88,8 +90,8 @@ fi
 
 echo ""
 echo "5. Checking account balance..."
-BALANCE=$(cast balance $DEPLOYER_ADDRESS --rpc-url $BASE_SEPOLIA_RPC_URL 2>/dev/null || echo "0")
-BALANCE_ETH=$(cast --to-unit $BALANCE ether 2>/dev/null || echo "0")
+BALANCE=$(cast balance "$DEPLOYER_ADDRESS" --rpc-url "$BASE_SEPOLIA_RPC_URL" 2>/dev/null || echo "0")
+BALANCE_ETH=$(cast --to-unit "$BALANCE" ether 2>/dev/null || echo "0")
 
 if [ "$BALANCE" = "0" ]; then
     echo -e "${RED}✗${NC} Account has no Sepolia ETH"
@@ -100,7 +102,8 @@ else
     echo -e "${GREEN}✓${NC} Account balance: $BALANCE_ETH ETH"
     
     # Check if balance is sufficient (at least 0.01 ETH recommended)
-    BALANCE_WEI=$(echo $BALANCE | sed 's/[^0-9]//g')
+    # shellcheck disable=SC2001
+    BALANCE_WEI=$(echo "$BALANCE" | sed 's/[^0-9]//g')
     MIN_BALANCE="10000000000000000" # 0.01 ETH in wei
     
     if [ "$BALANCE_WEI" -lt "$MIN_BALANCE" ]; then

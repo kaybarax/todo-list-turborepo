@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -25,6 +26,7 @@ if [ ! -f .env ]; then
     exit 1
 fi
 
+# shellcheck disable=SC1091
 source .env
 
 if [ -z "$BASE_PRIVATE_KEY" ] || [ "$BASE_PRIVATE_KEY" = "your_private_key_here_without_0x_prefix" ]; then
@@ -34,7 +36,7 @@ if [ -z "$BASE_PRIVATE_KEY" ] || [ "$BASE_PRIVATE_KEY" = "your_private_key_here_
 fi
 
 # Get deployer address
-DEPLOYER_ADDRESS=$(cast wallet address $BASE_PRIVATE_KEY)
+DEPLOYER_ADDRESS=$(cast wallet address "$BASE_PRIVATE_KEY")
 echo -e "${BLUE}Deployer address:${NC} $DEPLOYER_ADDRESS"
 echo ""
 
@@ -48,7 +50,7 @@ else
 fi
 
 echo ""
-read -p "Press Enter to continue with deployment..."
+read -r -p "Press Enter to continue with deployment..."
 echo ""
 
 # Step 2: Deploy TodoListFactory
@@ -63,6 +65,7 @@ forge script script/Deploy.s.sol:DeployScript \
   --verify \
   -vvvv
 
+# shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo ""
     echo -e "${GREEN}✓ TodoListFactory deployed successfully${NC}"
@@ -77,7 +80,7 @@ else
 fi
 
 echo ""
-read -p "Press Enter to continue with TodoList creation..."
+read -r -p "Press Enter to continue with TodoList creation..."
 echo ""
 
 # Step 3: Create TodoList
@@ -91,6 +94,7 @@ forge script script/CreateTodoList.s.sol:CreateTodoListScript \
   --broadcast \
   -vvvv
 
+# shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo ""
     echo -e "${GREEN}✓ TodoList created successfully${NC}"
@@ -108,7 +112,7 @@ else
 fi
 
 echo ""
-read -p "Press Enter to continue with sample todos creation..."
+read -r -p "Press Enter to continue with sample todos creation..."
 echo ""
 
 # Step 4: Create sample todos
@@ -122,6 +126,7 @@ forge script script/CreateSampleTodos.s.sol:CreateSampleTodosScript \
   --broadcast \
   -vvvv
 
+# shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo ""
     echo -e "${GREEN}✓ Sample todos created successfully${NC}"
@@ -138,9 +143,9 @@ echo ""
 echo "Summary:"
 echo -e "  ${BLUE}Factory:${NC}  $FACTORY_ADDRESS"
 echo -e "  ${BLUE}TodoList:${NC} $TODOLIST_ADDRESS"
-echo ""
-echo "View on Base Sepolia Explorer:"
-echo "  Factory:  https://sepolia.basescan.org/address/$FACTORY_ADDRESS"
+echo "  Deployer: $DEPLOYER_ADDRESS"
+echo "  View on explorer:"
+echo "  Deployer: https://sepolia.basescan.org/address/$DEPLOYER_ADDRESS"
 echo "  TodoList: https://sepolia.basescan.org/address/$TODOLIST_ADDRESS"
 echo ""
 echo "Deployment files saved in: deployments/84532/"
@@ -153,17 +158,18 @@ echo "=========================================="
 echo ""
 
 echo "Getting todo count..."
-TODO_COUNT=$(cast call $TODOLIST_ADDRESS "todoCount()(uint256)" --rpc-url base_sepolia)
+TODO_COUNT=$(cast call "$TODOLIST_ADDRESS" "todoCount()(uint256)" --rpc-url base_sepolia)
 echo -e "${GREEN}✓${NC} Todo count: $TODO_COUNT"
 
 echo ""
 echo "Getting todo statistics..."
-STATS=$(cast call $TODOLIST_ADDRESS "getTodoStats()((uint256,uint256,uint256,uint256))" --rpc-url base_sepolia)
+STATS=$(cast call "$TODOLIST_ADDRESS" "getTodoStats()((uint256,uint256,uint256,uint256))" --rpc-url base_sepolia)
 echo -e "${GREEN}✓${NC} Stats: $STATS"
 
 echo ""
 echo "Getting first todo..."
-TODO_1=$(cast call $TODOLIST_ADDRESS "getTodo(uint256)((uint256,string,string,bool,uint8,uint256,uint256))" 1 --rpc-url base_sepolia)
+# shellcheck disable=SC2034
+TODO_1=$(cast call "$TODOLIST_ADDRESS" "getTodo(uint256)((uint256,string,string,bool,uint8,uint256,uint256))" 1 --rpc-url base_sepolia)
 echo -e "${GREEN}✓${NC} Todo #1 retrieved successfully"
 
 echo ""

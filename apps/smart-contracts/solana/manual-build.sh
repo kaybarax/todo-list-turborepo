@@ -12,7 +12,7 @@ export PLATFORM_TOOLS_PATH="/Users/kevin/.local/share/solana/install/active_rele
 mkdir -p target/deploy
 
 # Navigate to program directory
-cd programs/todo-program
+cd programs/todo-program || exit 1
 
 echo "Compiling Solana program manually..."
 

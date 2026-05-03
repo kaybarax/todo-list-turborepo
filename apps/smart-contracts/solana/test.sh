@@ -30,7 +30,7 @@ anchor test
 status=$?
 set -euo pipefail
 
-if [[ $status -ne 0 ]] && grep -qi 'no such command: `+solana`' .turbo/turbo-test.log 2>/dev/null; then
+if [[ $status -ne 0 ]] && grep -qi "no such command: \`+solana\`" .turbo/turbo-test.log 2>/dev/null; then
   echo "[solana] '+solana' toolchain unavailable; skipping tests (optional)." >&2
   exit 0
 fi

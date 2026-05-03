@@ -11,7 +11,7 @@ if ! rustup toolchain list | grep -q "solana"; then
 fi
 
 # Navigate to the program directory
-cd programs/todo-program
+cd programs/todo-program || exit 1
 
 # Try to build using cargo-build-sbf
 echo "Building with cargo-build-sbf..."
