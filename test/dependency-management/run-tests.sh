@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -17,6 +18,9 @@ TEST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$TEST_DIR/../.." && pwd)"
 COVERAGE_DIR="$TEST_DIR/coverage"
 RESULTS_DIR="$TEST_DIR/results"
+COVERAGE="${COVERAGE:-false}"
+VERBOSE="${VERBOSE:-false}"
+BAIL="${BAIL:-false}"
 
 # Logging functions
 log_info() {
@@ -83,13 +87,14 @@ init_test_environment() {
 
 # Run specific test category
 run_test_category() {
-    local category="$1"
-    local description="$2"
+    local category
+    category="$1"
+    local description
+    description="$2"
     
     log_info "Running $description tests..."
-    
-    local test_pattern="$TEST_DIR/$category/**/*.test.js"
-    local results_file="$RESULTS_DIR/${category}-results.json"
+    local results_file
+    results_file="$RESULTS_DIR/${category}-results.json"
     
     if npx jest --config="$TEST_DIR/jest.config.js" \
         --testPathPattern="$category" \
@@ -126,22 +131,31 @@ generate_coverage_report() {
 generate_test_summary() {
     log_info "Generating test summary..."
     
-    local summary_file="$RESULTS_DIR/test-summary.json"
-    local total_tests=0
-    local passed_tests=0
-    local failed_tests=0
-    local categories=()
+    local summary_file
+    summary_file="$RESULTS_DIR/test-summary.json"
+    local total_tests
+    total_tests=0
+    local passed_tests
+    passed_tests=0
+    local failed_tests
+    failed_tests=0
+    local categories
+    categories=()
     
     # Process results from each category
     for results_file in "$RESULTS_DIR"/*-results.json; do
         if [ -f "$results_file" ]; then
-            local category=$(basename "$results_file" -results.json)
+            local category
+            category=$(basename "$results_file" -results.json)
             categories+=("$category")
             
             # Extract test counts (simplified - would need proper JSON parsing in real implementation)
-            local category_total=$(grep -o '"numTotalTests":[0-9]*' "$results_file" | cut -d: -f2 || echo "0")
-            local category_passed=$(grep -o '"numPassedTests":[0-9]*' "$results_file" | cut -d: -f2 || echo "0")
-            local category_failed=$(grep -o '"numFailedTests":[0-9]*' "$results_file" | cut -d: -f2 || echo "0")
+            local category_total
+            category_total=$(grep -o '"numTotalTests":[0-9]*' "$results_file" | cut -d: -f2 || echo "0")
+            local category_passed
+            category_passed=$(grep -o '"numPassedTests":[0-9]*' "$results_file" | cut -d: -f2 || echo "0")
+            local category_failed
+            category_failed=$(grep -o '"numFailedTests":[0-9]*' "$results_file" | cut -d: -f2 || echo "0")
             
             total_tests=$((total_tests + category_total))
             passed_tests=$((passed_tests + category_passed))
@@ -174,7 +188,8 @@ EOF
     echo "Passed: $passed_tests"
     echo "Failed: $failed_tests"
     if [ $total_tests -gt 0 ]; then
-        local success_rate=$(echo "scale=1; $passed_tests * 100 / $total_tests" | bc -l 2>/dev/null || echo "0")
+        local success_rate
+        success_rate=$(echo "scale=1; $passed_tests * 100 / $total_tests" | bc -l 2>/dev/null || echo "0")
         echo "Success Rate: ${success_rate}%"
     fi
     echo ""
@@ -197,11 +212,16 @@ cleanup_test_environment() {
 
 # Main execution
 main() {
-    local run_unit=false
-    local run_integration=false
-    local run_cross_platform=false
-    local run_error_handling=false
-    local run_all=true
+    local run_unit
+    run_unit=false
+    local run_integration
+    run_integration=false
+    local run_cross_platform
+    run_cross_platform=false
+    local run_error_handling
+    run_error_handling=false
+    local run_all
+    run_all=true
     
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -231,7 +251,8 @@ main() {
                 shift
                 ;;
             --verbose)
-                VERBOSE=true
+                # shellcheck disable=SC2034
+VERBOSE=true
                 shift
                 ;;
             --bail)
@@ -253,7 +274,8 @@ main() {
     # Initialize test environment
     init_test_environment
     
-    local exit_code=0
+    local exit_code
+    exit_code=0
     
     # Run selected test categories
     if [ "$run_all" = true ] || [ "$run_unit" = true ]; then
