@@ -5,3 +5,10 @@ include "root" {
 terraform {
   source = "${get_repo_root()}/infra/terraform/modules/aws-ecr-repository"
 }
+
+inputs = {
+  repositories = [
+    "todo-api",
+    "todo-ingestion",
+  ]
+}

@@ -12,9 +12,34 @@ Terragrunt owns environment-specific values and points each live unit at a reusa
 export AWS_ACCOUNT_ID_DEV=123456789012
 export AWS_ACCOUNT_ID_STAGING=234567890123
 export AWS_ACCOUNT_ID_PROD=345678901234
+export ROUTE53_ZONE_ID_DEV=Z000000000000000000DEV
+export ROUTE53_ZONE_ID_STAGING=Z00000000000000STAGING
+export ROUTE53_ZONE_ID_PROD=Z00000000000000000PROD
+export API_DOMAIN_NAME_DEV=api.dev.todo.example.com
+export API_DOMAIN_NAME_STAGING=api.staging.todo.example.com
+export API_DOMAIN_NAME_PROD=api.todo.example.com
 export GITHUB_OWNER=your-org
 export GITHUB_REPOSITORY_NAME=todo-list-turborepo
 ```
+
+## AWS Environment Assumptions
+
+- Region is `eu-central-1` for all live environments unless `env.hcl` is changed.
+- `dev`, `staging`, and `prod` are modeled as separate AWS accounts through `AWS_ACCOUNT_ID_DEV`, `AWS_ACCOUNT_ID_STAGING`, and `AWS_ACCOUNT_ID_PROD`.
+- Each environment has a named workload identity in `env.hcl`: `todo-list-dev-github-actions`, `todo-list-staging-github-actions`, and `todo-list-prod-github-actions`.
+- If a Route 53 hosted zone ID and API domain name are set, the ALB module creates DNS records and a DNS-validated ACM certificate. If `ACM_CERTIFICATE_ARN_*` is set, that existing certificate is used instead.
+- ECR is intentionally created as `todo-api` and `todo-ingestion`; using separate AWS accounts avoids repository name conflicts between environments.
+- API and ingestion ECS services reference a `bootstrap` image tag initially. Push that tag after ECR is applied, then deploy workflows should move services to immutable image digests.
+- API service secrets such as `JWT_SECRET`, `CORS_ORIGIN`, and blockchain credentials are created as empty Secrets Manager entries by Terraform; set their values before starting ECS services.
+
+## Database Restore Runbook
+
+1. Identify the DocumentDB cluster snapshot to restore from in the AWS console or with `aws docdb describe-db-cluster-snapshots`.
+2. Restore the snapshot into a new cluster in the same VPC database subnet group and database security group.
+3. Validate application compatibility against the restored cluster from a one-off ECS task in private subnets.
+4. Update the `todo-list/<env>/database/MONGODB_URI` Secrets Manager value to point at the restored endpoint.
+5. Force a new deployment of the API and ingestion ECS services so tasks reload the secret.
+6. Keep the previous cluster until smoke tests and ingestion checks pass, then remove it through a reviewed Terraform change or documented break-glass cleanup.
 
 Bootstrap the remote state backend first, then export its outputs before running any Terragrunt command:
 
