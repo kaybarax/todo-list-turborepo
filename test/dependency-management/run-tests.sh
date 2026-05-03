@@ -3,7 +3,7 @@
 # Test runner for dependency management test suite
 # Runs all test categories with proper setup and reporting
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'
