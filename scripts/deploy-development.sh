@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
@@ -19,6 +20,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }

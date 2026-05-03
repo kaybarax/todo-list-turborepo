@@ -16,7 +16,8 @@ ENABLE_PROGRESS="${ENABLE_PROGRESS:-true}"
 if [[ "$ENABLE_COLORS" == "true" ]]; then
     RED='\033[0;31m'
     GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
+    # shellcheck disable=SC2034
+YELLOW='\033[1;33m'
     BLUE='\033[0;34m'
     PURPLE='\033[0;35m'
     CYAN='\033[0;36m'
@@ -27,8 +28,10 @@ else
     GREEN=''
     YELLOW=''
     BLUE=''
+    # shellcheck disable=SC2034
     PURPLE=''
     CYAN=''
+    # shellcheck disable=SC2034
     WHITE=''
     NC=''
 fi
@@ -41,7 +44,8 @@ LOG_LEVEL_ERROR=3
 
 # Convert log level string to number
 get_log_level_num() {
-    local level=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+    local level
+    level=$(echo "$1" | tr '[:lower:]' '[:upper:]')
     case "$level" in
         "DEBUG") echo $LOG_LEVEL_DEBUG ;;
         "INFO")  echo $LOG_LEVEL_INFO ;;
@@ -62,8 +66,10 @@ get_timestamp() {
 
 # Format log message
 format_log_message() {
-    local level="$1"
-    local message="$2"
+    local level
+    level="$1"
+    local message
+    message="$2"
     local timestamp
     timestamp=$(get_timestamp)
     
@@ -76,9 +82,12 @@ format_log_message() {
 
 # Core logging function
 log_message() {
-    local level="$1"
-    local message="$2"
-    local color="$3"
+    local level
+    level="$1"
+    local message
+    message="$2"
+    local color
+    color="$3"
     local current_level_num
     local target_level_num
     
@@ -129,8 +138,10 @@ show_progress() {
         return
     fi
     
-    local message="$1"
-    local duration="${2:-0}"
+    local message
+    message="$1"
+    local duration
+    duration="${2:-0}"
     
     echo -ne "${BLUE}[PROGRESS]${NC} $message"
     
@@ -149,19 +160,25 @@ show_spinner() {
         return
     fi
     
-    local message="$1"
-    local pid="$2"
-    local spin='-\|/'
-    local i=0
+    local message
+    message="$1"
+    local pid
+    pid="$2"
+    local spin
+    spin='-\|/'
+    local i
+    i=0
     
     echo -ne "${BLUE}[PROGRESS]${NC} $message "
     
     while kill -0 "$pid" 2>/dev/null; do
         i=$(( (i+1) %4 ))
+        # shellcheck disable=SC2059
         printf "\r${BLUE}[PROGRESS]${NC} $message ${spin:$i:1}"
         sleep 0.1
     done
     
+    # shellcheck disable=SC2059
     printf "\r${BLUE}[PROGRESS]${NC} $message ✓\n"
 }
 
@@ -175,8 +192,10 @@ BUILD_REPORT_TOTAL_DURATION="0"
 
 # Initialize network report
 init_network_report() {
-    local network="$1"
-    local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    local network
+    network="$1"
+    local network_upper
+    network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
     
     eval "NETWORK_REPORT_${network_upper}_STATUS=pending"
     eval "NETWORK_REPORT_${network_upper}_START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
@@ -190,9 +209,12 @@ init_network_report() {
 
 # Update network report status
 update_network_status() {
-    local network="$1"
-    local status="$2"
-    local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    local network
+    network="$1"
+    local status
+    status="$2"
+    local network_upper
+    network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
     local end_time
     local start_time
     local duration
@@ -217,11 +239,16 @@ update_network_status() {
 
 # Add compiled artifact to report
 add_compiled_artifact() {
-    local network="$1"
-    local artifact_type="$2"  # contracts_compiled, programs_built, pallets_compiled
-    local artifact_name="$3"
-    local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
-    local artifact_type_upper=$(echo "$artifact_type" | tr '[:lower:]' '[:upper:]')
+    local network
+    network="$1"
+    local artifact_type
+    artifact_type="$2"  # contracts_compiled, programs_built, pallets_compiled
+    local artifact_name
+    artifact_name="$3"
+    local network_upper
+    network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    local artifact_type_upper
+    artifact_type_upper=$(echo "$artifact_type" | tr '[:lower:]' '[:upper:]')
     
     local current_artifacts
     eval "current_artifacts=\$NETWORK_REPORT_${network_upper}_${artifact_type_upper}"
@@ -235,9 +262,12 @@ add_compiled_artifact() {
 
 # Add error to report
 add_network_error() {
-    local network="$1"
-    local error_message="$2"
-    local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    local network
+    network="$1"
+    local error_message
+    error_message="$2"
+    local network_upper
+    network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
     
     local current_errors
     eval "current_errors=\$NETWORK_REPORT_${network_upper}_ERRORS"
@@ -251,9 +281,12 @@ add_network_error() {
 
 # Add warning to report
 add_network_warning() {
-    local network="$1"
-    local warning_message="$2"
-    local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    local network
+    network="$1"
+    local warning_message
+    warning_message="$2"
+    local network_upper
+    network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
     
     local current_warnings
     eval "current_warnings=\$NETWORK_REPORT_${network_upper}_WARNINGS"
@@ -267,11 +300,13 @@ add_network_warning() {
 
 # Generate recommendations based on build results
 generate_recommendations() {
-    local recommendations=()
+    local recommendations
+    recommendations=()
     
     # Check for common issues and provide recommendations
     for network in polygon solana polkadot moonbeam base; do
-        local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+        local network_upper
+        network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
         local status errors
         eval "status=\$NETWORK_REPORT_${network_upper}_STATUS"
         eval "errors=\$NETWORK_REPORT_${network_upper}_ERRORS"
@@ -314,7 +349,8 @@ generate_recommendations() {
     fi
     
     # Convert array to comma-separated string
-    local IFS=','
+    local IFS
+    IFS=','
     echo "${recommendations[*]}"
 }
 
@@ -340,6 +376,7 @@ generate_json_report() {
     fi
     
     BUILD_REPORT_TOTAL_DURATION="$total_duration"
+    # shellcheck disable=SC2034
     BUILD_REPORT_END_TIME="$end_time"
     
     # Generate JSON report
@@ -354,9 +391,11 @@ generate_json_report() {
 EOF
 
     # Add network reports
-    local first_network=true
+    local first_network
+    first_network=true
     for network in polygon solana polkadot moonbeam base; do
-        local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+        local network_upper
+        network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
         local status contracts_compiled programs_built pallets_compiled errors warnings duration
         
         eval "status=\$NETWORK_REPORT_${network_upper}_STATUS"
@@ -374,29 +413,39 @@ EOF
             eval "duration=\$NETWORK_REPORT_${network_upper}_DURATION"
             
             # Convert comma-separated strings to JSON arrays
-            local contracts_json="[]"
-            local programs_json="[]"
-            local pallets_json="[]"
-            local errors_json="[]"
-            local warnings_json="[]"
+            local contracts_json
+            contracts_json="[]"
+            local programs_json
+            programs_json="[]"
+            local pallets_json
+            pallets_json="[]"
+            local errors_json
+            errors_json="[]"
+            local warnings_json
+            warnings_json="[]"
             
             if [[ -n "$contracts_compiled" ]]; then
+                # shellcheck disable=SC2001
                 contracts_json="[\"$(echo "$contracts_compiled" | sed 's/,/","/g')\"]"
             fi
             
             if [[ -n "$programs_built" ]]; then
+                # shellcheck disable=SC2001
                 programs_json="[\"$(echo "$programs_built" | sed 's/,/","/g')\"]"
             fi
             
             if [[ -n "$pallets_compiled" ]]; then
+                # shellcheck disable=SC2001
                 pallets_json="[\"$(echo "$pallets_compiled" | sed 's/,/","/g')\"]"
             fi
             
             if [[ -n "$errors" ]]; then
+                # shellcheck disable=SC2001
                 errors_json="[\"$(echo "$errors" | sed 's/|/","/g')\"]"
             fi
             
             if [[ -n "$warnings" ]]; then
+                # shellcheck disable=SC2001
                 warnings_json="[\"$(echo "$warnings" | sed 's/|/","/g')\"]"
             fi
             
@@ -415,8 +464,10 @@ EOF
     done
     
     # Add recommendations
-    local recommendations_json="[]"
+    local recommendations_json
+    recommendations_json="[]"
     if [[ -n "$recommendations" ]]; then
+        # shellcheck disable=SC2001
         recommendations_json="[\"$(echo "$recommendations" | sed 's/,/","/g')\"]"
     fi
     
@@ -429,8 +480,10 @@ EOF
 
 # Generate human-readable summary report
 generate_summary_report() {
-    local total_duration="$BUILD_REPORT_TOTAL_DURATION"
-    local environment_check="$BUILD_REPORT_ENVIRONMENT_CHECK"
+    local total_duration
+    total_duration="$BUILD_REPORT_TOTAL_DURATION"
+    local environment_check
+    environment_check="$BUILD_REPORT_ENVIRONMENT_CHECK"
     
     echo ""
     echo "=== BUILD SUMMARY REPORT ==="
@@ -441,12 +494,16 @@ generate_summary_report() {
     
     # Network status summary
     echo "Network Build Status:"
-    local success_count=0
-    local failed_count=0
-    local skipped_count=0
+    local success_count
+    success_count=0
+    local failed_count
+    failed_count=0
+    local skipped_count
+    skipped_count=0
     
     for network in polygon solana polkadot moonbeam base; do
-        local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+        local network_upper
+        network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
         local status duration
         eval "status=\$NETWORK_REPORT_${network_upper}_STATUS"
         eval "duration=\$NETWORK_REPORT_${network_upper}_DURATION"
@@ -477,7 +534,8 @@ generate_summary_report() {
         echo ""
         echo "Build Errors:"
         for network in polygon solana polkadot moonbeam base; do
-            local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+            local network_upper
+            network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
             local status errors
             eval "status=\$NETWORK_REPORT_${network_upper}_STATUS"
             eval "errors=\$NETWORK_REPORT_${network_upper}_ERRORS"
@@ -490,9 +548,11 @@ generate_summary_report() {
     fi
     
     # Show warnings if any
-    local has_warnings=false
+    local has_warnings
+    has_warnings=false
     for network in polygon solana polkadot moonbeam base; do
-        local network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+        local network_upper
+        network_upper=$(echo "$network" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
         local warnings
         eval "warnings=\$NETWORK_REPORT_${network_upper}_WARNINGS"
         if [[ -n "$warnings" ]]; then

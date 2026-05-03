@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -91,7 +92,8 @@ test_tool_validation() {
     fi
     
     # Test valid tools are recognized
-    local valid_tools=("rust" "solana" "anchor" "substrate" "node")
+    local valid_tools
+    valid_tools=("rust" "solana" "anchor" "substrate" "node")
     for tool in "${valid_tools[@]}"; do
         if ./scripts/install-blockchain-tools.sh --help | grep -q "$tool"; then
             log_pass "Tool '$tool' is documented"

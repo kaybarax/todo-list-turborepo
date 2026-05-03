@@ -10,6 +10,7 @@ echo "📦 Publishing UI Packages..."
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -23,6 +24,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -99,15 +101,18 @@ fi
 
 # Function to publish a package
 publish_package() {
-    local package_dir=$1
-    local package_name=$2
+    local package_dir
+    package_dir=$1
+    local package_name
+    package_name=$2
     
     print_status "Publishing $package_name..."
     
     cd "$package_dir"
     
     # Get current version
-    local current_version=$(node -p "require('./package.json').version")
+    local current_version
+    current_version=$(node -p "require('./package.json').version")
     print_status "Current version: $current_version"
     
     # Check if version already exists on npm
@@ -122,6 +127,7 @@ publish_package() {
     # Perform dry run or actual publish
     if [ "$DRY_RUN" = true ]; then
         print_status "Dry run: Would publish $package_name@$current_version"
+        # shellcheck disable=SC2086
         if npm publish --dry-run $NPM_REGISTRY_ARG; then
             print_success "Dry run successful for $package_name"
         else
@@ -131,6 +137,7 @@ publish_package() {
         fi
     else
         print_status "Publishing $package_name@$current_version to npm..."
+        # shellcheck disable=SC2086
         if npm publish $NPM_REGISTRY_ARG; then
             print_success "Successfully published $package_name@$current_version"
         else

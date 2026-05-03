@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
@@ -19,6 +20,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -34,8 +36,8 @@ if ! nc -z localhost 3001 2>/dev/null; then
     
     # Wait for API to be ready
     print_status "Waiting for API to be ready..."
-    local max_attempts=30
-    local attempt=1
+    max_attempts=30
+    attempt=1
     
     while [ $attempt -le $max_attempts ]; do
         if nc -z localhost 3001 2>/dev/null; then
@@ -61,7 +63,7 @@ shutdown_handler() {
     print_status "Shutting down frontend development..."
     
     if [ -n "$API_PID" ]; then
-        kill $API_PID 2>/dev/null || true
+        kill "$API_PID" 2>/dev/null || true
     fi
     
     exit 0

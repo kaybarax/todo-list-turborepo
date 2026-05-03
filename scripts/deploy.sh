@@ -10,15 +10,17 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Function to print colored output
+# shellcheck disable=SC2329
 print_status() {
     echo -e "${BLUE}[INFO]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -57,6 +59,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -238,7 +241,7 @@ verify_deployment() {
             fi
             ;;
             
-        docker compose)
+        "docker compose"|docker-compose)
             # Check Docker Compose services
             docker compose ps
             
@@ -274,7 +277,7 @@ show_deployment_info() {
             echo "  Monitoring: https://$ingress_host/grafana"
             ;;
             
-        docker compose)
+        "docker compose"|docker-compose)
             print_status "Docker Services:"
             docker compose ps
             
@@ -299,7 +302,7 @@ rollback_deployment() {
                 print_success "Kubernetes rollback completed"
                 ;;
                 
-            docker compose)
+            "docker compose"|docker-compose)
                 # Stop Docker Compose services
                 docker compose down
                 print_success "Docker Compose rollback completed"
@@ -320,7 +323,7 @@ cleanup_deployment() {
                 kubectl delete namespace "$NAMESPACE" --timeout="$KUBECTL_TIMEOUT"
                 ;;
                 
-            docker compose)
+            "docker compose"|docker-compose)
                 docker compose down -v
                 docker system prune -f
                 ;;
@@ -345,7 +348,7 @@ show_help() {
     echo "  --skip-contracts      Skip blockchain contract deployment"
     echo "  --skip-monitoring     Skip monitoring stack deployment"
     echo "  --dry-run             Show what would be deployed without actually deploying"
-    echo "  --docker compose      Use Docker Compose instead of Kubernetes"
+    echo "  --docker-compose      Use Docker Compose instead of Kubernetes"
     echo "  --rollback            Rollback to previous deployment"
     echo "  --cleanup             Remove entire deployment"
     echo "  --help                Show this help message"
@@ -362,7 +365,7 @@ show_help() {
     echo "Examples:"
     echo "  $0                                    # Deploy to development"
     echo "  $0 --environment production           # Deploy to production"
-    echo "  $0 --docker compose                  # Deploy with Docker Compose"
+    echo "  $0 --docker-compose                  # Deploy with Docker Compose"
     echo "  $0 --dry-run --environment staging    # Dry run for staging"
     echo "  $0 --rollback                         # Rollback deployment"
     echo "  $0 --cleanup                          # Clean up deployment"
@@ -375,7 +378,8 @@ main_deploy() {
     print_status "Version: $VERSION"
     print_status "Deployment Type: $DEPLOYMENT_TYPE"
     
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     
     check_prerequisites
     
@@ -390,7 +394,7 @@ main_deploy() {
         kubernetes)
             deploy_kubernetes
             ;;
-        docker compose)
+        "docker compose"|docker-compose)
             deploy_docker_compose
             ;;
     esac
@@ -398,8 +402,10 @@ main_deploy() {
     run_migrations
     verify_deployment
     
-    local end_time=$(date +%s)
-    local duration=$((end_time - start_time))
+    local end_time
+    end_time=$(date +%s)
+    local duration
+    duration=$((end_time - start_time))
     
     print_success "Deployment completed successfully in ${duration}s"
     show_deployment_info
@@ -439,7 +445,7 @@ while [[ $# -gt 0 ]]; do
             DRY_RUN="true"
             shift
             ;;
-        --docker compose)
+        --docker-compose)
             DEPLOYMENT_TYPE="docker compose"
             shift
             ;;

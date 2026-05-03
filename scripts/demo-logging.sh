@@ -6,7 +6,8 @@ set -euo pipefail
 
 # Source the logging system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/build-logger.sh"
+# shellcheck disable=SC1091
+    source "$SCRIPT_DIR/build-logger.sh"
 
 # Demo configuration
 export LOG_LEVEL="INFO"
@@ -24,6 +25,7 @@ log_info "Starting blockchain contract build process"
 log_info "Target networks: polygon, solana, polkadot"
 
 # Set environment check
+# shellcheck disable=SC2034
 BUILD_REPORT_ENVIRONMENT_CHECK="success"
 
 # Simulate Polygon build (success)

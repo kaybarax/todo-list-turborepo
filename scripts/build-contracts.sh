@@ -8,7 +8,8 @@ set -euo pipefail
 
 # Source the logging system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/build-logger.sh"
+# shellcheck disable=SC1091
+    source "$SCRIPT_DIR/build-logger.sh"
 
 # Initialize logging
 init_logging
@@ -32,7 +33,8 @@ print_error() {
 
 # Source interactive help system
 if [[ -f "$SCRIPT_DIR/interactive-help.sh" ]]; then
-    source "$SCRIPT_DIR/interactive-help.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/interactive-help.sh"
 fi
 
 # Configuration
@@ -48,8 +50,10 @@ DIAGNOSE_MODE=false
 
 # Version comparison function
 version_compare() {
-    local version1=$1
-    local version2=$2
+    local version1
+    version1=$1
+    local version2
+    version2=$2
     
     # Remove 'v' prefix if present
     version1=${version1#v}
@@ -61,8 +65,10 @@ version_compare() {
     
     # Compare each part
     for i in {0..2}; do
-        local v1_part=${V1[i]:-0}
-        local v2_part=${V2[i]:-0}
+        local v1_part
+        v1_part=${V1[i]:-0}
+        local v2_part
+        v2_part=${V2[i]:-0}
         
         if (( v1_part > v2_part )); then
             return 0  # version1 > version2
@@ -227,7 +233,8 @@ INSTALL_SCRIPT="./scripts/install-blockchain-tools.sh"
 
 # Dependency management functions
 check_dependencies() {
-    local network="$1"
+    local network
+    network="$1"
     
     if [ "$SKIP_DEPS_CHECK" = "true" ]; then
         print_status "Skipping dependency check (SKIP_DEPS_CHECK=true)"
@@ -244,11 +251,13 @@ check_dependencies() {
     fi
     
     # Run dependency check for specific network
-    local check_args=""
+    local check_args
+    check_args=""
     if [ "$network" != "all" ]; then
         check_args="--network=$network"
     fi
     
+    # shellcheck disable=SC2086
     if "$DEPS_CHECK_SCRIPT" $check_args --verbose; then
         print_success "All dependencies verified for $network"
         return 0
@@ -259,7 +268,8 @@ check_dependencies() {
 }
 
 attempt_auto_install() {
-    local network="$1"
+    local network
+    network="$1"
     
     if [ "$AUTO_INSTALL" != "true" ]; then
         print_status "Auto-install disabled (AUTO_INSTALL=false)"
@@ -275,7 +285,8 @@ attempt_auto_install() {
     fi
     
     # Determine which tools to install based on network
-    local tools_to_install=()
+    local tools_to_install
+    tools_to_install=()
     case "$network" in
         "polygon"|"moonbeam"|"base")
             tools_to_install=("node")
@@ -296,7 +307,8 @@ attempt_auto_install() {
     esac
     
     # Attempt to install each required tool
-    local install_failed=false
+    local install_failed
+    install_failed=false
     for tool in "${tools_to_install[@]}"; do
         print_status "Installing $tool..."
         if ! "$INSTALL_SCRIPT" --tool="$tool"; then
@@ -317,7 +329,8 @@ attempt_auto_install() {
 }
 
 validate_environment() {
-    local network="$1"
+    local network
+    network="$1"
     
     print_status "Validating build environment for $network"
     
@@ -381,7 +394,8 @@ validate_environment() {
 }
 
 provide_manual_guidance() {
-    local network="$1"
+    local network
+    network="$1"
     
     print_error "Build environment validation failed for $network"
     print_status "Manual installation guidance:"
@@ -424,7 +438,8 @@ provide_manual_guidance() {
 
 # Network-specific dependency validation functions
 validate_polygon_dependencies() {
-    local validation_failed=false
+    local validation_failed
+    validation_failed=false
     
     print_status "Validating Polygon/Hardhat dependencies..."
     
@@ -469,7 +484,8 @@ validate_polygon_dependencies() {
 }
 
 validate_solana_dependencies() {
-    local validation_failed=false
+    local validation_failed
+    validation_failed=false
     
     print_status "Validating Solana/Anchor dependencies..."
     
@@ -534,7 +550,8 @@ validate_solana_dependencies() {
 }
 
 validate_polkadot_dependencies() {
-    local validation_failed=false
+    local validation_failed
+    validation_failed=false
     
     print_status "Validating Polkadot/Substrate dependencies..."
     
@@ -711,7 +728,8 @@ provide_polkadot_guidance() {
 
 # Enhanced build validation functions
 validate_polygon_build() {
-    local build_dir="${1:-apps/smart-contracts/polygon}"
+    local build_dir
+    build_dir="${1:-apps/smart-contracts/polygon}"
     
     print_status "Validating build artifacts for $build_dir..."
     
@@ -743,7 +761,8 @@ validate_polygon_build() {
 }
 
 validate_solana_build() {
-    local build_dir="apps/smart-contracts/solana"
+    local build_dir
+    build_dir="apps/smart-contracts/solana"
     
     print_status "Validating Solana build artifacts..."
     
@@ -782,7 +801,8 @@ validate_solana_build() {
 }
 
 validate_polkadot_build() {
-    local build_dir="apps/smart-contracts/polkadot"
+    local build_dir
+    build_dir="apps/smart-contracts/polkadot"
     
     print_status "Validating Polkadot build artifacts..."
     
@@ -815,7 +835,8 @@ validate_polkadot_build() {
 
 # Function to build Polygon contracts with enhanced validation
 build_polygon() {
-    local network="polygon"
+    local network
+    network="polygon"
     init_network_report "$network"
     
     if [ ! -d "apps/smart-contracts/polygon" ]; then
@@ -946,7 +967,8 @@ build_polygon() {
 
 # Function to build Solana programs with enhanced validation
 build_solana() {
-    local network="solana"
+    local network
+    network="solana"
     init_network_report "$network"
     
     if [ ! -d "apps/smart-contracts/solana" ]; then
@@ -1035,7 +1057,8 @@ build_solana() {
             print_status "Starting local test validator for tests..."
             # Start validator in background and give it time to start
             solana-test-validator --reset --quiet &
-            local validator_pid=$!
+            local validator_pid
+            validator_pid=$!
             sleep 5
             
             # Run tests
@@ -1103,7 +1126,8 @@ build_solana() {
 
 # Function to build Polkadot pallets with enhanced validation
 build_polkadot() {
-    local network="polkadot"
+    local network
+    network="polkadot"
     init_network_report "$network"
     
     if [ ! -d "apps/smart-contracts/polkadot" ]; then
@@ -1239,7 +1263,8 @@ build_polkadot() {
 
 # Function to build Moonbeam contracts with enhanced validation
 build_moonbeam() {
-    local network="moonbeam"
+    local network
+    network="moonbeam"
     init_network_report "$network"
     
     if [ ! -d "apps/smart-contracts/moonbeam" ]; then
@@ -1332,7 +1357,8 @@ build_moonbeam() {
 
 # Function to build Base contracts with enhanced validation
 build_base() {
-    local network="base"
+    local network
+    network="base"
     init_network_report "$network"
     
     if [ ! -d "apps/smart-contracts/base" ]; then
@@ -1431,7 +1457,8 @@ generate_artifacts() {
     # Create artifacts directory
     mkdir -p build/contracts
     
-    local artifacts_copied=false
+    local artifacts_copied
+    artifacts_copied=false
     
     # Copy Polygon artifacts
     if [ -d "apps/smart-contracts/polygon/artifacts" ]; then
@@ -1486,7 +1513,8 @@ generate_artifacts() {
 
 # Function to validate contract builds based on successful builds
 validate_builds() {
-    local build_results=("$@")
+    local build_results
+    build_results=("$@")
     
     if [ ${#build_results[@]} -eq 0 ]; then
         print_warning "No build results to validate"
@@ -1495,11 +1523,14 @@ validate_builds() {
     
     print_status "Validating contract builds..."
     
-    local validation_failed=false
+    local validation_failed
+    validation_failed=false
     
     for result in "${build_results[@]}"; do
-        local network="${result%:*}"
-        local status="${result#*:}"
+        local network
+        network="${result%:*}"
+        local status
+        status="${result#*:}"
         
         # Only validate successful builds
         if [ "$status" = "success" ]; then
@@ -1553,8 +1584,10 @@ validate_builds() {
 }
 
 # Function to show build summary with results
+# shellcheck disable=SC2120
 show_build_summary_with_results() {
-    local results=("$@")
+    local results
+    results=("$@")
     
     print_status "Contract Build Summary:"
     echo "  Network: $NETWORK"
@@ -1569,8 +1602,10 @@ show_build_summary_with_results() {
     if [ ${#results[@]} -gt 0 ]; then
         echo "Build Results:"
         for result in "${results[@]}"; do
-            local network="${result%:*}"
-            local status="${result#*:}"
+            local network
+            network="${result%:*}"
+            local status
+            status="${result#*:}"
             if [ "$status" = "success" ]; then
                 echo -e "  ${GREEN}✓${NC} $network: Build successful"
             else
@@ -1588,8 +1623,10 @@ show_build_summary_with_results() {
     
     echo "Deployment Commands:"
     for result in "${results[@]}"; do
-        local network="${result%:*}"
-        local status="${result#*:}"
+        local network
+        network="${result%:*}"
+        local status
+        status="${result#*:}"
         if [ "$status" = "success" ]; then
             case "$network" in
                 "polygon")
@@ -1612,9 +1649,11 @@ show_build_summary_with_results() {
     done
     
     # Show troubleshooting info for failed builds
-    local has_failures=false
+    local has_failures
+    has_failures=false
     for result in "${results[@]}"; do
-        local status="${result#*:}"
+        local status
+        status="${result#*:}"
         if [ "$status" = "failed" ]; then
             has_failures=true
             break
@@ -1634,6 +1673,7 @@ show_build_summary_with_results() {
 
 # Function to show build summary (legacy compatibility)
 show_build_summary() {
+    # shellcheck disable=SC2119
     show_build_summary_with_results
 }
 
@@ -1641,7 +1681,8 @@ show_build_summary() {
 
 # Main build function with enhanced error handling and comprehensive reporting
 main_build() {
-    local overall_success=true
+    local overall_success
+    overall_success=true
     
     log_info "=== BLOCKCHAIN CONTRACT BUILD STARTED ==="
     log_info "Network: $NETWORK"
@@ -1652,7 +1693,8 @@ main_build() {
     echo ""
     
     # Set environment check status
-    BUILD_REPORT_ENVIRONMENT_CHECK="success"
+    # shellcheck disable=SC2034
+BUILD_REPORT_ENVIRONMENT_CHECK="success"
     
     # Pre-build validation for all networks if building all
     if [ "$NETWORK" = "all" ] && [ "$SKIP_DEPS_CHECK" != "true" ]; then
@@ -1660,7 +1702,8 @@ main_build() {
         show_progress "Validating build environment" 3
         
         if ! validate_environment "all"; then
-            BUILD_REPORT_ENVIRONMENT_CHECK="failed"
+            # shellcheck disable=SC2034
+BUILD_REPORT_ENVIRONMENT_CHECK="failed"
             log_error "Pre-build validation failed. Some networks may not build successfully."
             log_info "Continuing with individual network validation..."
         else

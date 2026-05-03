@@ -10,6 +10,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -95,13 +96,17 @@ version_ge() {
 
 # Enhanced retry mechanism for network operations with exponential backoff
 retry_command() {
-    local max_attempts="${1:-$MAX_RETRIES}"
+    local max_attempts
+    max_attempts="${1:-$MAX_RETRIES}"
     shift
-    local delay="$INITIAL_DELAY"
-    local attempt=1
-    local exit_code=0
+    local delay
+    delay="$INITIAL_DELAY"
+    local attempt
+    attempt=1
+    local exit_code
+    exit_code=0
     
-    while [ $attempt -le $max_attempts ]; do
+    while [ "$attempt" -le "$max_attempts" ]; do
         log_info "Attempt $attempt of $max_attempts: $*"
         
         if "$@"; then
@@ -109,7 +114,7 @@ retry_command() {
         else
             exit_code=$?
             
-            if [ $attempt -eq $max_attempts ]; then
+            if [ "$attempt" -eq "$max_attempts" ]; then
                 log_error "Command failed after $max_attempts attempts with exit code $exit_code: $*"
                 return $exit_code
             fi
@@ -124,7 +129,8 @@ retry_command() {
             fi
             
             # Add small random jitter to prevent thundering herd
-            local jitter=$((RANDOM % 3))
+            local jitter
+            jitter=$((RANDOM % 3))
             delay=$((delay + jitter))
             
             attempt=$((attempt + 1))
@@ -134,8 +140,10 @@ retry_command() {
 
 # Network connectivity check
 check_network_connectivity() {
-    local test_urls=("https://github.com" "https://sh.rustup.rs" "https://release.solana.com")
-    local connected=false
+    local test_urls
+    test_urls=("https://github.com" "https://sh.rustup.rs" "https://release.solana.com")
+    local connected
+    connected=false
     
     log_info "Checking network connectivity..."
     
@@ -166,7 +174,8 @@ check_network_connectivity() {
 
 # Check if running with sufficient permissions
 check_permissions() {
-    local install_type="$1"  # "user" or "system"
+    local install_type
+    install_type="$1"  # "user" or "system"
     
     case "$install_type" in
         "system")
@@ -178,7 +187,8 @@ check_permissions() {
             ;;
         "user")
             # Check if user directories are writable
-            local user_dirs=("$HOME/.cargo" "$HOME/.local")
+            local user_dirs
+            user_dirs=("$HOME/.cargo" "$HOME/.local")
             for dir in "${user_dirs[@]}"; do
                 if [ -e "$dir" ] && [ ! -w "$dir" ]; then
                     log_error "User directory $dir is not writable"
@@ -194,18 +204,24 @@ check_permissions() {
 
 # Validate installation with timeout
 validate_installation() {
-    local tool_name="$1"
-    local validation_command="$2"
-    local expected_pattern="$3"
-    local timeout="${4:-$VALIDATION_TIMEOUT}"
+    local tool_name
+    tool_name="$1"
+    local validation_command
+    validation_command="$2"
+    local expected_pattern
+    expected_pattern="$3"
+    local timeout
+    timeout="${4:-$VALIDATION_TIMEOUT}"
     
     log_info "Validating $tool_name installation..."
     
     # Wait for installation to complete and tool to be available
-    local elapsed=0
-    local check_interval=2
+    local elapsed
+    elapsed=0
+    local check_interval
+    check_interval=2
     
-    while [ $elapsed -lt $timeout ]; do
+    while [ "$elapsed" -lt "$timeout" ]; do
         if command_exists "$tool_name"; then
             # Tool exists, now validate it works
             if [ -n "$validation_command" ]; then
@@ -247,8 +263,10 @@ validate_installation() {
 
 # Provide manual installation fallback instructions
 provide_manual_instructions() {
-    local tool="$1"
-    local platform="$2"
+    local tool
+    tool="$1"
+    local platform
+    platform="$2"
     
     log_error "Automatic installation of $tool failed"
     log_info "Please follow these manual installation instructions:"
@@ -344,9 +362,11 @@ install_rust() {
         "macos"|"linux")
             # Check if we have curl or wget
             if command_exists curl; then
-                local download_cmd="curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs"
+                local download_cmd
+                download_cmd="curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs"
             elif command_exists wget; then
-                local download_cmd="wget -qO- https://sh.rustup.rs"
+                local download_cmd
+                download_cmd="wget -qO- https://sh.rustup.rs"
             else
                 log_error "Neither curl nor wget found. Please install one of them first."
                 provide_manual_instructions "rust" "$platform"
@@ -446,9 +466,11 @@ install_solana() {
         "macos"|"linux")
             # Check if we have curl or wget
             if command_exists curl; then
-                local download_cmd="curl -sSfL https://release.solana.com/v$SOLANA_VERSION/install"
+                local download_cmd
+                download_cmd="curl -sSfL https://release.solana.com/v$SOLANA_VERSION/install"
             elif command_exists wget; then
-                local download_cmd="wget -qO- https://release.solana.com/v$SOLANA_VERSION/install"
+                local download_cmd
+                download_cmd="wget -qO- https://release.solana.com/v$SOLANA_VERSION/install"
             else
                 log_error "Neither curl nor wget found. Please install one of them first."
                 provide_manual_instructions "solana" "$platform"
@@ -464,7 +486,8 @@ install_solana() {
             fi
             
             # Add to PATH if not already there
-            local solana_path="$HOME/.local/share/solana/install/active_release/bin"
+            local solana_path
+            solana_path="$HOME/.local/share/solana/install/active_release/bin"
             if [[ ":$PATH:" != *":$solana_path:"* ]]; then
                 # Add to shell profiles with error handling
                 for profile in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
@@ -568,7 +591,8 @@ install_anchor() {
     fi
     
     # Add cargo bin to PATH if not already there
-    local cargo_bin="$HOME/.cargo/bin"
+    local cargo_bin
+    cargo_bin="$HOME/.cargo/bin"
     if [[ ":$PATH:" != *":$cargo_bin:"* ]]; then
         # Add to shell profiles with error handling
         for profile in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
@@ -670,7 +694,8 @@ install_substrate() {
                 fi
                 
                 # Try different package managers with retry
-                local installed=false
+                local installed
+                installed=false
                 if command_exists apt-get; then
                     if retry_command 2 sudo apt-get update && retry_command 2 sudo apt-get install -y protobuf-compiler; then
                         installed=true
@@ -778,7 +803,8 @@ install_node_deps() {
     
     local node_version
     node_version=$(node --version | sed 's/v//')
-    local required_version="20.0.0"
+    local required_version
+    required_version="20.0.0"
     
     if ! version_ge "$node_version" "$required_version"; then
         log_error "Node.js $node_version found, but version $required_version or higher is required"
@@ -802,9 +828,9 @@ install_node_deps() {
 }
 
 # Additional global variables for enhanced help
-INTERACTIVE_MODE=false
-SKIP_VALIDATION=false
-FORCE_INSTALL=false
+export INTERACTIVE_MODE=false
+export SKIP_VALIDATION=false
+export FORCE_INSTALL=false
 
 # Enhanced help function
 show_help() {
@@ -829,7 +855,8 @@ run_interactive_installation() {
 
 # Main installation function
 install_tool() {
-    local tool="$1"
+    local tool
+    tool="$1"
     
     case "$tool" in
         "rust")
@@ -858,7 +885,8 @@ install_tool() {
 # Source interactive help system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "$SCRIPT_DIR/interactive-help.sh" ]]; then
-    source "$SCRIPT_DIR/interactive-help.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/interactive-help.sh"
 fi
 
 # Show comprehensive usage information
@@ -976,7 +1004,7 @@ $(echo -e "${YELLOW}RELATED SCRIPTS:${NC}")
   scripts/interactive-help.sh         Interactive troubleshooting system
 
 EOF
-}nstallation even if tool exists"
+    echo "  --force           Force reinstallation even if tool exists"
     echo "  --help            Show this help message"
     echo ""
     echo "Available tools:"
@@ -1025,15 +1053,19 @@ done
 
 # Enhanced error reporting
 report_installation_summary() {
-    local total_tools=0
-    local successful_tools=0
-    local summary_output=""
+    local total_tools
+    total_tools=0
+    local successful_tools
+    successful_tools=0
+    local summary_output
+    summary_output=""
     
     # Collect results for each tool
     for tool in rust solana anchor substrate node; do
         if [ "$INSTALL_ALL" = true ] || [ "$SPECIFIC_TOOL" = "$tool" ]; then
             total_tools=$((total_tools + 1))
-            local tool_result=""
+            local tool_result
+            tool_result=""
             
             case "$tool" in
                 "rust")
@@ -1061,7 +1093,8 @@ report_installation_summary() {
                     fi
                     ;;
                 "substrate")
-                    local substrate_status=""
+                    local substrate_status
+                    substrate_status=""
                     if command_exists protoc; then
                         substrate_status="protoc"
                     fi
@@ -1121,7 +1154,8 @@ parse_arguments() {
                 shift
                 ;;
             --verbose)
-                VERBOSE=true
+                # shellcheck disable=SC2034
+VERBOSE=true
                 shift
                 ;;
             --interactive)
@@ -1180,15 +1214,18 @@ main() {
         exit 1
     fi
     
-    local success=true
-    local failed_tools=()
+    local success
+    success=true
+    local failed_tools
+    failed_tools=()
     
     if [ "$INSTALL_ALL" = true ]; then
         log_info "Installing all blockchain development tools..."
         echo ""
         
         # Install in dependency order with individual error tracking
-        local tools=("rust" "solana" "anchor" "substrate" "node")
+        local tools
+        tools=("rust" "solana" "anchor" "substrate" "node")
         for tool in "${tools[@]}"; do
             log_info "Starting installation of $tool..."
             if ! install_tool "$tool"; then

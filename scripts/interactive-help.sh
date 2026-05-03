@@ -9,6 +9,7 @@ set -euo pipefail
 # Color codes for output formatting
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
@@ -29,11 +30,13 @@ SCRIPT_NAME=""
 
 # Initialize help system
 init_help_system() {
+    # shellcheck disable=SC2034
     SCRIPT_NAME="$1"
     
     # Check if running in CI or non-interactive environment
     if [[ -n "${CI:-}" ]] || [[ ! -t 0 ]]; then
-        INTERACTIVE=false
+        # shellcheck disable=SC2034
+INTERACTIVE=false
     fi
 }
 
@@ -72,8 +75,10 @@ log_section() {
 
 # Interactive prompt function
 prompt_user() {
-    local question="$1"
-    local default_answer="${2:-}"
+    local question
+    question="$1"
+    local default_answer
+    default_answer="${2:-}"
     local response
     
     if [[ "$INTERACTIVE" == false ]]; then
@@ -86,10 +91,10 @@ prompt_user() {
     fi
     
     if [[ -n "$default_answer" ]]; then
-        read -p "$(echo -e "${CYAN}${QUESTION_MARK}${NC} $question [${default_answer}]: ")" response
+        read -r -p "$(echo -e "${CYAN}${QUESTION_MARK}${NC} $question [${default_answer}]: ")" response
         response="${response:-$default_answer}"
     else
-        read -p "$(echo -e "${CYAN}${QUESTION_MARK}${NC} $question: ")" response
+        read -r -p "$(echo -e "${CYAN}${QUESTION_MARK}${NC} $question: ")" response
     fi
     
     echo "$response"
@@ -97,8 +102,10 @@ prompt_user() {
 
 # Yes/No prompt function
 prompt_yes_no() {
-    local question="$1"
-    local default="${2:-n}"
+    local question
+    question="$1"
+    local default
+    default="${2:-n}"
     local response
     
     if [[ "$INTERACTIVE" == false ]]; then
@@ -122,9 +129,11 @@ prompt_yes_no() {
 
 # Multi-choice prompt function
 prompt_choice() {
-    local question="$1"
+    local question
+    question="$1"
     shift
-    local choices=("$@")
+    local choices
+    choices=("$@")
     local response
     
     if [[ "$INTERACTIVE" == false ]]; then
@@ -138,7 +147,7 @@ prompt_choice() {
     done
     
     while true; do
-        read -p "Enter choice (1-${#choices[@]}): " response
+        read -r -p "Enter choice (1-${#choices[@]}): " response
         
         if [[ "$response" =~ ^[0-9]+$ ]] && [[ "$response" -ge 1 ]] && [[ "$response" -le "${#choices[@]}" ]]; then
             echo "${choices[$((response-1))]}"
@@ -151,7 +160,8 @@ prompt_choice() {
 
 # Environment diagnosis function
 diagnose_environment() {
-    local network="${1:-all}"
+    local network
+    network="${1:-all}"
     
     log_section "Environment Diagnosis"
     
@@ -201,6 +211,7 @@ diagnose_core_dependencies() {
         
         # Check if version meets requirements
         local version_number
+        # shellcheck disable=SC2001
         version_number=$(echo "$node_version" | sed 's/v//')
         if version_compare "$version_number" "20.0.0"; then
             log_verbose "Node.js version meets requirements (20+)"
@@ -387,11 +398,13 @@ diagnose_polkadot_environment() {
 
 # Provide environment recommendations
 provide_environment_recommendations() {
-    local network="$1"
+    local network
+    network="$1"
     
     log_section "Environment Recommendations"
     
-    local recommendations=()
+    local recommendations
+    recommendations=()
     
     # Check for common issues and provide recommendations
     if ! command -v node >/dev/null 2>&1; then
@@ -450,7 +463,8 @@ provide_environment_recommendations() {
 
 # Interactive troubleshooting guide
 interactive_troubleshooting() {
-    local issue_type="$1"
+    local issue_type
+    issue_type="$1"
     
     log_section "Interactive Troubleshooting Guide"
     
@@ -711,8 +725,10 @@ troubleshoot_core_dependencies() {
 
 # Version comparison helper
 version_compare() {
-    local version1=$1
-    local version2=$2
+    local version1
+    version1=$1
+    local version2
+    version2=$2
     
     # Remove 'v' prefix if present
     version1=${version1#v}
@@ -724,8 +740,10 @@ version_compare() {
     
     # Compare each part
     for i in {0..2}; do
-        local v1_part=${V1[i]:-0}
-        local v2_part=${V2[i]:-0}
+        local v1_part
+        v1_part=${V1[i]:-0}
+        local v2_part
+        v2_part=${V2[i]:-0}
         
         if (( v1_part > v2_part )); then
             return 0  # version1 > version2
@@ -739,7 +757,8 @@ version_compare() {
 
 # Show comprehensive help
 show_comprehensive_help() {
-    local script_name="$1"
+    local script_name
+    script_name="$1"
     
     cat << EOF
 $(echo -e "${CYAN}=== Blockchain Development Environment Help ===${NC}")
@@ -831,8 +850,10 @@ EOF
 
 # Main help function that can be sourced by other scripts
 main_help() {
-    local command="${1:-help}"
-    local network="${2:-all}"
+    local command
+    command="${1:-help}"
+    local network
+    network="${2:-all}"
     
     case "$command" in
         "diagnose")
@@ -861,14 +882,17 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     while [[ $# -gt 0 ]]; do
         case $1 in
             --verbose)
-                VERBOSE=true
+                # shellcheck disable=SC2034
+VERBOSE=true
                 shift
                 ;;
             --non-interactive)
-                INTERACTIVE=false
+                # shellcheck disable=SC2034
+INTERACTIVE=false
                 shift
                 ;;
             --network=*)
+                # shellcheck disable=SC2034
                 NETWORK="${1#*=}"
                 shift
                 ;;

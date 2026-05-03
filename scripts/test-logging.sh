@@ -6,7 +6,8 @@ set -euo pipefail
 
 # Source the logging system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/build-logger.sh"
+# shellcheck disable=SC1091
+    source "$SCRIPT_DIR/build-logger.sh"
 
 # Test configuration
 export LOG_LEVEL="DEBUG"
@@ -44,6 +45,7 @@ add_network_error "failing-network" "Dependencies missing"
 update_network_status "failing-network" "failed"
 
 # Test environment check
+# shellcheck disable=SC2034
 BUILD_REPORT_ENVIRONMENT_CHECK="success"
 
 # Generate reports

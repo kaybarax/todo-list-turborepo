@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
@@ -20,6 +21,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -42,8 +44,8 @@ docker compose -f docker-compose.dev.yml up -d mongodb redis
 
 # Wait for databases to be ready
 print_status "Waiting for databases to be ready..."
-local max_attempts=30
-local attempt=1
+max_attempts=30
+attempt=1
 
 while [ $attempt -le $max_attempts ]; do
     if docker compose -f docker-compose.dev.yml exec -T mongodb mongosh --eval "db.adminCommand('ping')" &>/dev/null; then

@@ -9,6 +9,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -31,6 +32,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -82,7 +84,7 @@ clean_builds() {
     # Remove Docker images if requested
     if [ "$BUILD_DOCKER" = "true" ] && [ "${CLEAN_DOCKER:-false}" = "true" ]; then
         print_status "Cleaning Docker images..."
-        docker rmi todo-web:$VERSION todo-api:$VERSION todo-mobile:$VERSION todo-ingestion:$VERSION 2>/dev/null || true
+        docker rmi "todo-web:$VERSION" "todo-api:$VERSION" "todo-mobile:$VERSION" "todo-ingestion:$VERSION" 2>/dev/null || true
     fi
     
     print_success "Cleanup completed"
@@ -120,7 +122,6 @@ build_packages() {
 
 # Function to compile blockchain contracts
 build_contracts() {
-{{ ... }}
     if [ "$BUILD_CONTRACTS" = "false" ]; then
         print_warning "Skipping blockchain contract compilation"
         return
@@ -242,16 +243,16 @@ build_docker_images() {
     print_status "Building API Docker image..."
     docker build \
         --target production \
-        --build-arg NODE_ENV=$ENVIRONMENT \
-        -t ${REGISTRY_PREFIX}todo-api:$VERSION \
+        --build-arg NODE_ENV="$ENVIRONMENT" \
+        -t "${REGISTRY_PREFIX}todo-api:$VERSION" \
         -f apps/api/Dockerfile .
     
     # Build Web app image
     print_status "Building Web app Docker image..."
     docker build \
         --target production \
-        --build-arg NODE_ENV=$ENVIRONMENT \
-        -t ${REGISTRY_PREFIX}todo-web:$VERSION \
+        --build-arg NODE_ENV="$ENVIRONMENT" \
+        -t "${REGISTRY_PREFIX}todo-web:$VERSION" \
         -f apps/web/Dockerfile .
     
     # Build Mobile app image (for Expo builds)
@@ -259,8 +260,8 @@ build_docker_images() {
         print_status "Building Mobile app Docker image..."
         docker build \
             --target production \
-            --build-arg NODE_ENV=$ENVIRONMENT \
-            -t ${REGISTRY_PREFIX}todo-mobile:$VERSION \
+            --build-arg NODE_ENV="$ENVIRONMENT" \
+            -t "${REGISTRY_PREFIX}todo-mobile:$VERSION" \
             -f apps/mobile/Dockerfile .
     fi
     
@@ -268,8 +269,8 @@ build_docker_images() {
     print_status "Building Ingestion service Docker image..."
     docker build \
         --target production \
-        --build-arg NODE_ENV=$ENVIRONMENT \
-        -t ${REGISTRY_PREFIX}todo-ingestion:$VERSION \
+        --build-arg NODE_ENV="$ENVIRONMENT" \
+        -t "${REGISTRY_PREFIX}todo-ingestion:$VERSION" \
         -f apps/ingestion/Dockerfile .
     
     # Build blockchain contracts image (for deployment)
@@ -277,7 +278,7 @@ build_docker_images() {
         print_status "Building Blockchain contracts Docker image..."
         docker build \
             --target production \
-            -t ${REGISTRY_PREFIX}todo-contracts:$VERSION \
+            -t "${REGISTRY_PREFIX}todo-contracts:$VERSION" \
             -f apps/smart-contracts/Dockerfile .
     fi
     
@@ -293,16 +294,16 @@ push_docker_images() {
     if [ "${PUSH_IMAGES:-false}" = "true" ]; then
         print_status "Pushing Docker images to registry..."
         
-        docker push ${DOCKER_REGISTRY}/todo-api:$VERSION
-        docker push ${DOCKER_REGISTRY}/todo-web:$VERSION
-        docker push ${DOCKER_REGISTRY}/todo-ingestion:$VERSION
+        docker push "${DOCKER_REGISTRY}/todo-api:$VERSION"
+        docker push "${DOCKER_REGISTRY}/todo-web:$VERSION"
+        docker push "${DOCKER_REGISTRY}/todo-ingestion:$VERSION"
         
         if docker images | grep -q "todo-mobile:$VERSION"; then
-            docker push ${DOCKER_REGISTRY}/todo-mobile:$VERSION
+            docker push "${DOCKER_REGISTRY}/todo-mobile:$VERSION"
         fi
         
         if docker images | grep -q "todo-contracts:$VERSION"; then
-            docker push ${DOCKER_REGISTRY}/todo-contracts:$VERSION
+            docker push "${DOCKER_REGISTRY}/todo-contracts:$VERSION"
         fi
         
         print_success "Docker images pushed successfully"
@@ -316,7 +317,7 @@ generate_build_report() {
     # Create build report
     BUILD_REPORT="build-report-$(date +%Y%m%d-%H%M%S).json"
     
-    cat > $BUILD_REPORT << EOF
+    cat > "$BUILD_REPORT" << EOF
 {
   "buildTime": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
   "environment": "$ENVIRONMENT",
@@ -333,20 +334,21 @@ EOF
             REGISTRY_PREFIX="$DOCKER_REGISTRY/"
         fi
         
-        echo "    \"${REGISTRY_PREFIX}todo-api:$VERSION\"," >> $BUILD_REPORT
-        echo "    \"${REGISTRY_PREFIX}todo-web:$VERSION\"," >> $BUILD_REPORT
-        echo "    \"${REGISTRY_PREFIX}todo-ingestion:$VERSION\"" >> $BUILD_REPORT
+        # shellcheck disable=SC2129
+        echo "    \"${REGISTRY_PREFIX}todo-api:$VERSION\"," >> "$BUILD_REPORT"
+        echo "    \"${REGISTRY_PREFIX}todo-web:$VERSION\"," >> "$BUILD_REPORT"
+        echo "    \"${REGISTRY_PREFIX}todo-ingestion:$VERSION\"" >> "$BUILD_REPORT"
         
         if docker images | grep -q "todo-mobile:$VERSION"; then
-            echo "    ,\"${REGISTRY_PREFIX}todo-mobile:$VERSION\"" >> $BUILD_REPORT
+            echo "    ,\"${REGISTRY_PREFIX}todo-mobile:$VERSION\"" >> "$BUILD_REPORT"
         fi
         
         if docker images | grep -q "todo-contracts:$VERSION"; then
-            echo "    ,\"${REGISTRY_PREFIX}todo-contracts:$VERSION\"" >> $BUILD_REPORT
+            echo "    ,\"${REGISTRY_PREFIX}todo-contracts:$VERSION\"" >> "$BUILD_REPORT"
         fi
     fi
     
-    cat >> $BUILD_REPORT << EOF
+    cat >> "$BUILD_REPORT" << EOF
   ],
   "packages": [
     $(pnpm list --filter "./packages/*" --depth -1 --json | node -e "const input = JSON.parse(fs.readFileSync(0)); console.log(input.map(pkg => '    \"' + pkg.name + '\"').join(',\n'))")
@@ -425,7 +427,8 @@ main_build() {
     print_status "Environment: $ENVIRONMENT"
     print_status "Version: $VERSION"
     
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     
     check_prerequisites
     
@@ -442,8 +445,10 @@ main_build() {
     push_docker_images
     generate_build_report
     
-    local end_time=$(date +%s)
-    local duration=$((end_time - start_time))
+    local end_time
+    end_time=$(date +%s)
+    local duration
+    duration=$((end_time - start_time))
     
     print_success "Build completed successfully in ${duration}s"
     show_build_summary

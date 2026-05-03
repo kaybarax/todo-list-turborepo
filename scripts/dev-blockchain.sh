@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
@@ -20,6 +21,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -85,8 +87,8 @@ if [ "$NETWORK" = "all" ] || [ "$NETWORK" = "polygon" ]; then
     
     # Wait for Hardhat node to be ready
     print_status "Waiting for Hardhat node to be ready..."
-    local max_attempts=30
-    local attempt=1
+    max_attempts=30
+    attempt=1
     
     while [ $attempt -le $max_attempts ]; do
         if nc -z localhost 8545 2>/dev/null; then
@@ -96,7 +98,7 @@ if [ "$NETWORK" = "all" ] || [ "$NETWORK" = "polygon" ]; then
         
         if [ $attempt -eq $max_attempts ]; then
             print_error "Hardhat node failed to start"
-            kill $HARDHAT_PID 2>/dev/null || true
+            kill "$HARDHAT_PID" 2>/dev/null || true
             cd ../../..
             exit 1
         fi
@@ -122,8 +124,8 @@ if [ "$NETWORK" = "all" ] || [ "$NETWORK" = "solana" ]; then
         
         # Wait for Solana validator to be ready
         print_status "Waiting for Solana validator to be ready..."
-        local max_attempts=60
-        local attempt=1
+        max_attempts=60
+        attempt=1
         
         while [ $attempt -le $max_attempts ]; do
             if solana cluster-version &>/dev/null; then
@@ -183,17 +185,17 @@ shutdown_handler() {
     # Stop all background processes
     if [ -n "$HARDHAT_PID" ]; then
         print_status "Stopping Hardhat node..."
-        kill $HARDHAT_PID 2>/dev/null || true
+        kill "$HARDHAT_PID" 2>/dev/null || true
     fi
     
     if [ -n "$SOLANA_PID" ]; then
         print_status "Stopping Solana test validator..."
-        kill $SOLANA_PID 2>/dev/null || true
+        kill "$SOLANA_PID" 2>/dev/null || true
     fi
     
     if [ -n "$POLKADOT_PID" ]; then
         print_status "Stopping Polkadot local node..."
-        kill $POLKADOT_PID 2>/dev/null || true
+        kill "$POLKADOT_PID" 2>/dev/null || true
     fi
     
     print_success "Blockchain development environment stopped"
@@ -290,19 +292,19 @@ while true; do
     
     # Check if networks are still running
     if [ "$NETWORK" = "all" ] || [ "$NETWORK" = "polygon" ]; then
-        if [ -n "$HARDHAT_PID" ] && ! kill -0 $HARDHAT_PID 2>/dev/null; then
+        if [ -n "$HARDHAT_PID" ] && ! kill -0 "$HARDHAT_PID" 2>/dev/null; then
             print_warning "Hardhat node stopped unexpectedly"
         fi
     fi
     
     if [ "$NETWORK" = "all" ] || [ "$NETWORK" = "solana" ]; then
-        if [ -n "$SOLANA_PID" ] && ! kill -0 $SOLANA_PID 2>/dev/null; then
+        if [ -n "$SOLANA_PID" ] && ! kill -0 "$SOLANA_PID" 2>/dev/null; then
             print_warning "Solana test validator stopped unexpectedly"
         fi
     fi
     
     if [ "$NETWORK" = "all" ] || [ "$NETWORK" = "polkadot" ]; then
-        if [ -n "$POLKADOT_PID" ] && ! kill -0 $POLKADOT_PID 2>/dev/null; then
+        if [ -n "$POLKADOT_PID" ] && ! kill -0 "$POLKADOT_PID" 2>/dev/null; then
             print_warning "Polkadot local node stopped unexpectedly"
         fi
     fi

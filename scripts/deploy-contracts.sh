@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
@@ -20,6 +21,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -40,8 +42,10 @@ print_status "Network: $NETWORK"
 
 # Function to validate environment variables
 validate_environment() {
-    local network=$1
-    local required_vars=()
+    local network
+    network=$1
+    local required_vars
+    required_vars=()
     
     case $network in
         polygon)
@@ -169,7 +173,7 @@ deploy_polygon() {
             if [ "$DRY_RUN" = "true" ]; then
                 print_status "DRY RUN: Would deploy to Polygon mainnet"
             else
-                read -p "Are you sure you want to deploy to Polygon mainnet? (yes/no): " confirm
+                read -r -p "Are you sure you want to deploy to Polygon mainnet? (yes/no): " confirm
                 if [ "$confirm" = "yes" ]; then
                     pnpm deploy:mainnet
                     
@@ -253,7 +257,7 @@ deploy_solana() {
             if [ "$DRY_RUN" = "true" ]; then
                 print_status "DRY RUN: Would deploy to Solana mainnet"
             else
-                read -p "Are you sure you want to deploy to Solana mainnet? (yes/no): " confirm
+                read -r -p "Are you sure you want to deploy to Solana mainnet? (yes/no): " confirm
                 if [ "$confirm" = "yes" ]; then
                     solana config set --url mainnet-beta
                     anchor deploy --provider.cluster mainnet-beta
@@ -402,7 +406,7 @@ deploy_moonbeam() {
             if [ "$DRY_RUN" = "true" ]; then
                 print_status "DRY RUN: Would deploy to Moonbeam mainnet"
             else
-                read -p "Are you sure you want to deploy to Moonbeam mainnet? (yes/no): " confirm
+                read -r -p "Are you sure you want to deploy to Moonbeam mainnet? (yes/no): " confirm
                 if [ "$confirm" = "yes" ]; then
                     pnpm deploy:mainnet
                     
@@ -477,7 +481,7 @@ deploy_base() {
             if [ "$DRY_RUN" = "true" ]; then
                 print_status "DRY RUN: Would deploy to Base mainnet"
             else
-                read -p "Are you sure you want to deploy to Base mainnet? (yes/no): " confirm
+                read -r -p "Are you sure you want to deploy to Base mainnet? (yes/no): " confirm
                 if [ "$confirm" = "yes" ]; then
                     pnpm deploy:mainnet
                     
@@ -740,7 +744,8 @@ show_help() {
 main_deploy() {
     print_status "Starting blockchain contracts deployment..."
     
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     
     # Create build directory
     mkdir -p build/contracts
@@ -780,8 +785,10 @@ main_deploy() {
     run_deployment_tests
     generate_deployment_report
     
-    local end_time=$(date +%s)
-    local duration=$((end_time - start_time))
+    local end_time
+    end_time=$(date +%s)
+    local duration
+    duration=$((end_time - start_time))
     
     print_success "Contract deployment completed successfully in ${duration}s"
 }

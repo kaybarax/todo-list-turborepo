@@ -27,7 +27,8 @@ log() { echo -e "${1}"; }
 debug() { [[ $VERBOSE -eq 1 ]] && echo "[debug] $1" || true; }
 
 confirm() {
-    local prompt="$1"
+    local prompt
+    prompt="$1"
     if [[ $YES -eq 1 ]]; then return 0; fi
     read -r -p "$prompt (y/N) " reply || true
     echo
@@ -77,7 +78,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 run_cmd() {
-    local cmd="$1"
+    local cmd
+    cmd="$1"
     if [[ $DRY_RUN -eq 1 ]]; then
         echo "DRY-RUN: $cmd"
     else
@@ -92,14 +94,16 @@ clean_docker() {
         return 0
     fi
 
-    local include_volumes=0
+    local include_volumes
+    include_volumes=0
     if [[ $REMOVE_VOLUMES -eq 1 ]]; then
         if confirm "Also remove compose volumes (-v)? This permanently deletes data in named volumes."; then
             include_volumes=1
         fi
     fi
 
-    local compose_files=(
+    local compose_files
+    compose_files=(
         "docker-compose.dev.yml"
         "docker-compose.test.yml"
         "docker-compose.yml"
@@ -107,7 +111,8 @@ clean_docker() {
 
     for f in "${compose_files[@]}"; do
         if [[ -f "$f" ]]; then
-            local down_args="--remove-orphans"
+            local down_args
+            down_args="--remove-orphans"
             if [[ $include_volumes -eq 1 ]]; then
                 down_args="$down_args -v"
             fi
@@ -145,8 +150,10 @@ clean_k8s() {
     fi
 
     # Default namespace file; resources are listed explicitly below
-    local ns_file="infra/kubernetes/namespace.yaml"
-    local has_ns_file=0
+    local ns_file
+    ns_file="infra/kubernetes/namespace.yaml"
+    local has_ns_file
+    has_ns_file=0
     [[ -f "$ns_file" ]] && has_ns_file=1
 
     log "Kubernetes cleanup selected. This will delete resources defined under infra/kubernetes/*.yaml."
@@ -155,7 +162,8 @@ clean_k8s() {
         return 0
     fi
 
-    local files=(
+    local files
+    files=(
         "infra/kubernetes/ingress.yaml"
         "infra/kubernetes/web-deployment.yaml"
         "infra/kubernetes/web-service.yaml"

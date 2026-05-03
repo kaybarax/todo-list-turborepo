@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
@@ -20,6 +21,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -60,7 +62,8 @@ verify_package_manager() {
         return 1
     fi
     
-    local pnpm_version=$(pnpm --version)
+    local pnpm_version
+    pnpm_version=$(pnpm --version)
     print_success "pnpm version: $pnpm_version"
     
     # Check if version is 9.0.0 or higher
@@ -78,7 +81,8 @@ verify_node() {
         return 1
     fi
     
-    local node_version=$(node --version)
+    local node_version
+    node_version=$(node --version)
     print_success "Node.js version: $node_version"
     
     # Check if version is 18.0.0 or higher
@@ -94,7 +98,8 @@ verify_blockchain_tools() {
     
     # Check for Rust (for Solana and Polkadot)
     if command_exists cargo; then
-        local rust_version=$(rustc --version)
+        local rust_version
+        rust_version=$(rustc --version)
         print_success "Rust version: $rust_version"
     else
         print_warning "Rust not found. Required for Solana and Polkadot development."
@@ -103,7 +108,8 @@ verify_blockchain_tools() {
     
     # Check for Anchor (for Solana)
     if command_exists anchor; then
-        local anchor_version=$(anchor --version)
+        local anchor_version
+        anchor_version=$(anchor --version)
         print_success "Anchor version: $anchor_version"
     else
         print_warning "Anchor CLI not found. Required for Solana development."
@@ -112,7 +118,8 @@ verify_blockchain_tools() {
     
     # Check for Solana CLI
     if command_exists solana; then
-        local solana_version=$(solana --version)
+        local solana_version
+        solana_version=$(solana --version)
         print_success "Solana CLI version: $solana_version"
     else
         print_warning "Solana CLI not found. Required for Solana development."
@@ -144,7 +151,8 @@ install_dependencies() {
 verify_packages() {
     print_status "Verifying package installations..."
     
-    local packages=(
+    local packages
+    packages=(
         "apps/web"
         "apps/api"
         "apps/mobile"
@@ -163,7 +171,8 @@ verify_packages() {
         "packages/config-release"
     )
     
-    local failed_packages=()
+    local failed_packages
+    failed_packages=()
     
     for package in "${packages[@]}"; do
         if [ -d "$package" ]; then
@@ -198,7 +207,8 @@ verify_network_dependencies() {
     print_status "Verifying network-specific dependencies..."
     
     # Verify Polygon/Moonbeam/Base dependencies
-    local evm_packages=("apps/smart-contracts/polygon" "apps/smart-contracts/moonbeam" "apps/smart-contracts/base")
+    local evm_packages
+    evm_packages=("apps/smart-contracts/polygon" "apps/smart-contracts/moonbeam" "apps/smart-contracts/base")
     
     for package in "${evm_packages[@]}"; do
         if [ -d "$package" ]; then
@@ -293,8 +303,10 @@ show_summary() {
     
     echo "Workspace Packages:"
     find apps packages -name "package.json" -not -path "*/node_modules/*" | while read -r pkg; do
-        local name=$(grep '"name"' "$pkg" | cut -d'"' -f4)
-        local version=$(grep '"version"' "$pkg" | cut -d'"' -f4)
+        local name
+        name=$(grep '"name"' "$pkg" | cut -d'"' -f4)
+        local version
+        version=$(grep '"version"' "$pkg" | cut -d'"' -f4)
         echo "  $name@$version"
     done
     
@@ -332,9 +344,12 @@ show_help() {
 
 # Main verification function
 main() {
-    local install_deps=false
-    local test_builds=false
-    local skip_blockchain=false
+    local install_deps
+    install_deps=false
+    local test_builds
+    test_builds=false
+    local skip_blockchain
+    skip_blockchain=false
     
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -363,7 +378,8 @@ main() {
         esac
     done
     
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     
     print_status "Starting dependency verification..."
     
@@ -387,8 +403,10 @@ main() {
         test_builds || exit 1
     fi
     
-    local end_time=$(date +%s)
-    local duration=$((end_time - start_time))
+    local end_time
+    end_time=$(date +%s)
+    local duration
+    duration=$((end_time - start_time))
     
     print_success "Dependency verification completed successfully in ${duration}s"
     show_summary

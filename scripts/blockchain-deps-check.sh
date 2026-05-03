@@ -9,6 +9,7 @@ set -euo pipefail
 # Color codes for output formatting
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -33,7 +34,8 @@ ANCHOR_MIN_VERSION="0.28.0"
 # Source interactive help system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "$SCRIPT_DIR/interactive-help.sh" ]]; then
-    source "$SCRIPT_DIR/interactive-help.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/interactive-help.sh"
 fi
 
 # Usage information
@@ -151,8 +153,10 @@ detect_platform() {
 
 # Version comparison function
 version_compare() {
-    local version1=$1
-    local version2=$2
+    local version1
+    version1=$1
+    local version2
+    version2=$2
     
     # Remove 'v' prefix if present
     version1=${version1#v}
@@ -164,8 +168,10 @@ version_compare() {
     
     # Compare each part
     for i in {0..2}; do
-        local v1_part=${V1[i]:-0}
-        local v2_part=${V2[i]:-0}
+        local v1_part
+        v1_part=${V1[i]:-0}
+        local v2_part
+        v2_part=${V2[i]:-0}
         
         if (( v1_part > v2_part )); then
             return 0  # version1 > version2
@@ -304,7 +310,8 @@ check_hardhat() {
 check_substrate_tools() {
     log_verbose "Checking Substrate tools..."
     
-    local substrate_ok=true
+    local substrate_ok
+    substrate_ok=true
     
     # Check cargo-contract
     if command -v cargo-contract >/dev/null 2>&1; then
@@ -471,11 +478,13 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --verbose)
-            VERBOSE=true
+            # shellcheck disable=SC2034
+VERBOSE=true
             shift
             ;;
         --network=*)
-            NETWORK_FILTER="${1#*=}"
+            # shellcheck disable=SC2034
+NETWORK_FILTER="${1#*=}"
             shift
             ;;
         --interactive)

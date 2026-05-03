@@ -8,6 +8,7 @@ set -euo pipefail
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -29,6 +30,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -106,8 +108,10 @@ start_infrastructure() {
     
     # Wait for databases to be ready
     print_status "Waiting for databases to be ready..."
-    local max_attempts=30
-    local attempt=1
+    local max_attempts
+    max_attempts=30
+    local attempt
+    attempt=1
     
     while [ $attempt -le $max_attempts ]; do
         # Try mongosh first, then mongo (legacy)
@@ -183,8 +187,10 @@ setup_database() {
 start_applications() {
     print_status "Starting application services..."
     
-    local turbo_cmd="turbo run dev"
-    local turbo_args=""
+    local turbo_cmd
+    turbo_cmd="turbo run dev"
+    local turbo_args
+    turbo_args=""
     
     # Configure turbo arguments
     if [ "$PARALLEL" = "true" ]; then
@@ -200,8 +206,10 @@ start_applications() {
         all)
             print_status "Starting all development servers..."
             if command -v turbo &> /dev/null; then
+                # shellcheck disable=SC2086
                 turbo $turbo_cmd $turbo_args
             else
+                # shellcheck disable=SC2086
                 npx turbo $turbo_cmd $turbo_args
             fi
             ;;
@@ -228,16 +236,20 @@ start_applications() {
         frontend)
             print_status "Starting frontend applications (web + mobile)..."
             if command -v turbo &> /dev/null; then
+                # shellcheck disable=SC2086
                 turbo run dev --filter="@todo/web" --filter="@todo/mobile" $turbo_args
             else
+                # shellcheck disable=SC2086
                 npx turbo run dev --filter="@todo/web" --filter="@todo/mobile" $turbo_args
             fi
             ;;
         backend)
             print_status "Starting backend services (api + ingestion)..."
             if command -v turbo &> /dev/null; then
+                # shellcheck disable=SC2086
                 turbo run dev --filter="@todo/api" --filter="@todo/ingestion" $turbo_args
             else
+                # shellcheck disable=SC2086
                 npx turbo run dev --filter="@todo/api" --filter="@todo/ingestion" $turbo_args
             fi
             ;;
@@ -284,7 +296,7 @@ setup_shutdown() {
         
         # Stop application processes (they should be in background)
         if [ -n "$APP_PID" ]; then
-            kill $APP_PID 2>/dev/null || true
+            kill "$APP_PID" 2>/dev/null || true
         fi
         
         # Stop Docker services
@@ -375,7 +387,8 @@ show_service_status() {
     
     echo ""
     echo "🌐 Port Status:"
-    local ports=("3000:Web" "3001:API" "8081:Mobile" "19000:Expo" "27017:MongoDB" "6379:Redis" "8545:Hardhat" "16686:Jaeger")
+    local ports
+    ports=("3000:Web" "3001:API" "8081:Mobile" "19000:Expo" "27017:MongoDB" "6379:Redis" "8545:Hardhat" "16686:Jaeger")
     
     for port_info in "${ports[@]}"; do
         IFS=':' read -r port name <<< "$port_info"
@@ -392,7 +405,8 @@ main_start() {
     print_status "Starting Todo App development environment..."
     print_status "Services: $SERVICES"
     
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     
     check_prerequisites
     install_dependencies
@@ -416,8 +430,10 @@ main_start() {
         start_applications
     fi
     
-    local end_time=$(date +%s)
-    local duration=$((end_time - start_time))
+    local end_time
+    end_time=$(date +%s)
+    local duration
+    duration=$((end_time - start_time))
     
     print_success "Development environment started in ${duration}s"
 }

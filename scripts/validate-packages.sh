@@ -10,6 +10,7 @@ echo "🔍 Validating UI Packages Build and Deployment..."
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+# shellcheck disable=SC2034
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -23,6 +24,7 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+# shellcheck disable=SC2329
 print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
@@ -236,6 +238,7 @@ print_status "Validating package.json configurations..."
 # Check ui-web package.json
 WEB_MAIN=$(node -p "require('./packages/ui-web/package.json').main")
 WEB_TYPES=$(node -p "require('./packages/ui-web/package.json').types")
+# shellcheck disable=SC2034
 WEB_MODULE=$(node -p "require('./packages/ui-web/package.json').module")
 
 if [ "$WEB_MAIN" != "./dist/index.js" ]; then

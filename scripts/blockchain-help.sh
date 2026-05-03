@@ -8,7 +8,8 @@ set -euo pipefail
 # Source the interactive help system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "$SCRIPT_DIR/interactive-help.sh" ]]; then
-    source "$SCRIPT_DIR/interactive-help.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/interactive-help.sh"
 else
     echo "Error: Interactive help system not found at $SCRIPT_DIR/interactive-help.sh"
     exit 1
@@ -67,7 +68,8 @@ EOF
 
 # Show help for specific script
 show_script_help() {
-    local script_name="$1"
+    local script_name
+    script_name="$1"
     
     case "$script_name" in
         "deps-check"|"blockchain-deps-check")
@@ -110,7 +112,8 @@ show_script_help() {
 list_scripts() {
     log_section "Available Blockchain Development Scripts"
     
-    local scripts=(
+    local scripts
+    scripts=(
         "blockchain-deps-check.sh:Comprehensive dependency checker and validator"
         "install-blockchain-tools.sh:Automated installation of blockchain development tools"
         "build-contracts.sh:Multi-network smart contract compilation and testing"
@@ -119,8 +122,10 @@ list_scripts() {
     )
     
     for script_info in "${scripts[@]}"; do
-        local script_name="${script_info%%:*}"
-        local description="${script_info#*:}"
+        local script_name
+        script_name="${script_info%%:*}"
+        local description
+        description="${script_info#*:}"
         
         if [[ -f "$SCRIPT_DIR/$script_name" ]]; then
             log_success "$script_name - $description"
@@ -308,7 +313,8 @@ EOF
 
 # Main command handler
 main() {
-    local command="${1:-help}"
+    local command
+    command="${1:-help}"
     
     case "$command" in
         "help")
@@ -349,15 +355,18 @@ main() {
 while [[ $# -gt 0 ]]; do
     case $1 in
         --verbose)
-            VERBOSE=true
+            # shellcheck disable=SC2034
+VERBOSE=true
             shift
             ;;
         --non-interactive)
-            INTERACTIVE=false
+            # shellcheck disable=SC2034
+INTERACTIVE=false
             shift
             ;;
         --network=*)
-            NETWORK_FILTER="${1#*=}"
+            # shellcheck disable=SC2034
+NETWORK_FILTER="${1#*=}"
             shift
             ;;
         --help|-h)
