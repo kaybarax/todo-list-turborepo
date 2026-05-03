@@ -3,7 +3,7 @@
 # Script to test the complete deployment workflow on Base Sepolia
 # This script performs all deployment steps in sequence
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'

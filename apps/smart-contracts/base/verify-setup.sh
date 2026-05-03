@@ -3,7 +3,7 @@
 # Script to verify Base Sepolia deployment setup
 # This checks that all prerequisites are met before deployment
 
-set -e
+set -euo pipefail
 
 echo "=========================================="
 echo "Base Sepolia Deployment Setup Verification"
