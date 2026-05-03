@@ -4,7 +4,7 @@ import globals from 'globals';
 export default [
   ...baseConfig,
   {
-    ignores: ['dist/', 'coverage/', 'node_modules/'],
+    ignores: ['dist/', 'coverage/', 'node_modules/', 'vite.config.ts', 'vitest.config.ts'],
   },
   // Enable test environment globals for utils test files
   {
