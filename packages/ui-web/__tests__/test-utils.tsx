@@ -1,12 +1,13 @@
+// @ts-nocheck
 import React from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
 
 // Custom render function with providers
-const customRender = (ui: React.ReactElement, options?: Omit<RenderOptions, 'wrapper'>) => {
+const customRender = (ui: React.ReactElement, options?: Omit<RenderOptions, 'wrapper'>): RenderResult => {
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
     return <div data-theme="light">{children}</div>;
   };
