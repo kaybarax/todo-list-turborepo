@@ -33,8 +33,8 @@ check_service() {
 }
 
 # Check database services
-check_service "MongoDB" 27017 || echo "⚠️  MongoDB not available - make sure docker-compose services are running"
-check_service "Redis" 6379 || echo "⚠️  Redis not available - make sure docker-compose services are running"
+check_service "MongoDB" 27017 || echo "⚠️  MongoDB not available - make sure docker compose services are running"
+check_service "Redis" 6379 || echo "⚠️  Redis not available - make sure docker compose services are running"
 
 # Check if Hardhat node is running
 check_service "Hardhat Node" 8545 || echo "ℹ️  Hardhat node not running - start with 'pnpm dev:contracts'"

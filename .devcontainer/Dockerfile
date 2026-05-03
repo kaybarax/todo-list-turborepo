@@ -121,8 +121,8 @@ RUN echo '# Development helper functions' >> ~/.bashrc \
     && echo 'function dev-test() { pnpm test; }' >> ~/.bashrc \
     && echo 'function dev-build() { pnpm build; }' >> ~/.bashrc \
     && echo 'function dev-clean() { pnpm clean && rm -rf node_modules && pnpm install; }' >> ~/.bashrc \
-    && echo 'function dev-logs() { docker-compose -f docker-compose.dev.yml logs -f $1; }' >> ~/.bashrc \
-    && echo 'function dev-restart() { docker-compose -f docker-compose.dev.yml restart $1; }' >> ~/.bashrc
+    && echo 'function dev-logs() { docker compose -f docker-compose.dev.yml logs -f $1; }' >> ~/.bashrc \
+    && echo 'function dev-restart() { docker compose -f docker-compose.dev.yml restart $1; }' >> ~/.bashrc
 
 # Set environment variables
 ENV NODE_ENV=development

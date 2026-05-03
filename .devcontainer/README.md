@@ -91,7 +91,7 @@ This directory contains a comprehensive development container configuration for 
 
 ```bash
 # Build and start the development container
-docker-compose -f docker-compose.dev.yml up devcontainer -d
+docker compose -f docker-compose.dev.yml up devcontainer -d
 
 # Attach to the container
 docker exec -it todo-devcontainer bash

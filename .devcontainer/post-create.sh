@@ -290,10 +290,10 @@ alias mongo-cli='mongosh mongodb://admin:password@mongodb:27017/todo-app?authSou
 alias redis-cli='redis-cli -h redis'
 
 # Docker aliases
-alias dc='docker-compose -f docker-compose.dev.yml'
-alias dcu='docker-compose -f docker-compose.dev.yml up'
-alias dcd='docker-compose -f docker-compose.dev.yml down'
-alias dcl='docker-compose -f docker-compose.dev.yml logs'
+alias dc='docker compose -f docker-compose.dev.yml'
+alias dcu='docker compose -f docker-compose.dev.yml up'
+alias dcd='docker compose -f docker-compose.dev.yml down'
+alias dcl='docker compose -f docker-compose.dev.yml logs'
 
 # Kubernetes aliases
 alias k='kubectl'
