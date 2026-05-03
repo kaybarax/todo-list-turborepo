@@ -1,5 +1,5 @@
 # Dockerfile for React Native Mobile Application (for building and testing)
-FROM node:18-alpine AS base
+FROM node:22-alpine AS base
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -66,4 +66,4 @@ FROM base AS test
 COPY . .
 
 # Run tests
-CMD ["pnpm", "test:mobile"]
+CMD ["pnpm", "--filter", "@todo/mobile", "test"]
