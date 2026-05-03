@@ -1,5 +1,5 @@
 {
-  "name": "ingestion",
+  "name": "@todo/ingestion",
   "version": "1.0.0",
   "description": "Data ingestion service for the Todo app",
   "main": "dist/index.js",

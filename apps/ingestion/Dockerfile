@@ -71,4 +71,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "console.log('healthy')" || exit 1
 
 # Start the application
-CMD ["node", "apps/ingestion/dist/main.js"]
+CMD ["node", "apps/ingestion/dist/index.js"]
