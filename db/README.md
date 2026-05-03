@@ -280,7 +280,7 @@ The seeding script creates:
 
    ```bash
    # Start all services including MongoDB
-   docker-compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.dev.yml up -d
 
    # Verify database setup
    node db/setup.js validate
@@ -404,7 +404,7 @@ mongorestore --uri="$MONGODB_URI" backup-20240101/
 
    ```bash
    # Check if MongoDB is running
-   docker-compose -f docker-compose.dev.yml ps mongodb
+   docker compose -f docker-compose.dev.yml ps mongodb
 
    # Check connection string
    echo $MONGODB_URI
