@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-05-03
+
+### Infrastructure as Code & Decoupled Deployment - COMPLETED
+
+This major infrastructure update transitions the project from a unified Kubernetes-centric deployment to a decoupled, platform-optimized strategy using managed cloud services and Infrastructure as Code (IaC).
+
+### 🏗️ IaC Foundation
+
+- **Terraform & Terragrunt Integration**: Unified infrastructure management for AWS and GitHub.
+  - Implemented reusable Terraform modules for VPC, ECS, ECR, ALB, DocumentDB, Redis, and CloudWatch.
+  - Configured Terragrunt for environment-specific configuration management (dev, staging, prod).
+  - Established remote state management with S3, DynamoDB locking, and KMS encryption.
+  - Automated infrastructure validation, formatting, and plan/apply workflows in GitHub Actions.
+  - Added a `Makefile` for streamlined local IaC validation (fmt, validate, tflint) and Colima-based deployments.
+
+### 🚀 Decoupled Deployment Strategy
+
+- **Web Application**: Optimized for Vercel deployment as the primary production path.
+- **API & Ingestion Services**: Migrated to AWS ECS Fargate for managed, containerized scalability.
+- **Mobile Application**: Fully integrated with Expo Application Services (EAS) for automated builds and store submissions.
+- **Smart Contracts**: Implemented approval-gated deployment workflows for testnet and mainnet environments.
+
+### 🔐 Security & Compliance
+
+- **AWS OIDC Integration**: Replaced long-lived AWS access keys with GitHub Actions OIDC trust and role assumption.
+- **Secrets Management**: Standardized secret storage in AWS Secrets Manager and GitHub Environment Secrets.
+- **Least Privilege IAM**: Implemented granular IAM policies for each deployment workflow and service role.
+- **Image Security**: Enabled ECR image scanning and enforced the use of immutable image digests in ECS task definitions.
+
+### 🔧 GitHub Actions Redesign
+
+- **Affected-CI Filtering**: Optimized CI pipelines to run only for changed applications and packages using Turborepo filters.
+- **Deployment Environments**: Configured GitHub Environments (dev, staging, production) with manual approval gates and protection rules.
+- **Automated Smoke Testing**: Integrated post-deployment health checks and connectivity validation for all services.
+- **Artifact Promotion**: Established a formal process for promoting contract addresses and build metadata between environments.
+
+### Technical Details
+
+**IaC and Decoupled Deployment - ALL 10 PHASES COMPLETED**
+
+- **Phase 1**: Resolved CI package-manager drift and Docker runtime blockers.
+- **Phase 2**: Established Terraform/Terragrunt skeleton and backend bootstrap.
+- **Phase 3**: Managed GitHub environments, branch protection, and OIDC with Terraform.
+- **Phase 4**: Built AWS core foundation (VPC, ECR, ECS, Secrets).
+- **Phase 5**: Shipped API deployment to ECS with smoke tests and image digests.
+- **Phase 6**: Shipped Ingestion worker deployment to ECS.
+- **Phase 7**: Finalized Web deployment to Vercel.
+- **Phase 8**: Established EAS mobile build/submit workflows.
+- **Phase 9**: Decommissioned legacy Kubernetes manifests as reference-only.
+- **Phase 10**: Implemented observability alarms and deployment dashboards.
+
 ### Added
 
 - **DaisyUI + Style Dictionary Integration**: Complete design system overhaul for web components

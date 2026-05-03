@@ -38,7 +38,12 @@ test/
   dependency-management/  # Dependency validation tests
 scripts/          # Shell scripts referenced by pnpm commands
 db/             # MongoDB migrations & seeds
-infra/          # k8s, nginx, redis configs
+infra/
+  terraform/    # Reusable IaC modules for AWS & GitHub
+  terragrunt/   # Environment-specific configuration
+  kubernetes/   # Legacy/Reference manifests
+  nginx/        # NGINX configs
+  redis/        # Redis configs
 ```
 
 ## Key Commands
@@ -81,6 +86,10 @@ pnpm infra:compose:down  # Stop infrastructure containers
 # Design system
 pnpm tokens:build     # Build design tokens
 pnpm storybook:web    # Launch Storybook
+
+# Infrastructure as Code (IaC)
+terragrunt run-all plan   # Plan changes (run in infra/terragrunt/{env}/{provider})
+terragrunt run-all apply  # Apply changes (run in infra/terragrunt/{env}/{provider})
 ```
 
 ## First-Time Setup
@@ -113,5 +122,9 @@ Root `tsconfig.json` uses `ignoreDeprecations: "6.0"` for compatibility. Path al
 GitHub Actions (`.github/workflows/`):
 
 - `ci.yml`: lint → typecheck → test (with MongoDB + Redis) → E2E → contract tests (matrix) → design-system → build
+- `deploy-*-aws.yml`: Per-app ECS deployment via OIDC + image digests
+- `deploy-web-vercel.yml`: Web app deployment via Vercel integration
+- `deploy-mobile-eas.yml`: Mobile app deployment via Expo EAS
+- `terraform-*.yml`: Automated IaC validation and planning on PRs
 - Turbo remote caching via `TURBO_TOKEN` / `TURBO_TEAM` secrets
-- Build only runs on push to `main` after all checks pass
+- Manual approval gates required for production deployments via GitHub Environments

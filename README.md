@@ -27,7 +27,7 @@ A modern, full-stack Todo application built as a comprehensive monorepo showcasi
 - **Database**: MongoDB with migrations, seeding, and validation
 - **Caching**: Redis for performance optimization
 - **Testing**: Unit, integration, E2E, and contract testing
-- **DevOps**: Docker, Kubernetes, and comprehensive CI/CD
+- **DevOps**: Infrastructure as Code with Terraform and Terragrunt, Decoupled Deployment with GitHub Actions, AWS OIDC authentication, and comprehensive CI/CD pipelines
 
 ## 📦 Repository Structure
 
@@ -66,7 +66,9 @@ A modern, full-stack Todo application built as a comprehensive monorepo showcasi
 │   ├── post-create.sh       # Automated environment setup
 │   └── devcontainer.json    # VS Code integration with extensions
 ├── infra/
-│   ├── k8s/                 # Kubernetes manifests for all environments
+│   ├── terraform/           # Reusable Terraform modules for AWS and GitHub
+│   ├── terragrunt/          # Environment-specific live configuration (dev, staging, prod)
+│   ├── kubernetes/          # Legacy/Reference Kubernetes manifests
 │   ├── nginx/               # NGINX configurations
 │   └── redis/               # Redis configurations
 ├── .github/
@@ -76,6 +78,7 @@ A modern, full-stack Todo application built as a comprehensive monorepo showcasi
 ├── pnpm-workspace.yaml      # Workspace configuration
 ├── docker-compose.dev.yml   # Development environment
 ├── docker-compose.yml       # Production environment
+├── Makefile                 # Infrastructure and local deployment utilities
 └── README.md
 ```
 
@@ -141,12 +144,14 @@ pnpm --filter @todo/api dev
 
 This monorepo has been comprehensively modernized with enterprise-grade features and blockchain integration:
 
-### 🏗️ Infrastructure Modernization
+### 🚀 Infrastructure & Deployment Modernization (Phase 1-10)
 
-- **Complete Kubernetes Setup**: Production-ready manifests with auto-scaling, monitoring, and security
-- **Development Container**: Fully configured devcontainer with all blockchain tools (Solana CLI, Anchor, Rust)
-- **Database Management**: MongoDB with migrations, schema validation, and automated seeding
-- **Build System**: Multi-environment build scripts with security scanning and Docker optimization
+- **Infrastructure as Code**: Unified management of AWS and GitHub resources using Terraform and Terragrunt
+- **Decoupled Deployment**: Independent deployment paths for Web (Vercel), API (AWS ECS), Ingestion (AWS ECS), and Mobile (EAS)
+- **GitHub Actions Redesign**: Optimized pipelines with affected-CI filtering and secure OIDC-based AWS authentication
+- **Production Readiness**: Automated smoke tests, immutable image digests, and multi-environment approval gates
+- **Observability**: Centralized logging and alarms using AWS CloudWatch and OpenTelemetry
+- **Kubernetes Decommissioning**: Legacy manifests archived as reference material in favor of managed AWS services
 
 ### ⛓️ Blockchain Integration
 
@@ -500,30 +505,63 @@ pnpm test --watch
 - **[Security Policy](SECURITY.md)** - Security guidelines and reporting
 - **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
 
-## 🚢 Production Deployment
+### 🏗️ Infrastructure as Code (Primary Path)
 
-### Kubernetes Infrastructure
-
-The project includes production-ready Kubernetes manifests:
+The project uses a modern IaC stack with Terraform and Terragrunt for predictable, versioned infrastructure management.
 
 ```bash
-# Deploy to Kubernetes
-cd infra/k8s
-./deploy.sh --environment production
+# Initialize and plan infrastructure changes
+cd infra/terragrunt/dev/aws
+terragrunt run-all plan
 
-# Deploy specific components
-kubectl apply -f namespaces/
-kubectl apply -f deployments/
-kubectl apply -f services/
-kubectl apply -f ingress/
+# Apply changes (requires environment approval for production)
+terragrunt run-all apply
 ```
 
-**Kubernetes Features**:
+### 🚢 Decoupled Deployment Strategy
 
-- **Auto-scaling**: HPA for all services based on CPU/memory
-- **Monitoring**: Prometheus and Grafana integration
-- **Security**: RBAC, network policies, and pod security standards
-- **High Availability**: Multi-replica deployments with health checks
+Each component is deployed to its optimized platform:
+
+- **Web App**: Deployed to **Vercel** for the best Next.js experience.
+- **API Server**: Deployed to **AWS ECS Fargate** for scalable, containerized backend performance.
+- **Ingestion Service**: Deployed to **AWS ECS Fargate** as a private background worker.
+- **Mobile App**: Built and submitted via **Expo Application Services (EAS)**.
+
+### ☸️ Kubernetes (Reference Only)
+
+While managed services are the primary path, the project maintains legacy Kubernetes manifests for reference or specialized environments:
+
+```bash
+# Reference Kubernetes manifests are located in infra/kubernetes
+cd infra/kubernetes
+# See infra/kubernetes/README.md for usage
+```
+
+**Infrastructure Features**:
+
+- **Predictability**: Terraform state locking and environment-specific configuration.
+- **Security**: GitHub Actions OIDC trust for AWS (no static keys).
+- **Scalability**: AWS ECS Fargate autoscaling and Vercel's global edge network.
+- **Reliability**: Automated smoke tests and image digest-based deployments.
+
+### 🛠️ Infrastructure Utilities (Makefile)
+
+The project includes a `Makefile` to simplify common infrastructure and local development tasks:
+
+```bash
+# Show all available targets
+make help
+
+# IaC Quality & Validation
+make terraform-fmt      # Recursively format all Terraform modules
+make terraform-validate # Initialize and validate all modules
+make tflint             # Run TFLint recursively
+make infra-iac-check    # Run both validate and tflint
+
+# Local Colima/Kubernetes Deployment (Reference)
+make colima-deploy-web  # Build and deploy Web app to local Colima cluster
+make colima-deploy-api  # Build and deploy API to local Colima cluster
+```
 
 ### Docker Deployment
 

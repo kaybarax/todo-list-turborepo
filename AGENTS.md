@@ -4,7 +4,7 @@
 
 **Turborepo monorepo** with pnpm workspaces managing 4 apps + 7 shared packages. Data flows: Web/Mobile → NestJS API → MongoDB/Redis, with background ingestion processing blockchain data. Multi-network blockchain integration (Polygon/Solana/Polkadot/Moonbeam/Base) via factory pattern in `packages/services`.
 
-**Key structural decisions**: Monorepo enables shared UI components (`packages/ui-web/ui-mobile`) and blockchain services while maintaining deployment independence. Ingestion service decouples blockchain data processing from API responses.
+**Key structural decisions**: Monorepo enables shared UI components (`packages/ui-web/ui-mobile`) and blockchain services while maintaining deployment independence. Ingestion service decouples blockchain data processing from API responses. **Infrastructure is managed via Terraform/Terragrunt**, enabling a decoupled deployment strategy across Vercel (Web), AWS ECS (API/Ingestion), and EAS (Mobile).
 
 ## Critical Workflows
 
@@ -26,6 +26,14 @@
 - **Quick dev build**: `pnpm build:quick` (skips Docker/tests)
 - **Full CI build**: `pnpm build` (Turborepo orchestration, dependsOn relationships)
 - **Code quality**: `pnpm quality` (lint + typecheck), `pnpm format` (Prettier with Solidity plugin)
+
+### Infrastructure as Code (IaC)
+
+- **Root config**: `infra/terragrunt/root.hcl` (central provider and state management)
+- **Env planning**: `cd infra/terragrunt/{env}/{provider} && terragrunt run-all plan`
+- **Env application**: `terragrunt run-all apply` (requires approval for production)
+- **Secrets**: Managed via AWS Secrets Manager and GitHub Environment Secrets
+- **Identity**: AWS OIDC roles for secure, credential-less CI/CD access
 
 ## Project Conventions
 
@@ -90,6 +98,8 @@
 - `packages/services/src/blockchain/`: Core blockchain abstraction layer
 - `apps/api/src/telemetry/`: OTEL tracing configuration
 - `db/`: MongoDB migrations, seeding, setup scripts
+- `infra/terraform/modules/`: Reusable IaC modules for AWS and GitHub
+- `infra/terragrunt/`: Live environment configurations (dev, staging, prod)
 - `turbo.json`: Build orchestration (dependsOn, caching, outputs)
 - `pnpm-workspace.yaml`: Workspace config + shared dependency catalog</content>
   <parameter name="filePath">/Users/kevin/workspace/todo-list-turborepo/AGENTS.md
