@@ -35,6 +35,8 @@ module.exports = [
     rules: {
       // ESLint recommended rules
       ...js.configs.recommended.rules,
+      // Disable core no-unused-vars in favor of @typescript-eslint/no-unused-vars for TS files
+      'no-unused-vars': 'off',
 
       // Base TypeScript rules with NestJS optimizations
       '@typescript-eslint/explicit-module-boundary-types': 'off',
