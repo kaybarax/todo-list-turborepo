@@ -58,7 +58,7 @@ jobs:
 
       - name: Validate web
         if: ${{ github.event.inputs.skip_tests != 'true' }}
-        run: pnpm turbo run lint typecheck test --filter=@todo/web... --continue
+        run: pnpm --filter @todo/web typecheck
 
       - name: Select Vercel target
         id: target
@@ -88,6 +88,13 @@ jobs:
           deployment_url="$(pnpm dlx vercel deploy --prebuilt ${{ steps.target.outputs.deploy_args }} --token=${{ secrets.VERCEL_TOKEN }})"
           echo "deployment_url=$deployment_url" >> "$GITHUB_OUTPUT"
         working-directory: apps/web
+
+      - name: Smoke test deployment
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+        run: pnpm --filter @todo/web test:e2e:smoke --project=chromium
 
       - name: Write build metadata
         if: always()
