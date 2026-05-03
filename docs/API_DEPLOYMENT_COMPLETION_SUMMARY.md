@@ -309,7 +309,7 @@ A production-ready GitHub Actions workflow for database migrations:
 
 1. **Manual Trigger with Options**
 
-   ```
+   ```text
    - Target environment (staging/production)
    - Direction (up/down)
    - Rollback count (for down migrations)
@@ -393,7 +393,7 @@ Updated "API Deployment Todo" section:
 
 **Before**:
 
-```
+```text
 - [ ] Fix `apps/api/Dockerfile` for production ECS readiness:
   - Install or avoid curl in health checks.
   - Use a non-mutating build.
@@ -402,7 +402,7 @@ Updated "API Deployment Todo" section:
 
 **After**:
 
-```
+```text
 - [x] Fix `apps/api/Dockerfile` for production ECS readiness:
   - [x] Install curl for health checks (not fetch())
   - [x] Use a non-mutating build (curl only reads from /api/v1/health)

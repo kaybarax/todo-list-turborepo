@@ -4,7 +4,7 @@ This guide outlines the workflow for developing components with DaisyUI foundati
 
 ## Development Workflow Overview
 
-```
+```text
 Design → Tokens → DaisyUI Base → Component → Tests → Documentation → Review
 ```
 
@@ -81,7 +81,7 @@ Button.displayName = 'Button';
 
 ### File Organization
 
-```
+```text
 src/components/Button/
 ├── Button.tsx           # Main component
 ├── Button.test.tsx      # Unit tests
@@ -407,7 +407,7 @@ function MyComponent() {
 - Screen reader compatible
 - Focus management
 
-````
+````text
 
 ## Code Review Checklist
 

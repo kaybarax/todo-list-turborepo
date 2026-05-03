@@ -102,7 +102,7 @@ Add Moonbeam networks to your wallet:
 
 The Moonbeam contracts are located in `apps/smart-contracts/moonbeam/`:
 
-```
+```text
 moonbeam/
 ├── contracts/
 │   ├── TodoList.sol         # Main todo list contract

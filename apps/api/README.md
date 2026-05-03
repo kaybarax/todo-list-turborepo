@@ -29,7 +29,7 @@ A modern NestJS API server with MongoDB, Redis, and comprehensive blockchain int
 
 ## 📁 Project Structure
 
-```
+```text
 apps/api/
 ├── src/
 │   ├── auth/                # Authentication module
@@ -344,7 +344,7 @@ GET /metrics
 
 ### Test Structure
 
-```
+```text
 test/
 ├── unit/                   # Unit tests
 │   ├── auth/

@@ -84,7 +84,7 @@ cat deployments/84532/TodoList-<YOUR_ADDRESS>.json
 
 View on Base Sepolia Explorer:
 
-```
+```text
 https://sepolia.basescan.org/address/<CONTRACT_ADDRESS>
 ```
 

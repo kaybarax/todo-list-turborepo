@@ -12,7 +12,7 @@ The integration combines three key technologies:
 
 ### Integration Flow
 
-```
+```text
 Design Tokens (JSON) → Style Dictionary → Generated Assets → DaisyUI + Tailwind → Components
 ```
 
@@ -23,7 +23,7 @@ Design Tokens (JSON) → Style Dictionary → Generated Assets → DaisyUI + Tai
 
 ## Project Structure
 
-```
+```text
 packages/ui-web/
 ├── tokens/                    # Design token definitions
 │   ├── core/                 # Core design tokens

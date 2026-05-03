@@ -31,7 +31,7 @@ A modern Next.js 14 web application with App Router, TypeScript, Tailwind CSS, a
 
 ## 📁 Project Structure
 
-```
+```text
 apps/web/
 ├── src/
 │   ├── app/                 # Next.js App Router
@@ -443,7 +443,7 @@ function TransactionStatus({ todoId }: { todoId: string }) {
 
 ### Test Structure
 
-```
+```text
 __tests__/
 ├── components/            # Component tests
 │   ├── TodoList.test.tsx

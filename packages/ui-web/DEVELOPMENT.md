@@ -15,7 +15,7 @@ This document provides comprehensive guidelines for developing components in the
 
 ### Directory Structure
 
-```
+```text
 packages/ui-web/
 ├── lib/                        # Source code (new structure)
 │   ├── components/            # Component implementations
@@ -203,7 +203,7 @@ interface SelectProps<T> extends React.SelectHTMLAttributes<HTMLSelectElement> {
 
 Each component should have comprehensive tests:
 
-```
+```text
 __tests__/components/ComponentName.test.tsx
 ```
 

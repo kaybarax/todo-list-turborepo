@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _client) {
     console.log('Adding blockchain features...');
 
     // Create blockchain_transactions collection for tracking blockchain operations
@@ -245,7 +245,7 @@ module.exports = {
     console.log('Blockchain features added successfully');
   },
 
-  async down(db, client) {
+  async down(db, _client) {
     console.log('Removing blockchain features...');
 
     // Drop blockchain-specific collections

@@ -90,7 +90,7 @@ Options:
 
 ### Dependency Graph
 
-```
+```text
 Web App ──────┐
               ├─── API ──────┐
 Mobile App ───┘              ├─── MongoDB

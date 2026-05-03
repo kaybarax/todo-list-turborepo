@@ -434,7 +434,7 @@ export CARGO_BUILD_JOBS=4  # Adjust based on CPU cores
 
 ### Basic Rust Project
 
-```
+```text
 my-project/
 ├── Cargo.toml
 ├── Cargo.lock

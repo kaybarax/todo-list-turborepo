@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _client) {
     console.log('Creating todos collection with validation...');
 
     // Create the todos collection with schema validation
@@ -118,7 +118,7 @@ module.exports = {
     console.log('Todos collection created successfully with validation and indexes');
   },
 
-  async down(db, client) {
+  async down(db, _client) {
     console.log('Dropping todos collection...');
 
     // Drop the todos collection

@@ -55,7 +55,7 @@ pnpm run build:lib    # JS bundles only if that script exists
 
 ### Build Outputs
 
-```
+```text
 dist/
 ├── index.js      # ES module
 ├── index.cjs     # CommonJS

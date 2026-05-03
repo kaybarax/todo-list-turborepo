@@ -59,7 +59,7 @@ mkdir packages/ui-web/src/components/NewComponent
 
 2. **Component structure**:
 
-```
+```text
 NewComponent/
 ├── NewComponent.tsx      # Main component
 ├── index.ts             # Exports
@@ -531,7 +531,7 @@ pnpm run chromatic        # Visual regression tests
 
 Follow conventional commit format:
 
-```
+```text
 type(scope): description
 
 feat(button): add loading state variant

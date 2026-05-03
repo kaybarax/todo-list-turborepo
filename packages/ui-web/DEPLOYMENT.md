@@ -53,7 +53,7 @@ pnpm run build:lib
 
 The build process generates the following files in the `dist/` directory:
 
-```
+```text
 dist/
 ├── index.js          # ES module build
 ├── index.cjs         # CommonJS build

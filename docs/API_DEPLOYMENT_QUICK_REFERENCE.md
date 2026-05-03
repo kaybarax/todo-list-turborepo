@@ -311,7 +311,7 @@ module "api_secrets" {
 
 ### Multi-Stage Build Strategy:
 
-```
+```text
 development     → pnpm install → pnpm build:api (dev server)
 prod-deps      → pnpm install --prod (only production deps)
 build          → pnpm install → pnpm build:api (compilation)
@@ -386,7 +386,7 @@ gh workflow run migrate-api-database.yml \
 
 ## 🎯 Deployment Architecture
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────┐
 │ GitHub Push (main) or Manual Workflow Trigger                │
 └──────────────────┬───────────────────────────────────────────┘

@@ -27,7 +27,7 @@ This directory contains a comprehensive database management system for the Todo 
 
 ## Directory Structure
 
-```
+```text
 db/
 ├── migrations/                    # Database migration files
 │   ├── 20240101000000-create-todos-collection.js

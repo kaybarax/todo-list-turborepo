@@ -95,7 +95,7 @@ Add Base networks to your wallet:
 
 The Base contracts are located in `apps/smart-contracts/base/`:
 
-```
+```text
 base/
 ├── contracts/
 │   ├── TodoList.sol         # Main todo list contract

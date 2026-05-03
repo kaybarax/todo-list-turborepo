@@ -6,7 +6,7 @@ This guide provides comprehensive instructions for managing and customizing desi
 
 ### Token Hierarchy
 
-```
+```text
 tokens/
 ├── core/                     # Foundation tokens
 │   ├── colors.json          # Color palette
@@ -27,7 +27,7 @@ tokens/
 
 Follow the structured naming pattern:
 
-```
+```text
 [category].[subcategory].[variant].[state]
 ```
 

@@ -57,7 +57,7 @@ pnpm run dev          # Watch mode build
 
 #### Component Structure
 
-```
+```text
 ComponentName/
 ├── ComponentName.tsx        # Main component implementation
 ├── ComponentName.test.tsx   # Unit tests

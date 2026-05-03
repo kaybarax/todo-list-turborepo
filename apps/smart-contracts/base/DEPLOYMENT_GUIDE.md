@@ -72,7 +72,7 @@ forge script script/Deploy.s.sol:DeployScript \
 
 **Expected Output:**
 
-```
+```bash
 ===========================================
 Deploying TodoListFactory
 ===========================================
@@ -93,7 +93,7 @@ Block number: ...
 
 Visit Base Sepolia Explorer to verify your deployment:
 
-```
+```text
 https://sepolia.basescan.org/address/<YOUR_FACTORY_ADDRESS>
 ```
 
@@ -122,7 +122,7 @@ forge script script/CreateTodoList.s.sol:CreateTodoListScript \
 
 **Expected Output:**
 
-```
+```bash
 ===========================================
 Creating TodoList
 ===========================================
@@ -159,7 +159,7 @@ forge script script/CreateSampleTodos.s.sol:CreateSampleTodosScript \
 
 **Expected Output:**
 
-```
+```bash
 ===========================================
 Creating Sample Todos
 ===========================================
@@ -220,7 +220,7 @@ cast send $TODOLIST_ADDRESS \
 
 Visit your TodoList contract on Basescan:
 
-```
+```text
 https://sepolia.basescan.org/address/<YOUR_TODOLIST_ADDRESS>
 ```
 

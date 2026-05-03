@@ -30,18 +30,17 @@ OTEL_SERVICE_VERSION=1.0.0
 
 1. Start the development infrastructure:
 
-```bash
-docker-compose -f docker-compose.dev.yml up -d
-```
+   ```bash
+   docker-compose -f docker-compose.dev.yml up -d
+   ```
 
-This will start:
+   This will start:
+   - MongoDB (port 27017)
+   - Redis (port 6379)
+   - Jaeger UI (port 16686)
+   - OpenTelemetry Collector (ports 4317/4318)
 
-- MongoDB (port 27017)
-- Redis (port 6379)
-- Jaeger UI (port 16686)
-- OpenTelemetry Collector (ports 4317/4318)
-
-2. Access Jaeger UI at http://localhost:16686 to view traces
+1. Access Jaeger UI at http://localhost:16686 to view traces
 
 ## Usage
 
@@ -112,10 +111,10 @@ The following services include method-level tracing:
 ### Key Metrics to Monitor
 
 1. **Request Duration**: HTTP request response times
-2. **Database Performance**: MongoDB query execution times
-3. **Cache Performance**: Redis operation latencies
-4. **Error Rates**: Failed requests and exceptions
-5. **Service Dependencies**: External service call performance
+1. **Database Performance**: MongoDB query execution times
+1. **Cache Performance**: Redis operation latencies
+1. **Error Rates**: Failed requests and exceptions
+1. **Service Dependencies**: External service call performance
 
 ### Alerts
 
@@ -131,19 +130,19 @@ Consider setting up alerts for:
 For production environments:
 
 1. Use a dedicated OpenTelemetry Collector
-2. Export traces to your observability platform (Jaeger, Zipkin, etc.)
-3. Configure sampling rates to manage trace volume
-4. Set up proper retention policies
-5. Monitor collector performance and resource usage
+1. Export traces to your observability platform (Jaeger, Zipkin, etc.)
+1. Configure sampling rates to manage trace volume
+1. Set up proper retention policies
+1. Monitor collector performance and resource usage
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Traces not appearing**: Check OTLP_ENDPOINT configuration
-2. **High overhead**: Adjust sampling rates or disable in development
-3. **Missing spans**: Ensure services are properly instrumented
-4. **Memory issues**: Configure batch processors and memory limits
+1. **High overhead**: Adjust sampling rates or disable in development
+1. **Missing spans**: Ensure services are properly instrumented
+1. **Memory issues**: Configure batch processors and memory limits
 
 ### Debug Mode
 

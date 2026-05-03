@@ -193,7 +193,7 @@ cast call $TODOLIST_ADDRESS "todoCount()(uint256)" --rpc-url base_sepolia
 
 All deployment information is saved in `deployments/84532/`:
 
-```
+```text
 deployments/84532/
 ├── TodoListFactory.json          # Factory deployment info
 ├── TodoList-<YOUR_ADDRESS>.json  # Your TodoList info

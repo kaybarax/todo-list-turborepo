@@ -31,7 +31,7 @@ A modern, full-stack Todo application built as a comprehensive monorepo showcasi
 
 ## 📦 Repository Structure
 
-```
+```text
 .
 ├── apps/
 │   ├── web/                 # Next.js 15 with App Router and Tailwind CSS

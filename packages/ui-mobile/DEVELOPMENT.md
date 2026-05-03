@@ -15,7 +15,7 @@ This document provides comprehensive guidelines for developing components in the
 
 ### Directory Structure
 
-```
+```text
 packages/ui-mobile/
 ├── lib/                        # Source code (new structure)
 │   ├── components/            # Component implementations

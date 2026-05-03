@@ -93,7 +93,7 @@ npx hardhat run scripts/create-sample-todos.js --network localhost
 
 1. Create a `.env` file based on `.env.example`:
 
-```
+```bash
 POLYGON_RPC_URL=https://polygon-rpc.com
 MUMBAI_RPC_URL=https://rpc-mumbai.maticvigil.com
 PRIVATE_KEY=0xYourPrivateKeyHere

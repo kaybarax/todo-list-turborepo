@@ -196,7 +196,7 @@ Each includes:
 
 All created files have been verified:
 
-```
+```text
 ✓ Dockerfile uses curl-based health check
 ✓ Image build workflow captures immutable digest
 ✓ Deploy workflow includes smoke tests

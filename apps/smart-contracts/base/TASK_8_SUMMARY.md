@@ -259,7 +259,7 @@ cast call $TODOLIST_ADDRESS "getTodoStats()((uint256,uint256,uint256,uint256))" 
 
 After successful deployment, the following files will be created:
 
-```
+```text
 deployments/84532/
 ├── TodoListFactory.json          # Factory deployment info
 ├── TodoList-<YOUR_ADDRESS>.json  # Your TodoList info

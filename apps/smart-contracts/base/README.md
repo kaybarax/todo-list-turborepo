@@ -334,7 +334,7 @@ Files:
 
 ## Project Structure
 
-```
+```text
 apps/smart-contracts/base/
 ├── src/                      # Contract source files
 │   ├── TodoList.sol

@@ -34,7 +34,7 @@ Local screenshot testing using jest-image-snapshot for:
 
 ## File Structure
 
-```
+```text
 packages/ui-web/
 ├── .storybook/
 │   ├── main.ts                 # Storybook configuration

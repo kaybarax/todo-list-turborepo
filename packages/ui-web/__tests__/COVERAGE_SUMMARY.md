@@ -38,7 +38,7 @@ This document summarizes the comprehensive test coverage implementation for the 
 
 ## 📁 Test File Structure
 
-```
+```text
 packages/ui-web/__tests__/
 ├── __mocks__/                          # External dependency mocks
 │   ├── class-variance-authority.ts

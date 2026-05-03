@@ -38,7 +38,7 @@ This document summarizes the comprehensive visual regression testing implementat
 
 ### Web Package (`packages/ui-web/`)
 
-```
+```text
 ├── .storybook/
 │   ├── main.ts                     # Enhanced Storybook configuration
 │   └── preview.ts                  # Visual testing settings
@@ -59,7 +59,7 @@ This document summarizes the comprehensive visual regression testing implementat
 
 ### Mobile Package (`packages/ui-mobile/`)
 
-```
+```text
 ├── .storybook/
 │   └── main.js                     # React Native Storybook config
 ├── lib/components/

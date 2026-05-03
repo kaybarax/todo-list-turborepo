@@ -32,7 +32,7 @@ The integration tests cover:
 
 ## Test Structure
 
-```
+```text
 test/integration/
 ├── blockchain-expansion-integration.test.ts  # Core blockchain service tests
 ├── web-blockchain-integration.test.ts        # Web application integration tests

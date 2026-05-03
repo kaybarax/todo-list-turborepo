@@ -13,7 +13,7 @@ The test suite is organized into four main categories:
 
 ## Test Structure
 
-```
+```text
 test/dependency-management/
 ├── unit/                           # Unit tests
 │   ├── dependency-detection.test.js   # Dependency detection functions

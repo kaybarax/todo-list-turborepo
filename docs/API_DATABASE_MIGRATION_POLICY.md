@@ -17,7 +17,7 @@ The API uses `migrate-mongo` for MongoDB schema migrations. See `/Users/kevin/wo
 
 Migrations are timestamped files in `db/migrations/`:
 
-```
+```text
 db/migrations/
 ├── 20240101000000-initial-schema.js
 ├── 20240115120000-add-user-preferences.js
@@ -334,7 +334,7 @@ Production migrations are scheduled during:
 
 ### Migration Calendar
 
-```
+```text
 Q1 2024:
 - Week 6 (Feb 5-11): User preferences schema migration
 - Week 10 (Mar 4-10): Add indices for performance

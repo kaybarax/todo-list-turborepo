@@ -10,31 +10,14 @@ Enterprise-grade monorepo (Turborepo) for a todo list application with full-stac
 
 ## Monorepo Structure
 
-```
+````text
+```text
 apps/
-  web/          # Next.js 15 + React 19 (port 3000)
-  mobile/       # Expo 54 + React Native 0.81
-  api/          # NestJS 11 + MongoDB + Redis (port 3001)
-  ingestion/    # Background processing
-  smart-contracts/
-    polygon/    # Solidity + Hardhat
-    solana/     # Rust + Anchor
-    polkadot/   # Substrate
-    moonbeam/   # EVM + Hardhat
-    base/       # L2 + Hardhat
+  api/          # NestJS API server
+  web/          # Next.js web application
+  mobile/       # Expo mobile app
+  ingestion/    # Blockchain data processor
 packages/
-  ui-web/       # React component library (DaisyUI + Style Dictionary)
-  ui-mobile/    # React Native component library
-  services/     # Blockchain & API services
-  utils/        # Shared utilities
-  config-eslint/
-  config-jest/
-  config-ts/
-  config-release/
-src/
-  test/         # Shared test utilities
-test/
-  integration/    # Root-level integration test suites
   dependency-management/  # Dependency validation tests
 scripts/          # Shell scripts referenced by pnpm commands
 db/             # MongoDB migrations & seeds
@@ -44,7 +27,7 @@ infra/
   kubernetes/   # Legacy/Reference manifests
   nginx/        # NGINX configs
   redis/        # Redis configs
-```
+````
 
 ## Key Commands
 

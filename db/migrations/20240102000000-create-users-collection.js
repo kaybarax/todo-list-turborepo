@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _client) {
     console.log('Creating users collection with validation...');
 
     // Create the users collection with schema validation
@@ -118,7 +118,7 @@ module.exports = {
     console.log('Users collection created successfully with validation and indexes');
   },
 
-  async down(db, client) {
+  async down(db, _client) {
     console.log('Dropping users collection...');
 
     // Drop the users collection

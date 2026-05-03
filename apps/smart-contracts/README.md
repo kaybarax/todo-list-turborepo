@@ -19,7 +19,7 @@ This project supports smart contracts deployment across multiple blockchain netw
 
 ## 📁 Directory Structure
 
-```
+```text
 smart-contracts/
 ├── polygon/                 # Polygon network contracts (Solidity + Hardhat)
 │   ├── contracts/
