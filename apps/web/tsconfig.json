@@ -16,9 +16,7 @@
     "../../node_modules/@types/hapi*",
     "**/__tests__/**",
     "**/*.test.ts",
-    "**/*.test.tsx",
-    "e2e/**",
-    "playwright.config.ts"
+    "**/*.test.tsx"
   ],
   "references": [{ "path": "../../packages/ui-web" }, { "path": "../../packages/services" }]
 }
