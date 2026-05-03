@@ -14,7 +14,9 @@
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "test:e2e:local": "node ./scripts/run-e2e.mjs",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "lint": "eslint .",
+    "build": "echo \"Run eas build for mobile\""
   },
   "dependencies": {
     "@eva-design/eva": "^2.2.0",
@@ -24,9 +26,9 @@
     "@todo/ui-mobile": "workspace:*",
     "@ui-kitten/components": "^5.3.1",
     "@ui-kitten/eva-icons": "^5.3.1",
-  "expo": "~54.0.10",
+    "expo": "~54.0.10",
     "expo-linking": "^8.0.8",
-  "expo-router": "~6.0.8",
+    "expo-router": "~6.0.8",
     "expo-status-bar": "~3.0.8",
     "inline-style-prefixer": "^6.0.1",
     "react": "19.1.0",

@@ -40,7 +40,9 @@
     "lint:base": "cd base && pnpm lint",
     "lint:solidity": "solhint --config .solhint.json 'polygon/contracts/**/*.sol' 'moonbeam/contracts/**/*.sol' 'base/contracts/**/*.sol'",
     "format": "prettier --write 'contracts/**/*.sol' && cd solana && pnpm format && cd ../polkadot && cargo fmt",
-    "clean": "hardhat clean && cd polygon && pnpm clean && cd ../moonbeam && pnpm clean && cd ../base && pnpm clean && cd ../solana && anchor clean && cd ../polkadot && cargo clean"
+    "clean": "hardhat clean && cd polygon && pnpm clean && cd ../moonbeam && pnpm clean && cd ../base && pnpm clean && cd ../solana && anchor clean && cd ../polkadot && cargo clean",
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm compile"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.4.0",

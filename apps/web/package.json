@@ -14,7 +14,8 @@
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test e2e/deploy-smoke.spec.ts",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "docker:build": "docker build -t @todo/web ."
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
