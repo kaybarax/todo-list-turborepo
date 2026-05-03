@@ -192,41 +192,15 @@ struct Todo {
 
 ## 🚀 Deployment
 
+### GitHub Actions (Primary Path)
+
+Deployments are automated via GitHub Actions with manual approval gates:
+
+- **Workflows**: `deploy-contracts.yml`
+- **Environments**: `polygon-mainnet`, `solana-mainnet`, etc.
+- **Security**: Private keys are stored as encrypted GitHub Environment Secrets.
+
 ### Development (Local)
-
-```bash
-# Start local nodes
-pnpm dev:blockchain
-
-# Deploy to local networks
-pnpm deploy:local
-```
-
-### Testnet Deployment
-
-```bash
-# Deploy to all testnets
-pnpm deploy:testnet
-
-# Deploy to specific testnet
-cd polygon && pnpm deploy:mumbai
-cd moonbeam && pnpm deploy:testnet
-cd base && pnpm deploy:testnet
-cd solana && anchor deploy --provider.cluster devnet
-```
-
-### Mainnet Deployment
-
-```bash
-# Deploy to all mainnets (with confirmations)
-pnpm deploy:mainnet
-
-# Deploy to specific mainnet
-cd polygon && pnpm deploy:mainnet
-cd moonbeam && pnpm deploy:mainnet
-cd base && pnpm deploy:mainnet
-cd solana && anchor deploy --provider.cluster mainnet-beta
-```
 
 ## 🧪 Testing Strategy
 

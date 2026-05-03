@@ -416,29 +416,16 @@ module.exports = {
 
 ## 🚀 Deployment
 
-### Docker Deployment
+### AWS ECS Fargate (Primary Path)
 
-```bash
-# Build Docker image
-docker build -t todo-api:latest -f apps/api/Dockerfile .
+The API is deployed to AWS ECS Fargate using the automated `deploy-api-aws.yml` workflow.
 
-# Run container
-docker run -p 3001:3001 \
-  -e MONGODB_URI=mongodb://mongodb:27017/todo-app \
-  -e REDIS_URI=redis://redis:6379 \
-  todo-api:latest
-```
+1.  **Identity**: GitHub Actions assumes an AWS IAM role via OIDC.
+2.  **Container**: Multi-stage Docker image is built and pushed to AWS ECR.
+3.  **Deploy**: ECS Task Definition is updated with the new image digest.
+4.  **Verify**: Automated smoke tests verify `/health` and connectivity.
 
-### Kubernetes Deployment
-
-```bash
-# Deploy to Kubernetes
-kubectl apply -f infra/k8s/deployments/api.yaml
-kubectl apply -f infra/k8s/services/database-services.yaml
-
-# Check deployment status
-kubectl get pods -l app.kubernetes.io/component=api
-```
+### Docker Deployment (Local/Manual)
 
 ### Environment Variables
 

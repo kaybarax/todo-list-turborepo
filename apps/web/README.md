@@ -544,59 +544,15 @@ test.describe('Todo Management', () => {
 
 ## 🚀 Deployment
 
-### Build Configuration
+### Vercel (Primary Path)
 
-```javascript
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-  images: {
-    domains: ['localhost', 'api.todo-app.com'],
-  },
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
-      },
-    ];
-  },
-};
+The web application is optimized for Vercel deployment via the `deploy-web-vercel.yml` workflow.
 
-module.exports = nextConfig;
-```
+- **Automation**: Merges to `main` trigger a production deployment.
+- **Preview**: Pull Requests generate preview deployments.
+- **Secrets**: Environment variables are managed in the Vercel Project dashboard.
 
-### Docker Deployment
-
-```dockerfile
-# Multi-stage build
-FROM node:20-alpine AS base
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-FROM node:20-alpine AS build
-WORKDIR /app
-COPY . .
-RUN npm ci
-RUN npm run build
-
-FROM node:20-alpine AS runtime
-WORKDIR /app
-COPY --from=base /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/package.json ./package.json
-
-EXPOSE 3000
-CMD ["npm", "start"]
-```
+### Docker Deployment (Legacy/Manual)
 
 ### Static Export
 

@@ -61,3 +61,20 @@ CI note:
 - Rebuild `@todo/ui-mobile` after token changes: `pnpm --filter @todo/ui-mobile build`.
 - API base URL defaults to `http://localhost:3001/api/v1`.
 - Expo SDK 54: keep `expo`, `expo-router`, `react`, `react-dom`, and RN aligned with pinned versions.
+
+## 🚀 Deployment
+
+### Expo Application Services (EAS)
+
+The mobile app is built and deployed using EAS.
+
+- **Automation**: Triggered via the `deploy-mobile-eas.yml` workflow.
+- **Builds**: Configured in `eas.json` with profiles for `development`, `preview`, and `production`.
+- **Submission**: Automated submission to Apple App Store and Google Play Store via EAS Submit.
+- **Secrets**: EAS secrets are used for sensitive build-time configuration.
+
+To run a manual production build:
+
+```bash
+eas build --platform all --profile production
+```
