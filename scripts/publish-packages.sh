@@ -3,7 +3,7 @@
 # Package Publishing Script
 # This script handles the publishing of UI packages to npm
 
-set -e
+set -euo pipefail
 
 echo "📦 Publishing UI Packages..."
 

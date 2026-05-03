@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # Comprehensive deployment script for Todo App Monorepo
-# Supports multiple environments and blockchain contract deployment
+# [LEGACY] This script primarily targets Kubernetes, which is now considered legacy.
+# Primary deployment is now managed via Terraform/Terragrunt (AWS/Vercel/EAS).
+# Use this only for historical reference or specialized Kubernetes-based environments.
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -11,6 +13,30 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# Function to print colored output
+print_status() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+# Legacy warning function
+show_legacy_warning() {
+    echo -e "${RED}╔══════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${RED}║                                   WARNING                                    ║${NC}"
+    echo -e "${RED}╠══════════════════════════════════════════════════════════════════════════════╣${NC}"
+    echo -e "${RED}║ This deployment script is LEGACY and targets Kubernetes.                     ║${NC}"
+    echo -e "${RED}║ The project has moved to AWS (ECS), Vercel, and EAS (Expo).                  ║${NC}"
+    echo -e "${RED}║ Infrastructure is now managed via Terraform/Terragrunt in /infra.            ║${NC}"
+    echo -e "${RED}╚══════════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+}
+
+# Call legacy warning immediately
+show_legacy_warning
 
 # Configuration
 ENVIRONMENT="${ENVIRONMENT:-development}"
@@ -150,10 +176,10 @@ deploy_docker_compose() {
     
     case $ENVIRONMENT in
         development)
-            docker-compose -f docker-compose.dev.yml up -d
+            docker compose -f docker-compose.dev.yml up -d
             ;;
         staging|production)
-            docker-compose up -d
+            docker compose up -d
             ;;
     esac
     
@@ -212,9 +238,9 @@ verify_deployment() {
             fi
             ;;
             
-        docker-compose)
+        docker compose)
             # Check Docker Compose services
-            docker-compose ps
+            docker compose ps
             
             # Basic health checks
             curl -f http://localhost:3001/health || print_warning "API health check failed"
@@ -248,9 +274,9 @@ show_deployment_info() {
             echo "  Monitoring: https://$ingress_host/grafana"
             ;;
             
-        docker-compose)
+        docker compose)
             print_status "Docker Services:"
-            docker-compose ps
+            docker compose ps
             
             print_status "Access Information:"
             echo "  Web App: http://localhost:3000"
@@ -273,9 +299,9 @@ rollback_deployment() {
                 print_success "Kubernetes rollback completed"
                 ;;
                 
-            docker-compose)
+            docker compose)
                 # Stop Docker Compose services
-                docker-compose down
+                docker compose down
                 print_success "Docker Compose rollback completed"
                 ;;
         esac
@@ -294,8 +320,8 @@ cleanup_deployment() {
                 kubectl delete namespace "$NAMESPACE" --timeout="$KUBECTL_TIMEOUT"
                 ;;
                 
-            docker-compose)
-                docker-compose down -v
+            docker compose)
+                docker compose down -v
                 docker system prune -f
                 ;;
         esac
@@ -319,7 +345,7 @@ show_help() {
     echo "  --skip-contracts      Skip blockchain contract deployment"
     echo "  --skip-monitoring     Skip monitoring stack deployment"
     echo "  --dry-run             Show what would be deployed without actually deploying"
-    echo "  --docker-compose      Use Docker Compose instead of Kubernetes"
+    echo "  --docker compose      Use Docker Compose instead of Kubernetes"
     echo "  --rollback            Rollback to previous deployment"
     echo "  --cleanup             Remove entire deployment"
     echo "  --help                Show this help message"
@@ -336,7 +362,7 @@ show_help() {
     echo "Examples:"
     echo "  $0                                    # Deploy to development"
     echo "  $0 --environment production           # Deploy to production"
-    echo "  $0 --docker-compose                  # Deploy with Docker Compose"
+    echo "  $0 --docker compose                  # Deploy with Docker Compose"
     echo "  $0 --dry-run --environment staging    # Dry run for staging"
     echo "  $0 --rollback                         # Rollback deployment"
     echo "  $0 --cleanup                          # Clean up deployment"
@@ -364,7 +390,7 @@ main_deploy() {
         kubernetes)
             deploy_kubernetes
             ;;
-        docker-compose)
+        docker compose)
             deploy_docker_compose
             ;;
     esac
@@ -413,8 +439,8 @@ while [[ $# -gt 0 ]]; do
             DRY_RUN="true"
             shift
             ;;
-        --docker-compose)
-            DEPLOYMENT_TYPE="docker-compose"
+        --docker compose)
+            DEPLOYMENT_TYPE="docker compose"
             shift
             ;;
         --rollback)

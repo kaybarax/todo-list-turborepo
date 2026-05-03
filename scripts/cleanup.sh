@@ -116,7 +116,7 @@ clean_docker() {
             else
                 log "Bringing down $f (removing orphans, keeping volumes)..."
             fi
-            run_cmd "docker compose -f \"$f\" down $down_args || docker-compose -f \"$f\" down $down_args"
+            run_cmd "docker compose -f \"$f\" down $down_args || docker compose -f \"$f\" down $down_args"
         fi
     done
 

@@ -3,7 +3,7 @@
 # Development environment deployment script
 # Optimized for local development with Docker Compose
 
-set -e
+set -euo pipefail
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -39,7 +39,7 @@ fi
 
 # Stop any existing services
 print_status "Stopping existing services..."
-docker-compose -f docker-compose.dev.yml down || true
+docker compose -f docker-compose.dev.yml down || true
 
 # Build applications
 print_status "Building applications for development..."
@@ -47,7 +47,7 @@ pnpm build:quick
 
 # Start database services first
 print_status "Starting database services..."
-docker-compose -f docker-compose.dev.yml up -d mongodb redis
+docker compose -f docker-compose.dev.yml up -d mongodb redis
 
 # Wait for databases to be ready
 print_status "Waiting for databases to be ready..."
@@ -59,7 +59,7 @@ pnpm db:setup
 
 # Start all services
 print_status "Starting all development services..."
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 
 # Wait for services to be ready
 print_status "Waiting for services to start..."
@@ -100,8 +100,8 @@ echo "  Redis:            redis://localhost:6379"
 echo ""
 echo "🔧 Development Commands:"
 echo "  Start dev servers: pnpm dev"
-echo "  View logs:         docker-compose -f docker-compose.dev.yml logs -f"
-echo "  Stop services:     docker-compose -f docker-compose.dev.yml down"
+echo "  View logs:         docker compose -f docker-compose.dev.yml logs -f"
+echo "  Stop services:     docker compose -f docker-compose.dev.yml down"
 echo "  Reset database:    pnpm db:reset"
 echo ""
 echo "🎉 Happy coding!"

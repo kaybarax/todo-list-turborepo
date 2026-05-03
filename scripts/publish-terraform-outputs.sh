@@ -3,7 +3,7 @@
 # Script to publish non-secret Terraform outputs to GitHub Variables
 # Usage: terraform output -json | ./scripts/publish-terraform-outputs.sh [environment]
 
-set -e
+set -euo pipefail
 
 ENVIRONMENT=$1
 

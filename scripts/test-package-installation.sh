@@ -3,7 +3,7 @@
 # Package Installation Test Script
 # This script tests that the built packages can be installed and used in external projects
 
-set -e
+set -euo pipefail
 
 echo "🧪 Testing Package Installation in External Projects..."
 

@@ -3,7 +3,7 @@
 # Blockchain development script
 # Starts blockchain development environment with local networks
 
-set -e
+set -euo pipefail
 
 # Colors for output
 GREEN='\033[0;32m'

@@ -454,10 +454,10 @@ volumes:
 
 ```bash
 # Build and start container
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 
 # Enter development environment
-docker-compose -f docker-compose.dev.yml exec blockchain-dev bash
+docker compose -f docker-compose.dev.yml exec blockchain-dev bash
 
 # Verify installation
 node --version

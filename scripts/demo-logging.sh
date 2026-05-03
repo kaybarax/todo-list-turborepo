@@ -2,7 +2,7 @@
 
 # Demo script showing the complete build logging and reporting system
 
-set -e
+set -euo pipefail
 
 # Source the logging system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

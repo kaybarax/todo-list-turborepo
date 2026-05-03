@@ -3,7 +3,7 @@
 # Package Build and Deployment Validation Script
 # This script validates that both UI packages can be built and used correctly
 
-set -e
+set -euo pipefail
 
 echo "🔍 Validating UI Packages Build and Deployment..."
 

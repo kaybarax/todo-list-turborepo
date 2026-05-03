@@ -3,7 +3,7 @@
 # Test script for blockchain tools installer
 # This script tests the installation functions without actually installing anything
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'

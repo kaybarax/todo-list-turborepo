@@ -3,7 +3,7 @@
 # Frontend development script
 # Starts web and mobile applications with shared infrastructure
 
-set -e
+set -euo pipefail
 
 # Colors for output
 GREEN='\033[0;32m'

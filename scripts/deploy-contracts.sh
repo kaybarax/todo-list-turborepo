@@ -3,7 +3,7 @@
 # Blockchain contracts deployment script
 # Handles deployment across multiple networks with proper validation
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'

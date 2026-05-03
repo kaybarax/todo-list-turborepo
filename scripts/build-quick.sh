@@ -3,7 +3,7 @@
 # Quick build script for development
 # Skips Docker images, contracts, and tests for faster iteration
 
-set -e
+set -euo pipefail
 
 # Colors for output
 GREEN='\033[0;32m'

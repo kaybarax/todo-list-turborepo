@@ -5,7 +5,7 @@
 # Supports: Rust, Solana CLI, Anchor CLI
 # Platforms: macOS, Linux, Windows (WSL/Git Bash)
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'

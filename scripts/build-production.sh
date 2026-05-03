@@ -3,7 +3,7 @@
 # Production build script with optimizations and security checks
 # This script is designed for CI/CD pipelines and production deployments
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'

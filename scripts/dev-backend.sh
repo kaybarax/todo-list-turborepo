@@ -3,7 +3,7 @@
 # Backend development script
 # Starts API and ingestion services with database dependencies
 
-set -e
+set -euo pipefail
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -38,7 +38,7 @@ fi
 
 # Start database services
 print_status "Starting database services..."
-docker-compose -f docker-compose.dev.yml up -d mongodb redis
+docker compose -f docker-compose.dev.yml up -d mongodb redis
 
 # Wait for databases to be ready
 print_status "Waiting for databases to be ready..."
@@ -46,7 +46,7 @@ local max_attempts=30
 local attempt=1
 
 while [ $attempt -le $max_attempts ]; do
-    if docker-compose -f docker-compose.dev.yml exec -T mongodb mongosh --eval "db.adminCommand('ping')" &>/dev/null; then
+    if docker compose -f docker-compose.dev.yml exec -T mongodb mongosh --eval "db.adminCommand('ping')" &>/dev/null; then
         print_success "MongoDB is ready"
         break
     fi
@@ -63,7 +63,7 @@ done
 # Check Redis
 attempt=1
 while [ $attempt -le $max_attempts ]; do
-    if docker-compose -f docker-compose.dev.yml exec -T redis redis-cli ping &>/dev/null; then
+    if docker compose -f docker-compose.dev.yml exec -T redis redis-cli ping &>/dev/null; then
         print_success "Redis is ready"
         break
     fi
@@ -84,14 +84,14 @@ pnpm db:setup || print_warning "Database setup failed, continuing anyway"
 
 # Start monitoring services
 print_status "Starting monitoring services..."
-docker-compose -f docker-compose.dev.yml up -d jaeger otel-collector
+docker compose -f docker-compose.dev.yml up -d jaeger otel-collector
 
 # Function to handle shutdown
 shutdown_handler() {
     print_status "Shutting down backend development..."
     
     # Stop Docker services
-    docker-compose -f docker-compose.dev.yml down
+    docker compose -f docker-compose.dev.yml down
     
     exit 0
 }

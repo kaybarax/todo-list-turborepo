@@ -4,7 +4,7 @@
 # Compiles and tests smart contracts for all supported networks
 # Enhanced with dependency management, automatic installation, and comprehensive logging
 
-set -e
+set -euo pipefail
 
 # Source the logging system
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

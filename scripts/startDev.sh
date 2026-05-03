@@ -3,7 +3,7 @@
 # Comprehensive development environment startup script
 # Manages service dependencies and provides flexible development options
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -102,7 +102,7 @@ start_infrastructure() {
     
     # Start database and cache services first
     print_status "Starting MongoDB and Redis..."
-    docker-compose -f docker-compose.dev.yml up -d mongodb redis
+    docker compose -f docker-compose.dev.yml up -d mongodb redis
     
     # Wait for databases to be ready
     print_status "Waiting for databases to be ready..."
@@ -110,7 +110,9 @@ start_infrastructure() {
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if docker-compose -f docker-compose.dev.yml exec -T mongodb mongosh --eval "db.adminCommand('ping')" &>/dev/null; then
+        # Try mongosh first, then mongo (legacy)
+        if docker compose -f docker-compose.dev.yml exec -T mongodb mongosh --eval "db.adminCommand('ping')" &>/dev/null || \
+           docker compose -f docker-compose.dev.yml exec -T mongodb mongo --eval "db.adminCommand('ping')" &>/dev/null; then
             print_success "MongoDB is ready"
             break
         fi
@@ -127,7 +129,7 @@ start_infrastructure() {
     # Check Redis
     attempt=1
     while [ $attempt -le $max_attempts ]; do
-        if docker-compose -f docker-compose.dev.yml exec -T redis redis-cli ping &>/dev/null; then
+        if docker compose -f docker-compose.dev.yml exec -T redis redis-cli ping &>/dev/null; then
             print_success "Redis is ready"
             break
         fi
@@ -143,12 +145,12 @@ start_infrastructure() {
     
     # Start monitoring services
     print_status "Starting monitoring services..."
-    docker-compose -f docker-compose.dev.yml up -d jaeger otel-collector mailhog
+    docker compose -f docker-compose.dev.yml up -d jaeger otel-collector mailhog
     
     # Start blockchain development services if needed
     if [[ "$SERVICES" == *"contracts"* ]] || [ "$SERVICES" = "all" ]; then
         print_status "Starting blockchain development services..."
-        docker-compose -f docker-compose.dev.yml up -d hardhat-node
+        docker compose -f docker-compose.dev.yml up -d hardhat-node
         
         # Wait for Hardhat node
         sleep 5
@@ -255,7 +257,7 @@ show_development_urls() {
     echo "  Web App:          http://localhost:3000"
     echo "  API:              http://localhost:3001"
     echo "  API Docs:         http://localhost:3001/api"
-    echo "  Mobile (Expo):    http://localhost:19000"
+    echo "  Mobile (Expo):    http://localhost:8081"
     echo ""
     echo "🔧 Development Tools:"
     echo "  Jaeger Tracing:   http://localhost:16686"
@@ -287,7 +289,7 @@ setup_shutdown() {
         
         # Stop Docker services
         print_status "Stopping Docker services..."
-        docker-compose -f docker-compose.dev.yml down
+        docker compose -f docker-compose.dev.yml down
         
         print_success "Development environment stopped"
         exit 0
@@ -303,12 +305,12 @@ monitor_services() {
     
     while true; do
         # Check if critical services are still running
-        if ! docker-compose -f docker-compose.dev.yml ps mongodb | grep -q "Up"; then
+        if ! docker compose -f docker-compose.dev.yml ps mongodb | grep -q "Up"; then
             print_error "MongoDB service stopped unexpectedly"
             break
         fi
         
-        if ! docker-compose -f docker-compose.dev.yml ps redis | grep -q "Up"; then
+        if ! docker compose -f docker-compose.dev.yml ps redis | grep -q "Up"; then
             print_error "Redis service stopped unexpectedly"
             break
         fi
@@ -369,7 +371,7 @@ show_service_status() {
     print_status "Service Status:"
     
     echo "🐳 Docker Services:"
-    docker-compose -f docker-compose.dev.yml ps
+    docker compose -f docker-compose.dev.yml ps
     
     echo ""
     echo "🌐 Port Status:"

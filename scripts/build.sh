@@ -4,7 +4,7 @@
 # This script builds all applications, packages, and blockchain contracts
 # Supports development, staging, and production environments
 
-set -e
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -349,18 +349,10 @@ EOF
     cat >> $BUILD_REPORT << EOF
   ],
   "packages": [
-    "@todo/ui-web",
-    "@todo/ui-mobile",
-    "@todo/services",
-    "@todo/config-eslint",
-    "@todo/config-ts",
-    "@todo/config-jest"
+    $(pnpm list --filter "./packages/*" --depth -1 --json | node -e "const input = JSON.parse(fs.readFileSync(0)); console.log(input.map(pkg => '    \"' + pkg.name + '\"').join(',\n'))")
   ],
   "applications": [
-    "@todo/api",
-    "@todo/web",
-    "@todo/mobile",
-    "@todo/ingestion"
+    $(pnpm list --filter "./apps/*" --depth -1 --json | node -e "const input = JSON.parse(fs.readFileSync(0)); console.log(input.map(pkg => '    \"' + pkg.name + '\"').join(',\n'))")
   ],
   "contracts": {
     "polygon": $([ -d "apps/smart-contracts/polygon" ] && echo "true" || echo "false"),

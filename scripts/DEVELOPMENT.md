@@ -259,7 +259,7 @@ pnpm db:test
 
 ```bash
 # Docker service logs
-docker-compose -f docker-compose.dev.yml logs -f api
+docker compose -f docker-compose.dev.yml logs -f api
 
 # Application logs
 # Check console output from development scripts
@@ -276,10 +276,10 @@ docker-compose -f docker-compose.dev.yml logs -f api
 
 ```bash
 # Stop all Docker services
-docker-compose -f docker-compose.dev.yml down
+docker compose -f docker-compose.dev.yml down
 
 # Stop specific services
-docker-compose -f docker-compose.dev.yml stop mongodb redis
+docker compose -f docker-compose.dev.yml stop mongodb redis
 ```
 
 ## 🔧 Development Configuration
@@ -404,7 +404,7 @@ mongo-cli
 redis-cli -h localhost -p 6379
 
 # Database logs
-docker-compose -f docker-compose.dev.yml logs mongodb
+docker compose -f docker-compose.dev.yml logs mongodb
 ```
 
 ### Blockchain Debugging
@@ -440,13 +440,13 @@ kill -9 $(lsof -t -i:3000)
 
 ```bash
 # Restart Docker services
-docker-compose -f docker-compose.dev.yml restart
+docker compose -f docker-compose.dev.yml restart
 
 # Clean Docker resources
 docker system prune -f
 
 # Rebuild containers
-docker-compose -f docker-compose.dev.yml build --no-cache
+docker compose -f docker-compose.dev.yml build --no-cache
 ```
 
 #### Database Connection Issues
@@ -456,10 +456,10 @@ docker-compose -f docker-compose.dev.yml build --no-cache
 pnpm db:reset
 
 # Check database status
-docker-compose -f docker-compose.dev.yml ps mongodb
+docker compose -f docker-compose.dev.yml ps mongodb
 
 # View database logs
-docker-compose -f docker-compose.dev.yml logs mongodb
+docker compose -f docker-compose.dev.yml logs mongodb
 ```
 
 #### Dependency Issues
@@ -516,7 +516,7 @@ export NODE_OPTIONS="--max-old-space-size=8192"
 docker stats
 
 # Restart services
-docker-compose -f docker-compose.dev.yml restart
+docker compose -f docker-compose.dev.yml restart
 ```
 
 ## 📈 Development Best Practices
