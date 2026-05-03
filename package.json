@@ -34,6 +34,7 @@
     "//_mobile": "=== MOBILE APP SCRIPTS ===",
     "dev:mobile": "pnpm --filter @todo/mobile dev",
     "build:mobile": "turbo run build --filter=@todo/mobile",
+    "build:mobile:web": "pnpm --filter @todo/mobile build:web",
     "build:ui-mobile": "pnpm --filter @todo/ui-mobile build",
     "test:integration:mobile": "jest --config=test/integration/jest.config.js --testPathPattern=mobile-blockchain-integration",
     "storybook:mobile": "pnpm --filter @todo/ui-mobile storybook",

@@ -88,6 +88,16 @@ lib/
 .vercel
 .netlify
 
+# Terraform / Terragrunt
+.terraform/
+*.tfstate
+*.tfstate.*
+.terragrunt-cache/
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
+
 # Documentation
 .docusaurus
 
