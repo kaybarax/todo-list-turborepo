@@ -10,9 +10,8 @@ import { Trace } from '../telemetry/decorators/trace.decorator';
 @Controller('health')
 export class HealthController {
   constructor(
-    // eslint-disable-next-line no-unused-vars
     private readonly healthService: HealthService,
-    // eslint-disable-next-line no-unused-vars
+
     private readonly configService: ConfigService,
   ) {}
 

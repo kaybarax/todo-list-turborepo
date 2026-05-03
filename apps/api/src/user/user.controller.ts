@@ -8,10 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(
-    // eslint-disable-next-line no-unused-vars
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)

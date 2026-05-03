@@ -19,9 +19,8 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    // eslint-disable-next-line no-unused-vars
     private readonly userService: UserService,
-    // eslint-disable-next-line no-unused-vars
+
     private readonly jwtService: JwtService,
   ) {}
 

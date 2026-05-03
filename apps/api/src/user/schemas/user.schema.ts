@@ -64,7 +64,7 @@ export class User {
   updatedAt: Date;
 
   // Virtual method to compare passwords
-  // eslint-disable-next-line no-unused-vars
+
   comparePassword: (password: string) => Promise<boolean>;
 }
 

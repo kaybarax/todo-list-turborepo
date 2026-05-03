@@ -22,10 +22,7 @@ interface FindAllReturn {
 
 @Injectable()
 export class UserService {
-  constructor(
-    // eslint-disable-next-line no-unused-vars
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   @Trace('UserService.create')
   async create(registerDto: RegisterDto): Promise<UserDocument> {

@@ -6,9 +6,8 @@ import { RedisClientType } from 'redis';
 @Injectable()
 export class HealthService {
   constructor(
-    // eslint-disable-next-line no-unused-vars
     @InjectConnection() private readonly connection: Connection,
-    // eslint-disable-next-line no-unused-vars
+
     @Optional() @Inject('REDIS_CLIENT') private readonly redisClient: RedisClientType | undefined,
   ) {}
 

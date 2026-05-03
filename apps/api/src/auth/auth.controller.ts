@@ -20,10 +20,7 @@ interface UserProfile {
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    // eslint-disable-next-line no-unused-vars
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('register')

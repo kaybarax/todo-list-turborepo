@@ -7,10 +7,7 @@ import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(
-    // eslint-disable-next-line no-unused-vars
-    private reflector: Reflector,
-  ) {
+  constructor(private reflector: Reflector) {
     super();
   }
 
@@ -27,7 +24,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleRequest<TUser = any>(err: any, user: any, _info: any, _context: ExecutionContext, _status?: any): TUser {
     if (err || !user) {
       throw err || new UnauthorizedException('Authentication required');

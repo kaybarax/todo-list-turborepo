@@ -6,10 +6,7 @@ import { AppService } from './app.service';
 @ApiTags('App')
 @Controller()
 export class AppController {
-  constructor(
-    // eslint-disable-next-line no-unused-vars
-    private readonly appService: AppService,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get API information' })
