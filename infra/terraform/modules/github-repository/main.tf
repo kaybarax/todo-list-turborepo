@@ -35,7 +35,6 @@ resource "github_repository" "this" {
   has_issues      = true
   has_projects    = true
   has_wiki        = true
-  has_downloads   = true
   
   vulnerability_alerts = true
   
