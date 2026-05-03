@@ -341,6 +341,74 @@ resource "aws_cloudwatch_metric_alarm" "ingestion_lag" {
   tags = local.tags
 }
 
+variable "ingestion_log_group_name" {
+  description = "Log group name for the ingestion service."
+  type        = string
+  default     = ""
+}
+
+resource "aws_cloudwatch_log_metric_filter" "ingestion_success" {
+  count          = var.ingestion_log_group_name == "" ? 0 : 1
+  name           = "${local.name_prefix}-ingestion-success"
+  pattern        = "\"Ingested todo:\""
+  log_group_name = var.ingestion_log_group_name
+
+  metric_transformation {
+    name      = "IngestionSuccessCount"
+    namespace = "Todo/Ingestion"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "ingestion_success_low" {
+  count               = var.ingestion_log_group_name == "" ? 0 : 1
+  alarm_name          = "${local.name_prefix}-ingestion-success-low"
+  alarm_description   = "Ingestion successful operations count is too low (heartbeat missing)."
+  namespace           = "Todo/Ingestion"
+  metric_name         = "IngestionSuccessCount"
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 2
+  threshold           = 1
+  comparison_operator = "LessThanThreshold"
+  alarm_actions       = var.alarm_actions
+  treat_missing_data  = "breaching"
+
+  depends_on = [aws_cloudwatch_log_metric_filter.ingestion_success]
+  tags       = local.tags
+}
+
+resource "aws_cloudwatch_log_metric_filter" "ingestion_failures" {
+  count          = var.ingestion_log_group_name == "" ? 0 : 1
+  name           = "${local.name_prefix}-ingestion-failures"
+  pattern        = "\"Failed to ingest todo:\""
+  log_group_name = var.ingestion_log_group_name
+
+  metric_transformation {
+    name      = "IngestionFailureCount"
+    namespace = "Todo/Ingestion"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "ingestion_repeated_failures" {
+  count               = var.ingestion_log_group_name == "" ? 0 : 1
+  alarm_name          = "${local.name_prefix}-ingestion-failures-high"
+  alarm_description   = "Ingestion failures are above the threshold."
+  namespace           = "Todo/Ingestion"
+  metric_name         = "IngestionFailureCount"
+  statistic           = "Sum"
+  period              = 300
+  evaluation_periods  = 2
+  threshold           = 5
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  alarm_actions       = var.alarm_actions
+  treat_missing_data  = "notBreaching"
+
+  depends_on = [aws_cloudwatch_log_metric_filter.ingestion_failures]
+  tags       = local.tags
+}
+
 output "module_name" {
   description = "Logical module name."
   value       = local.module_name

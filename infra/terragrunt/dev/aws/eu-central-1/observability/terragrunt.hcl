@@ -72,4 +72,5 @@ inputs = {
   api_target_group_arn_suffix   = dependency.alb.outputs.api_target_group_arn_suffix
   documentdb_cluster_identifier = dependency.database.outputs.cluster_identifier
   redis_replication_group_id    = dependency.redis.outputs.replication_group_id
+  ingestion_log_group_name      = dependency.ecs_cluster.outputs.log_group_names.ingestion
 }
