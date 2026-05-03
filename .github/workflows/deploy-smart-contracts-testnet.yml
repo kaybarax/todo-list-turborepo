@@ -1,0 +1,60 @@
+name: Deploy Smart Contracts (Testnet)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/smart-contracts/**
+      - pnpm-lock.yaml
+      - package.json
+      - turbo.json
+      - .github/workflows/deploy-smart-contracts-testnet.yml
+  workflow_dispatch:
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_REMOTE_ONLY: true
+
+jobs:
+  deploy:
+    name: Deploy to Testnet
+    runs-on: ubuntu-latest
+    environment: testnet
+    concurrency:
+      group: deploy-contracts-testnet
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-pnpm-node
+
+      - name: Install blockchain dependencies
+        run: pnpm --filter @todo/smart-contracts deps:check || pnpm --filter @todo/smart-contracts deps:fix
+
+      - name: Compile Contracts
+        run: pnpm turbo run compile --filter=@todo/smart-contracts
+
+      - name: Test Contracts
+        run: pnpm turbo run test --filter=@todo/smart-contracts
+
+      - name: Deploy to Testnets
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          POLYGON_RPC_URL: ${{ secrets.POLYGON_MUMBAI_RPC_URL }}
+          BASE_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          MOONBEAM_RPC_URL: ${{ secrets.MOONBASE_ALPHA_RPC_URL }}
+        run: |
+          pnpm --filter @todo/smart-contracts deploy:polygon:mumbai
+          pnpm --filter @todo/smart-contracts deploy:moonbeam:testnet
+          pnpm --filter @todo/smart-contracts deploy:base:testnet
+          pnpm --filter @todo/smart-contracts deploy:solana:devnet
+
+      - name: Upload Contract Addresses Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-addresses-testnet
+          path: apps/smart-contracts/**/deployments/**/*.json
+          if-no-files-found: ignore

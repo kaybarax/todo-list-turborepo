@@ -1,5 +1,11 @@
 terraform {
   required_version = ">= 1.9.0"
+  required_providers {
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
+  }
 }
 
 variable "project" {
@@ -28,10 +34,29 @@ variable "environment_names" {
   default     = []
 }
 
+variable "reviewer_users" {
+  description = "List of GitHub user IDs required for approval."
+  type        = list(number)
+  default     = []
+}
+
 variable "tags" {
   description = "Common labels represented as a map for consistency with AWS modules."
   type        = map(string)
   default     = {}
+}
+
+resource "github_repository_environment" "env" {
+  for_each    = toset(var.environment_names)
+  repository  = var.github_repository
+  environment = each.key
+
+  dynamic "reviewers" {
+    for_each = length(var.reviewer_users) > 0 ? [1] : []
+    content {
+      users = var.reviewer_users
+    }
+  }
 }
 
 locals {

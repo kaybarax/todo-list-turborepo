@@ -11,5 +11,5 @@ terraform {
 }
 
 inputs = {
-  environment_names = [local.env_config.locals.github_environment]
+  environment_names = [local.env_config.locals.github_environment, "mainnet"]
 }
