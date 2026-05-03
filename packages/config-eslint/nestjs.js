@@ -122,6 +122,11 @@ module.exports = [
   },
   {
     files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    languageOptions: {
+      parserOptions: {
+        project: null,
+      },
+    },
     rules: {
       // Disable TypeScript-specific rules for JavaScript files
       '@typescript-eslint/no-var-requires': 'off',
