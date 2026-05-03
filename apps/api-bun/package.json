@@ -11,12 +11,28 @@
     "test": "bun test",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\""
   },
-  "dependencies": {},
+  "dependencies": {
+    "@elysiajs/bearer": "^1.4.4",
+    "@elysiajs/cors": "^1.4.2",
+    "@elysiajs/jwt": "^1.4.2",
+    "@elysiajs/openapi": "1.4.15",
+    "@sinclair/typebox": "^0.34.49",
+    "elysia": "^1.4.28",
+    "elysia-helmet": "^3.1.0",
+    "elysia-rate-limit": "^4.6.1",
+    "ioredis": "^5.10.1",
+    "isomorphic-dompurify": "^3.12.0",
+    "mongoose": "^8.17.2"
+  },
   "devDependencies": {
     "@todo/config-eslint": "workspace:*",
     "@todo/config-ts": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
     "@types/bun": "latest",
+    "@types/dompurify": "^3.2.0",
     "eslint": "^9.18.0",
+    "mongodb-memory-server": "^10.2.0",
+    "openapi-diff": "^0.24.1",
     "typescript": "^5.9.2"
   }
 }
