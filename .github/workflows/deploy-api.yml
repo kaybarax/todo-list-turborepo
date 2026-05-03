@@ -12,69 +12,94 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
   TURBO_REMOTE_ONLY: true
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  API_ECR_REPOSITORY_URL: ${{ vars.API_ECR_REPOSITORY_URL }}
+  API_ECS_CLUSTER: ${{ vars.API_ECS_CLUSTER }}
+  API_ECS_SERVICE: ${{ vars.API_ECS_SERVICE }}
+  API_ECS_CONTAINER_NAME: ${{ vars.API_ECS_CONTAINER_NAME || 'todo-api' }}
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build --filter=@todo/api...
+        run: pnpm turbo run build --filter=@todo/api...
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+        id: build-image
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./apps/api/Dockerfile
           push: true
           tags: |
-            yourusername/todo-api:latest
-            yourusername/todo-api:${{ github.sha }}
-          cache-from: type=registry,ref=yourusername/todo-api:buildcache
-          cache-to: type=registry,ref=yourusername/todo-api:buildcache,mode=max
+            ${{ env.API_ECR_REPOSITORY_URL }}:${{ github.sha }}
+            ${{ env.API_ECR_REPOSITORY_URL }}:latest
+          cache-from: type=registry,ref=${{ env.API_ECR_REPOSITORY_URL }}:buildcache
+          cache-to: type=registry,ref=${{ env.API_ECR_REPOSITORY_URL }}:buildcache,mode=max
+          provenance: false
 
-      # Example deployment to a cloud provider (e.g., AWS ECS)
+      - name: Export image URI
+        run: |
+          echo "image=${API_ECR_REPOSITORY_URL}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+        id: image
+
+      - name: Download current ECS task definition
+        run: |
+          task_definition_arn="$(aws ecs describe-services --cluster "$API_ECS_CLUSTER" --services "$API_ECS_SERVICE" --query 'services[0].taskDefinition' --output text)"
+          aws ecs describe-task-definition --task-definition "$task_definition_arn" --query 'taskDefinition' > task-definition.json
+          jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' task-definition.json > task-definition-renderable.json
+
+      - name: Render ECS task definition
+        id: render-task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition-renderable.json
+          container-name: ${{ env.API_ECS_CONTAINER_NAME }}
+          image: ${{ steps.image.outputs.image }}
+
       - name: Deploy to AWS ECS
-        if: success()
-        run: |
-          echo "Deploying to AWS ECS..."
-          # This would be replaced with actual AWS CLI commands
-          # aws ecs update-service --cluster todo-cluster --service todo-api-service --force-new-deployment
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-west-2
-
-      # Example database migration step
-      - name: Run database migrations
-        if: success()
-        run: |
-          echo "Running database migrations..."
-          # This would be replaced with actual migration commands
-          # npm run migrate --filter=@todo/api
-        env:
-          MONGODB_URI: ${{ secrets.PROD_MONGODB_URI }}
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+          service: ${{ env.API_ECS_SERVICE }}
+          cluster: ${{ env.API_ECS_CLUSTER }}
+          wait-for-service-stability: true
 
       - name: Notify deployment status
         if: always()

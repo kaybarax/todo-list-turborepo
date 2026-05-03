@@ -1,4 +1,4 @@
-name: NPM Audit Fix
+name: PNPM Audit Fix
 
 on:
   schedule:
@@ -7,25 +7,30 @@ on:
 
 jobs:
   audit-fix:
-    name: Run npm audit fix
+    name: Run pnpm audit fix
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Run npm audit fix
-        run: npm audit fix --ignore-workspace-root-check || true
+      - name: Run pnpm audit fix
+        run: pnpm audit --fix || true
 
       - name: Check for changes
         id: git-check
@@ -37,13 +42,13 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'fix: security vulnerabilities from npm audit fix'
-          title: 'fix: security vulnerabilities from npm audit fix'
+          commit-message: 'fix: security vulnerabilities from pnpm audit fix'
+          title: 'fix: security vulnerabilities from pnpm audit fix'
           body: |
-            This PR fixes security vulnerabilities in dependencies using `npm audit fix`.
+            This PR fixes security vulnerabilities in dependencies using `pnpm audit --fix`.
 
-            Changes were made automatically by the npm-audit-fix GitHub Action.
-          branch: npm-audit-fix
+            Changes were made automatically by the pnpm-audit-fix GitHub Action.
+          branch: pnpm-audit-fix
           base: main
           labels: security,dependencies
           delete-branch: true

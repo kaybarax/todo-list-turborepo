@@ -30,15 +30,15 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9.12.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build Storybook
-        run: pnpm --filter ui-mobile build-storybook
+        run: pnpm --filter @todo/ui-mobile build-storybook
 
       - name: Run Chromatic
         uses: chromaui/action@v1
@@ -67,24 +67,24 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9.12.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright
-        run: pnpm --filter ui-mobile exec playwright install --with-deps
+        run: pnpm --filter @todo/ui-mobile exec playwright install --with-deps
 
       - name: Build Storybook
-        run: pnpm --filter ui-mobile build-storybook
+        run: pnpm --filter @todo/ui-mobile build-storybook
 
       - name: Run accessibility tests
-        run: pnpm --filter ui-mobile test:a11y
+        run: pnpm --filter @todo/ui-mobile test:a11y
 
       - name: Upload accessibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: accessibility-report
@@ -105,24 +105,24 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9.12.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright
-        run: pnpm --filter ui-mobile exec playwright install --with-deps
+        run: pnpm --filter @todo/ui-mobile exec playwright install --with-deps
 
       - name: Build Storybook
-        run: pnpm --filter ui-mobile build-storybook
+        run: pnpm --filter @todo/ui-mobile build-storybook
 
       - name: Run performance tests
-        run: pnpm --filter ui-mobile test:performance
+        run: pnpm --filter @todo/ui-mobile test:performance
 
       - name: Upload performance report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-report
@@ -147,27 +147,27 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9.12.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright
-        run: pnpm --filter ui-mobile exec playwright install --with-deps
+        run: pnpm --filter @todo/ui-mobile exec playwright install --with-deps
 
       - name: Build Storybook
-        run: pnpm --filter ui-mobile build-storybook
+        run: pnpm --filter @todo/ui-mobile build-storybook
 
       - name: Run visual regression tests
-        run: pnpm --filter ui-mobile test:visual --platform=${{ matrix.platform }} --theme=${{ matrix.theme }}
+        run: pnpm --filter @todo/ui-mobile test:visual --platform=${{ matrix.platform }} --theme=${{ matrix.theme }}
         env:
           PLATFORM: ${{ matrix.platform }}
           THEME: ${{ matrix.theme }}
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: screenshots-${{ matrix.platform }}-${{ matrix.theme }}
@@ -184,7 +184,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Generate combined report
         run: |
@@ -198,7 +198,7 @@ jobs:
           echo "- Visual Diff: ${{ needs.visual-diff.result }}" >> test-reports/README.md
 
       - name: Upload combined report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: test-reports/
