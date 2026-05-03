@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { TodoApiClient } from '../TodoApiClient';
 import { ApiError } from '../ApiError';
+import { TodoApiClient } from '../TodoApiClient';
 import {
-  ApiTodo as Todo,
-  CreateApiTodoInput as CreateTodoInput,
-  UpdateApiTodoInput as UpdateTodoInput,
+  type ApiTodo as Todo,
+  type CreateApiTodoInput as CreateTodoInput,
+  type UpdateApiTodoInput as UpdateTodoInput,
 } from '../types';
 
 // Mock axios

@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { TodoService } from '../todoService';
 import { TodoApiClient } from '../../api/TodoApiClient';
 import { BlockchainServiceFactory } from '../../blockchain/BlockchainServiceFactory';
-import { Todo, CreateTodoInput, UpdateTodoInput, TodoStatus, TodoPriority } from '../types';
+import { TodoService } from '../todoService';
+import { type Todo, type CreateTodoInput, type UpdateTodoInput, TodoStatus, TodoPriority } from '../types';
 
 // Mock the dependencies
 jest.mock('../../api/TodoApiClient');

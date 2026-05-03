@@ -26,6 +26,14 @@ module.exports = [
     },
   },
   {
+    files: ['**/__tests__/**/*.ts', '**/*.test.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+  },
+  {
     files: ['src/blockchain/implementations/*BlockchainService.ts'],
     rules: {
       'no-unreachable': 'off', // Temporary fix for false positives in catch blocks
