@@ -12,7 +12,20 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "build/**", "lib/**"]
+      "outputs": ["dist/**", ".next/**", "build/**", "lib/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "Dockerfile",
+        "**/.env.*",
+        "pnpm-lock.yaml",
+        "*.config.js",
+        "*.config.ts",
+        "package.json"
+      ]
+    },
+    "docker:build": {
+      "dependsOn": ["build"],
+      "inputs": ["Dockerfile", "package.json", "dist/**", ".next/**", "build/**"]
     },
     "lint": {
       "inputs": [
