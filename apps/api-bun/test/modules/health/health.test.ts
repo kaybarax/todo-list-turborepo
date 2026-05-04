@@ -1,7 +1,9 @@
 import { describe, expect, it, beforeAll, afterAll } from 'bun:test';
+
 import { app } from '../../../src/app';
-import { connectToDatabase, disconnectFromDatabase } from '../../../src/db/mongo';
 import { cache } from '../../../src/cache';
+import { connectToDatabase, disconnectFromDatabase } from '../../../src/db/mongo';
+import { type HealthResponse, type ReadinessResponse } from '../../../src/schemas/health';
 
 describe('Health Module', () => {
   beforeAll(async () => {
@@ -19,7 +21,7 @@ describe('Health Module', () => {
       const response = await app.handle(new Request('http://localhost/api/v1/health'));
 
       expect(response.status).toBe(200);
-      const data = await response.json();
+      const data = (await response.json()) as HealthResponse;
 
       expect(data.status).toBe('ok');
       expect(data.timestamp).toBeDefined();
@@ -37,7 +39,7 @@ describe('Health Module', () => {
       const response = await app.handle(new Request('http://localhost/api/v1/health/ready'));
 
       expect(response.status).toBe(200);
-      const data = await response.json();
+      const data = (await response.json()) as ReadinessResponse;
 
       expect(data.status).toBe('ready');
       expect(data.timestamp).toBeDefined();

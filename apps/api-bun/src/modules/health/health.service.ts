@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import { cache } from '../../cache';
 import { type HealthResponse, type ReadinessResponse } from '../../schemas/health';
 

@@ -1,7 +1,8 @@
 import { Elysia } from 'elysia';
+
 import { healthService } from './health.service';
-import { HealthResponseSchema, ReadinessResponseSchema } from '../../schemas/health';
 import { config } from '../../config/env';
+import { HealthResponseSchema, ReadinessResponseSchema } from '../../schemas/health';
 
 export const healthController = new Elysia({ prefix: '/health' })
   .get(
@@ -13,8 +14,8 @@ export const healthController = new Elysia({ prefix: '/health' })
         ...health,
         telemetry: {
           enabled: !!config.JAEGER_ENDPOINT,
-          endpoint: config.JAEGER_ENDPOINT,
-          serviceName: process.env.OTEL_SERVICE_NAME || 'todo-api-bun',
+          endpoint: config.JAEGER_ENDPOINT ?? '',
+          serviceName: process.env.OTEL_SERVICE_NAME ?? 'todo-api-bun',
         },
       };
     },
