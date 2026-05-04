@@ -1,9 +1,11 @@
 import { app } from './app';
+import { cache } from './cache';
 import { config } from './config/env';
 import { connectToDatabase, disconnectFromDatabase } from './db/mongo';
 
-// Initialize database connection
+// Initialize services
 await connectToDatabase();
+await cache.initialize();
 
 const server = Bun.serve({
   port: config.PORT,
@@ -12,13 +14,22 @@ const server = Bun.serve({
 
 console.info(`🦊 Bun API is running at ${server.url}`);
 
+async function shutdown(signal: string) {
+  console.info(`\n🛑 ${signal} received. Shutting down...`);
+  try {
+    await Promise.all([disconnectFromDatabase(), cache.quit()]);
+    console.info('👋 Graceful shutdown complete');
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Error during shutdown:', err);
+    process.exit(1);
+  }
+}
+
 // Handle graceful shutdown
 process.on('SIGINT', () => {
-  console.info('\n🛑 SIGINT received. Shutting down...');
-  void disconnectFromDatabase().then(() => process.exit(0));
+  void shutdown('SIGINT');
 });
-
 process.on('SIGTERM', () => {
-  console.info('\n🛑 SIGTERM received. Shutting down...');
-  void disconnectFromDatabase().then(() => process.exit(0));
+  void shutdown('SIGTERM');
 });
