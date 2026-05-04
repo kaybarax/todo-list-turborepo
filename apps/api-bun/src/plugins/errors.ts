@@ -88,6 +88,15 @@ export const errors = (app: Elysia) =>
           };
 
         default:
+          if (error instanceof Error && error.name === 'CastError') {
+            set.status = 400;
+            return {
+              statusCode: 400,
+              message: 'Invalid ID format',
+              error: 'Bad Request',
+            };
+          }
+
           console.error(error);
           set.status = 500;
           return {

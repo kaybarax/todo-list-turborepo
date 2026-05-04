@@ -235,6 +235,17 @@ describe('Todo Integration', () => {
 
       expect(response.status).toBe(404);
     });
+
+    it('should return 400 for invalid ObjectId', async () => {
+      const response = await app.handle(
+        new Request(`http://localhost/api/v1/todos/not-an-object-id`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${authToken}` },
+        }),
+      );
+
+      expect(response.status).toBe(400);
+    });
   });
 
   describe('PATCH /api/v1/todos/:id', () => {
@@ -246,6 +257,15 @@ describe('Todo Integration', () => {
     });
 
     it('should update a todo', async () => {
+      // Cache the todo first
+      await app.handle(
+        new Request(`http://localhost/api/v1/todos/${todoId}`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${authToken}` },
+        }),
+      );
+      expect(await cache.get(cache.generateTodoKey(todoId))).not.toBeNull();
+
       const response = await app.handle(
         new Request(`http://localhost/api/v1/todos/${todoId}`, {
           method: 'PATCH',
@@ -264,6 +284,12 @@ describe('Todo Integration', () => {
       const body = (await response.json()) as any;
       expect(body.title).toBe('New Title');
       expect(body.completed).toBe(true);
+
+      // Verify cache update
+      const cachedTodo: any = await cache.get(cache.generateTodoKey(todoId));
+      expect(cachedTodo).not.toBeNull();
+      expect(cachedTodo.title).toBe('New Title');
+      expect(cachedTodo.completed).toBe(true);
     });
   });
 
@@ -276,6 +302,14 @@ describe('Todo Integration', () => {
     });
 
     it('should toggle completion status', async () => {
+      // Cache the todo first
+      await app.handle(
+        new Request(`http://localhost/api/v1/todos/${todoId}`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${authToken}` },
+        }),
+      );
+
       // Toggle to true
       let response = await app.handle(
         new Request(`http://localhost/api/v1/todos/${todoId}/toggle`, {
@@ -297,6 +331,11 @@ describe('Todo Integration', () => {
       expect(response.status).toBe(200);
       body = (await response.json()) as any;
       expect(body.completed).toBe(false);
+
+      // Verify cache update
+      const cachedTodo: any = await cache.get(cache.generateTodoKey(todoId));
+      expect(cachedTodo).not.toBeNull();
+      expect(cachedTodo.completed).toBe(false);
     });
   });
 
@@ -309,6 +348,14 @@ describe('Todo Integration', () => {
     });
 
     it('should delete a todo', async () => {
+      // Cache the todo first
+      await app.handle(
+        new Request(`http://localhost/api/v1/todos/${todoId}`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${authToken}` },
+        }),
+      );
+
       const response = await app.handle(
         new Request(`http://localhost/api/v1/todos/${todoId}`, {
           method: 'DELETE',
@@ -320,6 +367,9 @@ describe('Todo Integration', () => {
 
       const check = await Todo.findById(todoId);
       expect(check).toBeNull();
+
+      // Verify cache invalidation
+      expect(await cache.get(cache.generateTodoKey(todoId))).toBeNull();
     });
   });
 

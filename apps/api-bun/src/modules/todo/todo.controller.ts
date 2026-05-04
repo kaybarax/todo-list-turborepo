@@ -192,7 +192,7 @@ export const todoController = new Elysia({ prefix: '/todos' })
     {
       params: t.Object({ id: t.String() }),
       response: {
-        204: t.Undefined(),
+        204: t.Void(),
         401: ErrorResponseSchema,
         404: ErrorResponseSchema,
       },
