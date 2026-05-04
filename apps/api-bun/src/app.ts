@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 
 import { authController } from './modules/auth/auth.controller';
+import { healthController } from './modules/health/health.controller';
 import { todoController } from './modules/todo/todo.controller';
 import { userController } from './modules/user/user.controller';
 import { corsPlugin } from './plugins/cors';
@@ -9,7 +10,6 @@ import { jwtPlugin } from './plugins/jwt';
 import { openapi } from './plugins/openapi';
 import { rateLimitPlugin } from './plugins/rate-limit';
 import { security } from './plugins/security';
-import { HealthResponseSchema, ReadinessResponseSchema } from './schemas/health';
 import { sanitizer } from './utils/sanitizer';
 
 export const app = new Elysia()
@@ -42,58 +42,8 @@ export const app = new Elysia()
         },
       )
 
-      // Public Health Routes (to be implemented in Phase 12)
-      .group('/health', app =>
-        app
-          .get(
-            '',
-            () => ({
-              status: 'ok',
-              timestamp: new Date().toISOString(),
-              uptime: process.uptime(),
-              database: { status: 'connected' },
-              cache: { status: 'connected', type: 'redis' },
-              memory: process.memoryUsage(),
-              version: process.version,
-            }),
-            {
-              response: {
-                200: HealthResponseSchema,
-              },
-              detail: {
-                tags: ['Health'],
-                summary: 'Health check',
-                responses: {
-                  200: {
-                    description: 'Service is healthy',
-                  },
-                },
-              },
-            },
-          )
-          .get(
-            '/ready',
-            () => ({
-              status: 'ready',
-              timestamp: new Date().toISOString(),
-              checks: { database: true, cache: true },
-            }),
-            {
-              response: {
-                200: ReadinessResponseSchema,
-              },
-              detail: {
-                tags: ['Health'],
-                summary: 'Readiness check',
-                responses: {
-                  200: {
-                    description: 'Service is ready',
-                  },
-                },
-              },
-            },
-          ),
-      )
+      // Public Health Routes
+      .use(healthController)
 
       // Authentication (Mixed public/private)
       .use(authController)

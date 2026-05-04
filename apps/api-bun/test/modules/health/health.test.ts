@@ -1,0 +1,48 @@
+import { describe, expect, it, beforeAll, afterAll } from 'bun:test';
+import { app } from '../../../src/app';
+import { connectToDatabase, disconnectFromDatabase } from '../../../src/db/mongo';
+import { cache } from '../../../src/cache';
+
+describe('Health Module', () => {
+  beforeAll(async () => {
+    await connectToDatabase();
+    await cache.initialize();
+  });
+
+  afterAll(async () => {
+    await cache.quit();
+    await disconnectFromDatabase();
+  });
+
+  describe('GET /api/v1/health', () => {
+    it('should return 200 with health information', async () => {
+      const response = await app.handle(new Request('http://localhost/api/v1/health'));
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+
+      expect(data.status).toBe('ok');
+      expect(data.timestamp).toBeDefined();
+      expect(data.uptime).toBeGreaterThan(0);
+      expect(data.database.status).toBe('connected');
+      expect(data.cache.status).toBe('connected');
+      expect(data.memory).toBeDefined();
+      expect(data.version).toBeDefined();
+      expect(data.telemetry).toBeDefined();
+    });
+  });
+
+  describe('GET /api/v1/health/ready', () => {
+    it('should return 200 with readiness information', async () => {
+      const response = await app.handle(new Request('http://localhost/api/v1/health/ready'));
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+
+      expect(data.status).toBe('ready');
+      expect(data.timestamp).toBeDefined();
+      expect(data.checks.database).toBe(true);
+      expect(data.checks.cache).toBe(true);
+    });
+  });
+});
