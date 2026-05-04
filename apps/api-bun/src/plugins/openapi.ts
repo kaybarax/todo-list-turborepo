@@ -28,6 +28,6 @@ export const openapi = (app: Elysia) =>
           },
         },
       },
-      exclude: ['/api/docs', '/api/docs/json'],
+      exclude: ['/api/docs', '/api/docs/json', '/api/v1/health', '/api/v1/health/ready'],
     }),
   );

@@ -5,6 +5,7 @@ import { jwtPlugin } from './plugins/jwt';
 import { openapi } from './plugins/openapi';
 import { rateLimitPlugin } from './plugins/rate-limit';
 import { security } from './plugins/security';
+import { ErrorResponseSchema } from './schemas/common';
 
 export const app = new Elysia()
   .use(errors)
@@ -27,6 +28,11 @@ export const app = new Elysia()
           detail: {
             tags: ['App'],
             summary: 'Get API information',
+            responses: {
+              200: {
+                description: 'API information retrieved successfully',
+              },
+            },
           },
         },
       )
@@ -35,10 +41,26 @@ export const app = new Elysia()
       .group('/health', app =>
         app
           .get('', () => ({ status: 'ok' }), {
-            detail: { tags: ['Health'], summary: 'Health check' },
+            detail: {
+              tags: ['Health'],
+              summary: 'Health check',
+              responses: {
+                200: {
+                  description: 'Service is healthy',
+                },
+              },
+            },
           })
           .get('/ready', () => ({ status: 'ready' }), {
-            detail: { tags: ['Health'], summary: 'Readiness check' },
+            detail: {
+              tags: ['Health'],
+              summary: 'Readiness check',
+              responses: {
+                200: {
+                  description: 'Service is ready',
+                },
+              },
+            },
           }),
       )
 
@@ -57,6 +79,19 @@ export const app = new Elysia()
               tags: ['Authentication'],
               summary: 'Get current user profile',
               security: [{ bearer: [] }],
+              responses: {
+                200: {
+                  description: 'Profile retrieved successfully',
+                },
+                401: {
+                  description: 'Authentication required',
+                  content: {
+                    'application/json': {
+                      schema: ErrorResponseSchema,
+                    },
+                  },
+                },
+              },
             },
           }),
       ),
