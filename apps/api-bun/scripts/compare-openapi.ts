@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+
 // @ts-ignore
 import openapiDiff from 'openapi-diff';
 

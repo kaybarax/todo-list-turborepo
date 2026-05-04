@@ -1,6 +1,7 @@
-import { app } from '../src/app';
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
+
+import { app } from '../src/app';
 
 async function exportOpenAPI() {
   console.log('Exporting OpenAPI spec...');

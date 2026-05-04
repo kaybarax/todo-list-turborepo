@@ -6,7 +6,7 @@ module.exports = [
     ignores: ['dist/**', 'node_modules/**', 'eslint.config.js'],
   },
   {
-    files: ['src/**/*.ts', 'test/**/*.ts'],
+    files: ['src/**/*.ts', 'test/**/*.ts', 'scripts/**/*.ts'],
     languageOptions: {
       globals: {
         Bun: 'readonly',
