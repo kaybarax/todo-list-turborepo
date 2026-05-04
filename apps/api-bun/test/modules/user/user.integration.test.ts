@@ -68,7 +68,7 @@ describe('User Integration', () => {
       expect(body.id).toBe(user.id);
     });
 
-    it('should return 404 if user in token does not exist', async () => {
+    it('should return 401 if user in token does not exist', async () => {
       const randomId = new mongoose.Types.ObjectId().toString();
       const token = await signToken(randomId, 'ghost@example.com');
 
@@ -80,9 +80,9 @@ describe('User Integration', () => {
         }),
       );
 
-      expect(response.status).toBe(404);
+      expect(response.status).toBe(401);
       const body = (await response.json()) as any;
-      expect(body.message).toContain('not found');
+      expect(body.message).toContain('Authentication required');
     });
   });
 });

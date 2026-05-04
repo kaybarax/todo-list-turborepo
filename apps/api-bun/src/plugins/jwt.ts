@@ -4,6 +4,7 @@ import { type Elysia } from 'elysia';
 
 import { UnauthorizedError } from './errors';
 import { config } from '../config/env';
+import { userService } from '../modules/user/user.service';
 
 export const jwtPlugin = (app: Elysia) =>
   app
@@ -28,10 +29,21 @@ export const jwtPlugin = (app: Elysia) =>
         };
       }
 
+      // Fetch full user for parity with NestJS JwtStrategy
+      const user = await userService.findById(profile.sub as string).catch(() => null);
+      if (!user) {
+        return {
+          user: null,
+        };
+      }
+
       return {
         user: {
-          id: profile.sub as string,
-          email: profile.email as string,
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          walletAddress: user.walletAddress,
+          preferredNetwork: user.preferredNetwork,
         },
       };
     })

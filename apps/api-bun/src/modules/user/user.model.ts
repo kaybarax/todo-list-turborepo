@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcryptjs';
 import mongoose, { Schema, type Document, type Model } from 'mongoose';
 
 import { defaultSchemaOptions } from '../../db/utils';
@@ -53,9 +52,16 @@ const userSchema = new Schema<IUser, Model<IUser, any, IUserMethods>, IUserMetho
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
+  // If it already looks like a bcrypt hash (e.g. from tests or migration), don't hash again
+  if (this.password.startsWith('$2b$') || this.password.startsWith('$2a$') || this.password.startsWith('$2y$')) {
+    return next();
+  }
+
   try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await Bun.password.hash(this.password, {
+      algorithm: 'bcrypt',
+      cost: 10,
+    });
     next();
   } catch (error) {
     next(error as Error);
@@ -64,7 +70,7 @@ userSchema.pre('save', async function (next) {
 
 // Instance method to compare passwords
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+  return Bun.password.verify(candidatePassword, this.password);
 };
 
 // Add indexes

@@ -1,5 +1,6 @@
-import { Elysia, t } from 'elysia';
+import { Elysia } from 'elysia';
 
+import { authController } from './modules/auth/auth.controller';
 import { userController } from './modules/user/user.controller';
 import { corsPlugin } from './plugins/cors';
 import { errors, UnauthorizedError } from './plugins/errors';
@@ -7,9 +8,7 @@ import { jwtPlugin } from './plugins/jwt';
 import { openapi } from './plugins/openapi';
 import { rateLimitPlugin } from './plugins/rate-limit';
 import { security } from './plugins/security';
-import { ErrorResponseSchema } from './schemas/common';
 import { HealthResponseSchema, ReadinessResponseSchema } from './schemas/health';
-import { UserProfileSchema } from './schemas/user';
 import { sanitizer } from './utils/sanitizer';
 
 export const app = new Elysia()
@@ -95,19 +94,10 @@ export const app = new Elysia()
           ),
       )
 
-      // Authentication (Mixed public/private, will be handled in Phase 10)
-      .group('/auth', app =>
-        app
-          .onTransform(({ body }: { body: any }) => {
-            if (body?.email) body.email = sanitizer.lowercase(sanitizer.trim(body.email));
-            if (body?.name) body.name = sanitizer.trim(body.name);
-            if (body?.walletAddress) body.walletAddress = sanitizer.trim(body.walletAddress);
-            if (body?.password) body.password = sanitizer.trim(body.password);
-          })
-          // Placeholders for now
-          .post('/register', () => ({ success: true }), { detail: { tags: ['Authentication'] } })
-          .post('/login', () => ({ success: true }), { detail: { tags: ['Authentication'] } }),
-      )
+      // Authentication (Mixed public/private)
+      .use(authController)
+
+      // Users Module
       .use(userController)
 
       // Protected Routes (Required JWT)
@@ -132,45 +122,6 @@ export const app = new Elysia()
               if (query.search) query.search = sanitizer.trim(query.search);
               if (query.tag) query.tag = sanitizer.trim(query.tag);
             }
-          })
-          // These will be filled in later phases
-          .get(
-            '/auth/profile',
-            ({ user }) => {
-              if (!user) return { user: null };
-              return {
-                user: {
-                  id: user.id,
-                  email: user.email,
-                  name: 'Stub User',
-                  isVerified: true,
-                  isActive: true,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                },
-              };
-            },
-            {
-              response: {
-                200: t.Object({
-                  user: t.Nullable(UserProfileSchema),
-                }),
-                401: ErrorResponseSchema,
-              },
-              detail: {
-                tags: ['Authentication'],
-                summary: 'Get current user profile',
-                security: [{ bearer: [] }],
-                responses: {
-                  200: {
-                    description: 'Profile retrieved successfully',
-                  },
-                  401: {
-                    description: 'Authentication required',
-                  },
-                },
-              },
-            },
-          ),
+          }),
       ),
   );
