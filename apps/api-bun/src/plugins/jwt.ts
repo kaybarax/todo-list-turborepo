@@ -1,8 +1,9 @@
 import { bearer } from '@elysiajs/bearer';
 import { jwt } from '@elysiajs/jwt';
-import { Elysia } from 'elysia';
-import { config } from '../config/env';
+import { type Elysia } from 'elysia';
+
 import { UnauthorizedError } from './errors';
+import { config } from '../config/env';
 
 export const jwtPlugin = (app: Elysia) =>
   app
@@ -38,7 +39,7 @@ export const jwtPlugin = (app: Elysia) =>
       isPublic(value: boolean) {
         if (value) return;
 
-        onBeforeHandle(({ user }) => {
+        onBeforeHandle(({ user }: { user: any }) => {
           if (!user) {
             throw new UnauthorizedError('Authentication required');
           }

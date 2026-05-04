@@ -1,5 +1,6 @@
 import { cors } from '@elysiajs/cors';
-import { Elysia } from 'elysia';
+import { type Elysia } from 'elysia';
+
 import { config } from '../config/env';
 
 export const corsPlugin = (app: Elysia) =>

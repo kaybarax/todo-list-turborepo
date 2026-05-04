@@ -1,4 +1,5 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
+
 import { corsPlugin } from './plugins/cors';
 import { errors, UnauthorizedError } from './plugins/errors';
 import { jwtPlugin } from './plugins/jwt';
@@ -75,6 +76,17 @@ export const app = new Elysia()
           })
           // These will be filled in later phases
           .get('/auth/profile', ({ user }) => ({ user }), {
+            response: {
+              200: t.Object({
+                user: t.Nullable(
+                  t.Object({
+                    id: t.String(),
+                    email: t.String(),
+                  }),
+                ),
+              }),
+              401: ErrorResponseSchema,
+            },
             detail: {
               tags: ['Authentication'],
               summary: 'Get current user profile',
@@ -85,11 +97,6 @@ export const app = new Elysia()
                 },
                 401: {
                   description: 'Authentication required',
-                  content: {
-                    'application/json': {
-                      schema: ErrorResponseSchema,
-                    },
-                  },
                 },
               },
             },

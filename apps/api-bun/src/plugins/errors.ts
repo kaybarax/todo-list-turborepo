@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { type Elysia } from 'elysia';
 
 export class BadRequestError extends Error {
   constructor(public message: string) {

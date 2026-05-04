@@ -1,5 +1,5 @@
 import { openapi as openapiPlugin } from '@elysiajs/openapi';
-import { Elysia } from 'elysia';
+import { type Elysia } from 'elysia';
 
 export const openapi = (app: Elysia) =>
   app.use(
@@ -28,6 +28,8 @@ export const openapi = (app: Elysia) =>
           },
         },
       },
-      exclude: ['/api/docs', '/api/docs/json', '/api/v1/health', '/api/v1/health/ready'],
+      exclude: {
+        paths: ['/api/docs', '/api/docs/json', '/api/v1/health', '/api/v1/health/ready'],
+      },
     }),
   );

@@ -17,7 +17,7 @@ console.info(`🦊 Bun API is running at ${server.url}`);
 async function shutdown(signal: string) {
   console.info(`\n🛑 ${signal} received. Shutting down...`);
   try {
-    server.stop();
+    await server.stop();
     await Promise.all([disconnectFromDatabase(), cache.quit()]);
     console.info('👋 Graceful shutdown complete');
     process.exit(0);

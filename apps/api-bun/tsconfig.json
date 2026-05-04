@@ -9,7 +9,9 @@
     "paths": {
       "@/*": ["src/*"],
       "@todo/*": ["../../packages/*/src"]
-    }
+    },
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src/**/*", "test/**/*", "scripts/**/*"],
   "exclude": ["node_modules", "dist"]

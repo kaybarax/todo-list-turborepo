@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { type Elysia } from 'elysia';
 import { helmet } from 'elysia-helmet';
 
 export const security = (app: Elysia) =>
