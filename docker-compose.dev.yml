@@ -70,6 +70,35 @@ services:
       - todo-network
     command: pnpm dev:api
 
+  api-bun:
+    build:
+      context: .
+      dockerfile: apps/api-bun/Dockerfile
+      target: development
+    container_name: todo-api-bun-dev
+    restart: unless-stopped
+    ports:
+      - '3002:3002'
+    environment:
+      NODE_ENV: development
+      MONGODB_URI: mongodb://admin:password@mongodb:27017/todo-app?authSource=admin
+      REDIS_URI: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret
+      CORS_ORIGIN: http://localhost:3000
+    volumes:
+      - ./apps/api-bun:/app/apps/api-bun
+      - ./packages:/app/packages
+      - /app/node_modules
+      - /app/apps/api-bun/node_modules
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - todo-network
+    command: pnpm dev:api-bun
+
   web:
     build:
       context: .
