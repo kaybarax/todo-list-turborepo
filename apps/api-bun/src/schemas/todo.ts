@@ -60,27 +60,18 @@ export const CreateTodoBodySchema = t.Object(
 /**
  * Update Todo request body
  */
-export const UpdateTodoBodySchema = t.Partial(
-  t.Intersect([
-    CreateTodoBodySchema,
-    t.Object({
-      completed: t.Boolean({
-        description: 'Todo completion status',
-        examples: [false],
-      }),
-      blockchainNetwork: BlockchainNetworkEnum,
-      transactionHash: t.String({
-        maxLength: 255,
-        description: 'Blockchain transaction hash',
-        examples: ['0x1234567890abcdef'],
-      }),
-      blockchainAddress: t.String({
-        maxLength: 255,
-        description: 'Blockchain address',
-        examples: ['solana-address-123'],
-      }),
-    }),
-  ]),
+export const UpdateTodoBodySchema = t.Object(
+  {
+    title: t.Optional(t.String({ minLength: 1, maxLength: 200 })),
+    description: t.Optional(t.String({ maxLength: 1000 })),
+    priority: t.Optional(PriorityEnum),
+    dueDate: t.Optional(t.String({ format: 'date-time' })),
+    tags: t.Optional(t.Array(t.String({ maxLength: 50 }))),
+    completed: t.Optional(t.Boolean()),
+    blockchainNetwork: t.Optional(BlockchainNetworkEnum),
+    transactionHash: t.Optional(t.String({ maxLength: 255 })),
+    blockchainAddress: t.Optional(t.String({ maxLength: 255 })),
+  },
   {
     additionalProperties: false,
     description: 'Update Todo request body',
@@ -189,14 +180,11 @@ export const TodoSchema = t.Object(
  */
 export const PaginatedTodosSchema = t.Object(
   {
-    items: t.Array(TodoSchema),
-    meta: t.Object({
-      totalItems: t.Number(),
-      itemCount: t.Number(),
-      itemsPerPage: t.Number(),
-      totalPages: t.Number(),
-      currentPage: t.Number(),
-    }),
+    todos: t.Array(TodoSchema),
+    total: t.Number(),
+    page: t.Number(),
+    limit: t.Number(),
+    totalPages: t.Number(),
   },
   {
     description: 'Paginated list of Todos',
@@ -210,13 +198,10 @@ export const TodoStatsSchema = t.Object(
   {
     total: t.Number(),
     completed: t.Number(),
-    pending: t.Number(),
-    byPriority: t.Object({
-      low: t.Number(),
-      medium: t.Number(),
-      high: t.Number(),
-    }),
-    completionRate: t.Number(),
+    active: t.Number(),
+    overdue: t.Number(),
+    byPriority: t.Record(t.String(), t.Number()),
+    byBlockchainNetwork: t.Record(t.String(), t.Number()),
   },
   {
     description: 'Todo statistics',

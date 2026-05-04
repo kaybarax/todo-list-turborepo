@@ -1,6 +1,7 @@
 import { Elysia } from 'elysia';
 
 import { authController } from './modules/auth/auth.controller';
+import { todoController } from './modules/todo/todo.controller';
 import { userController } from './modules/user/user.controller';
 import { corsPlugin } from './plugins/cors';
 import { errors, UnauthorizedError } from './plugins/errors';
@@ -122,6 +123,7 @@ export const app = new Elysia()
               if (query.search) query.search = sanitizer.trim(query.search);
               if (query.tag) query.tag = sanitizer.trim(query.tag);
             }
-          }),
+          })
+          .use(todoController),
       ),
   );
