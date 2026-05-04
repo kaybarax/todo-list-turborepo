@@ -1,5 +1,6 @@
 import { Elysia, t } from 'elysia';
 
+import { userController } from './modules/user/user.controller';
 import { corsPlugin } from './plugins/cors';
 import { errors, UnauthorizedError } from './plugins/errors';
 import { jwtPlugin } from './plugins/jwt';
@@ -107,6 +108,7 @@ export const app = new Elysia()
           .post('/register', () => ({ success: true }), { detail: { tags: ['Authentication'] } })
           .post('/login', () => ({ success: true }), { detail: { tags: ['Authentication'] } }),
       )
+      .use(userController)
 
       // Protected Routes (Required JWT)
       .group('', app =>
