@@ -44,7 +44,9 @@ export class BaseApiClient {
       },
     });
 
-    this.setupInterceptors();
+    if (this.client) {
+      this.setupInterceptors();
+    }
   }
 
   /**
