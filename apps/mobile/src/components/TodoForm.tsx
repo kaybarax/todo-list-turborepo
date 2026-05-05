@@ -85,6 +85,8 @@ export const TodoForm: React.FC<Props> = ({ onSubmit, onCancel, initialData }) =
             }}
             placeholder="Enter todo title"
             placeholderTextColor={tokens.colors.text.secondary}
+            accessibilityLabel="Todo title"
+            onBlur={() => setErrors(e => ({ ...e, title: validateTitle(title) }))}
             autoFocus
           />
           {errors.title ? <Text style={[styles.errorText, { color: tokens.colors.error }]}>{errors.title}</Text> : null}
@@ -128,6 +130,8 @@ export const TodoForm: React.FC<Props> = ({ onSubmit, onCancel, initialData }) =
             }}
             placeholder="YYYY-MM-DD"
             placeholderTextColor={tokens.colors.text.secondary}
+            accessibilityLabel="Due date"
+            onBlur={() => setErrors(e => ({ ...e, dueDate: validateDueDate(dueDate) }))}
           />
           {errors.dueDate ? (
             <Text style={[styles.errorText, { color: tokens.colors.error }]}>{errors.dueDate}</Text>

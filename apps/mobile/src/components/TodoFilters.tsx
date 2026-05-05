@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, StyleSheet, Text } from 'react-native';
-import { Button, ButtonGroup, Card, CardContent } from '@todo/ui-mobile';
+import { Button, Card, CardContent } from '@todo/ui-mobile';
 import { useDesignTokens } from '../hooks/useDesignTokens';
 
 export type PriorityFilter = 'all' | 'low' | 'medium' | 'high';
@@ -41,32 +41,27 @@ export const TodoFilters: React.FC<Props> = ({
         />
 
         <Text style={[styles.sectionLabel, styles.sectionSpacing]}>Priority</Text>
-        <ButtonGroup
-          attached={true}
-          type="single"
-          value={priority}
-          onValueChange={(value: string | string[]) => onPriorityChange(value as PriorityFilter)}
-        >
+        <View style={styles.buttonRow}>
           {(['all', 'low', 'medium', 'high'] as const).map(p => (
-            <Button key={p} size="sm" variant={priority === p ? 'primary' : 'outline'} value={p}>
+            <Button
+              key={p}
+              size="sm"
+              variant={priority === p ? 'primary' : 'outline'}
+              onPress={() => onPriorityChange(p)}
+            >
               {p[0].toUpperCase() + p.slice(1)}
             </Button>
           ))}
-        </ButtonGroup>
+        </View>
 
         <Text style={[styles.sectionLabel, styles.sectionSpacing]}>Status</Text>
-        <ButtonGroup
-          attached={true}
-          type="single"
-          value={status}
-          onValueChange={(value: string | string[]) => onStatusChange(value as StatusFilter)}
-        >
+        <View style={styles.buttonRow}>
           {(['all', 'open', 'completed'] as const).map(s => (
-            <Button key={s} size="sm" variant={status === s ? 'primary' : 'outline'} value={s}>
+            <Button key={s} size="sm" variant={status === s ? 'primary' : 'outline'} onPress={() => onStatusChange(s)}>
               {s[0].toUpperCase() + s.slice(1)}
             </Button>
           ))}
-        </ButtonGroup>
+        </View>
 
         <View style={styles.clearRow}>
           <Button
@@ -105,6 +100,7 @@ const createStyles = (tokens: ReturnType<typeof useDesignTokens>) =>
       color: tokens.colors.text.primary,
       fontWeight: '600',
     },
+    buttonRow: { flexDirection: 'row', flexWrap: 'wrap', gap: tokens.spacing.xs },
     sectionSpacing: { marginTop: tokens.spacing.sm },
     clearRow: { marginTop: tokens.spacing.sm, flexDirection: 'row', justifyContent: 'flex-end' },
   });
