@@ -11,13 +11,12 @@ const customJestConfig = {
   ...baseConfig,
   setupFilesAfterEnv: ['<rootDir>/../../packages/config-jest/setup-tests.js', '<rootDir>/jest.setup.js'],
   moduleNameMapper: {
-    ...baseConfig.moduleNameMapper,
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@todo/utils/ui/web$': '<rootDir>/../../packages/utils/src/ui/web',
-    '^@todo/utils/ui/web/(.*)$': '<rootDir>/../../packages/utils/src/ui/web/$1',
     '^@todo/utils/(.*)$': '<rootDir>/../../packages/utils/src/$1',
+    '^@todo/services$': '<rootDir>/../../packages/services/src',
+    '^@todo/services/(.*)$': '<rootDir>/../../packages/services/src/$1',
     '^@todo/ui-web$': '<rootDir>/../../packages/ui-web/src',
-    '^@todo/(.*)$': '<rootDir>/../../packages/$1/src',
+    '^@todo/ui-web/(.*)$': '<rootDir>/../../packages/ui-web/src/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
 };

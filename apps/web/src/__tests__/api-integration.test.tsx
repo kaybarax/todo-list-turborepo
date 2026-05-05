@@ -121,7 +121,7 @@ const server = setupServer(
     );
   }),
 
-  http.put('http://localhost:3001/api/v1/todos/:id', async ({ params, request }) => {
+  http.patch('http://localhost:3001/api/v1/todos/:id', async ({ params, request }) => {
     const { id } = params;
     const body = (await request.json()) as any;
     const todoIndex = mockApiTodos.findIndex(t => t.id === id);

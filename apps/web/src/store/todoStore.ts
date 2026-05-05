@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { TodoData as Todo } from '@/components/todo/TodoItem';
 import { createBlockchainService, todoToBlockchainTodo, type TransactionResult } from '@/services/blockchainService';
 import type { BlockchainNetwork } from '@todo/services';
+import { todoClient } from '@/config/api';
 
 interface TodoStore {
   todos: Todo[];
@@ -214,19 +215,29 @@ export const useTodoStore = create<TodoStore>()(
 
       fetchTodos: async () => {
         set({ isLoading: true, error: null });
-
         try {
-          // Mock API call - will be replaced with actual API integration
-          await new Promise(resolve => setTimeout(resolve, 1000));
-
-          // Initialize with sample data if no todos exist
-          const currentTodos = get().todos;
-          if (currentTodos.length === 0) {
-            const { sampleTodos } = await import('@/lib/sampleData');
-            set({ todos: sampleTodos });
+          const response = await todoClient.getTodos();
+          if (response.success && response.data) {
+            // Map API todos to store format
+            const mappedTodos: Todo[] = response.data.map(todo => ({
+              id: todo.id,
+              title: todo.title,
+              description: todo.description,
+              completed: todo.completed,
+              priority: todo.priority as any,
+              dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
+              tags: todo.tags,
+              userId: todo.userId,
+              createdAt: new Date(todo.createdAt),
+              updatedAt: new Date(todo.updatedAt),
+              blockchainNetwork: todo.blockchainNetwork as any,
+              transactionHash: todo.transactionHash,
+              blockchainAddress: todo.blockchainAddress,
+            }));
+            set({ todos: mappedTodos, isLoading: false });
+          } else {
+            throw new Error(response.error || 'Failed to fetch todos');
           }
-
-          set({ isLoading: false });
         } catch (error) {
           set({
             error: error instanceof Error ? error.message : 'Failed to fetch todos',
