@@ -67,7 +67,9 @@ export function ThemeProvider({
 
   // Detect system preference
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    if (!mediaQuery) return;
+
     setSystemPreference(mediaQuery.matches ? 'dark' : 'light');
 
     const handleChange = (e: MediaQueryListEvent) => {

@@ -3,7 +3,7 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Button, cn } from '@todo/ui-web';
-import { useTheme } from './theme-provider';
+import { useThemeContext } from './ThemeProvider';
 
 const themeToggleVariants = cva('theme-toggle transition-all duration-200', {
   variants: {
@@ -42,11 +42,13 @@ export function ThemeToggle({
   size = 'md',
   className,
   showLabel = false,
-  cycleThrough: _cycleThrough = 'mode',
+  cycleThrough = 'mode',
   customIcons,
   'data-testid': testId,
 }: ThemeToggleProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { mode, resolvedType, theme, themes, setMode, setTheme } = useThemeContext();
+  const currentThemeName = theme?.name || 'light';
+  const currentThemeDisplayName = theme?.displayName || resolvedType.charAt(0).toUpperCase() + resolvedType.slice(1);
 
   const getThemeIcon = (type: 'light' | 'dark' | 'system') => {
     if (customIcons) {
@@ -91,7 +93,16 @@ export function ThemeToggle({
   };
 
   const handleToggle = () => {
-    toggleTheme();
+    if (cycleThrough === 'themes') {
+      if (!themes || themes.length === 0) return;
+
+      const currentIndex = themes.findIndex(candidate => candidate.name === currentThemeName);
+      const nextTheme = themes[(currentIndex + 1) % themes.length];
+      if (nextTheme) setTheme(nextTheme);
+      return;
+    }
+
+    setMode(resolvedType === 'dark' ? 'light' : 'dark');
   };
 
   const isDarkTheme = (themeName: string) => {
@@ -112,16 +123,21 @@ export function ThemeToggle({
   };
 
   const getAriaLabel = () => {
-    const nextType = isDarkTheme(theme) ? 'light' : 'dark';
+    if (cycleThrough === 'themes') return 'Switch theme';
+
+    const nextType = resolvedType === 'dark' || isDarkTheme(currentThemeName) ? 'light' : 'dark';
     return `Switch to ${getThemeLabel(nextType)} theme`;
   };
 
   const getCurrentIcon = () => {
-    return getThemeIcon(isDarkTheme(theme) ? 'dark' : 'light');
+    if (mode === 'system') return getThemeIcon('system');
+    return getThemeIcon(resolvedType === 'dark' || isDarkTheme(currentThemeName) ? 'dark' : 'light');
   };
 
   const getCurrentLabel = () => {
-    return getThemeLabel(isDarkTheme(theme) ? 'dark' : 'light');
+    if (mode === 'system' && cycleThrough !== 'themes') return 'System';
+    if (cycleThrough === 'themes') return currentThemeDisplayName;
+    return getThemeLabel(resolvedType === 'dark' || isDarkTheme(currentThemeName) ? 'dark' : 'light');
   };
 
   if (variant === 'switch') {
@@ -135,7 +151,7 @@ export function ThemeToggle({
         <input
           type="checkbox"
           className="toggle"
-          checked={isDarkTheme(theme)}
+          checked={resolvedType === 'dark' || isDarkTheme(currentThemeName)}
           onChange={handleToggle}
           aria-label={getAriaLabel()}
         />

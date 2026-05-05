@@ -243,7 +243,7 @@ const TodoForm = React.forwardRef<HTMLFormElement, TodoFormProps>(
                 if (errors.description) setErrors(prev => ({ ...prev, description: '' }));
               }}
               rows={3}
-              placeholder="Enter todo description"
+              placeholder="Enter description (optional)"
               variant="bordered"
               disabled={disabled || loading}
               className={errors.description ? 'border-error' : ''}

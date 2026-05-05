@@ -3,7 +3,7 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Select, Button, Dropdown, type DropdownItem, cn } from '@todo/ui-web';
-import { useTheme, type DaisyUITheme } from './theme-provider';
+import { useThemeContext, type DaisyUITheme } from './ThemeProvider';
 
 const themeSwitcherVariants = cva('theme-switcher', {
   variants: {
@@ -41,7 +41,8 @@ export function ThemeSwitcher({
   customThemes,
   'data-testid': testId,
 }: ThemeSwitcherProps) {
-  const { theme, setTheme } = useTheme();
+  const { daisyUITheme, setTheme, setDaisyUITheme } = useThemeContext();
+  const theme = daisyUITheme as DaisyUITheme;
 
   // All available DaisyUI themes
   const allThemes: DaisyUITheme[] = (customThemes as DaisyUITheme[]) || [
@@ -80,6 +81,11 @@ export function ThemeSwitcher({
   ];
 
   const handleThemeChange = (newTheme: string) => {
+    if (setDaisyUITheme) {
+      setDaisyUITheme(newTheme as DaisyUITheme);
+      return;
+    }
+
     setTheme(newTheme as DaisyUITheme);
   };
 

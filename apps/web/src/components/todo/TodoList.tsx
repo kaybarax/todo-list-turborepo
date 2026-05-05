@@ -285,12 +285,14 @@ const TodoList = React.forwardRef<HTMLDivElement, TodoListProps>(
           {filteredAndSortedTodos.map(todo => (
             <TodoItem
               key={todo.id}
+              data-testid={`todo-item-${todo.id}`}
               todo={todo}
               variant={todoItemVariant}
               onToggle={onToggle}
               onEdit={onEdit}
               onDelete={onDelete}
               onBlockchainSync={onBlockchainSync}
+              hideActionsUntilHover
               TransactionStatusComponent={TransactionStatusComponent}
               getNetworkDisplayInfo={getNetworkDisplayInfo}
               supportedNetworks={supportedNetworks}

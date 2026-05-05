@@ -61,7 +61,7 @@ export const TodoFilters: React.FC<TodoFiltersProps> = ({
         <ButtonGroup value={status} onValueChange={s => onStatusChange(s as StatusFilter)}>
           {STATUS_OPTIONS.map(option => (
             <Button key={option} value={option} size="sm">
-              {option === 'all' ? 'All' : option.charAt(0).toUpperCase() + option.slice(1)}
+              {option === 'all' ? 'Any' : option.charAt(0).toUpperCase() + option.slice(1)}
             </Button>
           ))}
         </ButtonGroup>

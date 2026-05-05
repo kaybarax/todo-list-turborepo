@@ -61,6 +61,7 @@ export interface TodoItemProps
   }>;
   getNetworkDisplayInfo?: (network: BlockchainNetwork) => { displayName: string };
   supportedNetworks?: string[];
+  hideActionsUntilHover?: boolean;
 }
 
 const TodoItem = React.forwardRef<HTMLDivElement, TodoItemProps>(
@@ -77,11 +78,13 @@ const TodoItem = React.forwardRef<HTMLDivElement, TodoItemProps>(
       showBlockchainInfo = true,
       TransactionStatusComponent,
       getNetworkDisplayInfo,
-      supportedNetworks = [],
+      supportedNetworks = [BlockchainNetwork.POLYGON, BlockchainNetwork.SOLANA],
+      hideActionsUntilHover = false,
       ...props
     },
     ref,
   ) => {
+    const [actionsVisible, setActionsVisible] = React.useState(!hideActionsUntilHover);
     const isOverdue = todo.dueDate && new Date(todo.dueDate) < new Date() && !todo.completed;
 
     const getNetworkDisplayName = (network: BlockchainNetwork) => {
@@ -97,7 +100,7 @@ const TodoItem = React.forwardRef<HTMLDivElement, TodoItemProps>(
         case 'medium':
           return 'warning';
         case 'low':
-          return 'info';
+          return 'secondary';
         default:
           return 'success';
       }
@@ -105,38 +108,50 @@ const TodoItem = React.forwardRef<HTMLDivElement, TodoItemProps>(
 
     const renderSyncButton = () => {
       if (!onBlockchainSync) return null;
-
-      if (!supportedNetworks || supportedNetworks.length <= 1) {
-        const network = (supportedNetworks?.[0] ?? 'solana') as BlockchainNetwork;
-        return (
-          <Button variant="outline" size="sm" onClick={() => onBlockchainSync(todo.id, network)}>
-            Sync
-          </Button>
-        );
-      }
+      if (variant === 'compact') return null;
 
       return (
-        <div className="dropdown dropdown-top dropdown-end">
-          <Button variant="outline" size="sm" tabIndex={0} role="button">
-            Sync
-          </Button>
-          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-10">
+        <details>
+          <summary className="cursor-pointer list-none">
+            <Button variant="outline" size="sm" asChild>
+              <span className="cursor-pointer">Sync to blockchain</span>
+            </Button>
+          </summary>
+          <div className="mt-2 flex flex-wrap gap-2">
             {supportedNetworks.map(network => (
-              <li key={network}>
-                <a onClick={() => onBlockchainSync(todo.id, network as BlockchainNetwork)}>
-                  {getNetworkDisplayName(network as BlockchainNetwork)}
-                </a>
-              </li>
+              <Button
+                key={network}
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={() => onBlockchainSync(todo.id, network as BlockchainNetwork)}
+              >
+                {getNetworkDisplayName(network as BlockchainNetwork)}
+              </Button>
             ))}
-          </ul>
-        </div>
+          </div>
+        </details>
       );
     };
+
+    const formattedDueDate = todo.dueDate
+      ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(
+          new Date(todo.dueDate),
+        )
+      : null;
 
     return (
       <div
         ref={ref}
         className={cn(todoItemVariants({ variant, completed: todo.completed, overdue: isOverdue, className }))}
+        onMouseEnter={event => {
+          setActionsVisible(true);
+          props.onMouseEnter?.(event);
+        }}
+        onMouseLeave={event => {
+          setActionsVisible(false);
+          props.onMouseLeave?.(event);
+        }}
         {...props}
       >
         <div className="card-body">
@@ -147,21 +162,29 @@ const TodoItem = React.forwardRef<HTMLDivElement, TodoItemProps>(
               aria-label={`Mark ${todo.title} as ${todo.completed ? 'incomplete' : 'complete'}`}
             />
             <div className="flex-1">
-              <h2 className={cn('card-title', { 'line-through': todo.completed })}>{todo.title}</h2>
-              {todo.description && <p className="text-sm text-base-content/70 mt-1">{todo.description}</p>}
+              <h3 className={cn('card-title', { 'line-through text-base-content/50': todo.completed })}>
+                {todo.title}
+              </h3>
+              {variant !== 'compact' && todo.description && (
+                <p className="text-sm text-base-content/70 mt-1">{todo.description}</p>
+              )}
 
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-xs text-base-content/70">
                 <Badge variant={getPriorityVariant(todo.priority)} size="sm">
                   {todo.priority}
                 </Badge>
-                {todo.dueDate && <span>Due: {new Date(todo.dueDate).toLocaleDateString()}</span>}
+                {formattedDueDate && (
+                  <Badge variant={isOverdue ? 'error' : 'outline'} size="sm">
+                    Due: {formattedDueDate}
+                  </Badge>
+                )}
               </div>
 
-              {todo.tags && todo.tags.length > 0 && (
+              {variant !== 'compact' && todo.tags && todo.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-3">
                   {todo.tags.map(tag => (
                     <Badge key={tag} variant="outline" size="sm">
-                      #{tag}
+                      {tag}
                     </Badge>
                   ))}
                 </div>
@@ -169,19 +192,35 @@ const TodoItem = React.forwardRef<HTMLDivElement, TodoItemProps>(
 
               {showBlockchainInfo && todo.blockchainNetwork && todo.transactionHash && TransactionStatusComponent && (
                 <div className="mt-3">
+                  <span className="sr-only">{getNetworkDisplayName(todo.blockchainNetwork)}</span>
                   <TransactionStatusComponent transactionHash={todo.transactionHash} network={todo.blockchainNetwork} />
                 </div>
+              )}
+              {showBlockchainInfo && todo.blockchainNetwork && !todo.transactionHash && (
+                <div className="mt-3 text-sm text-base-content/70">{getNetworkDisplayName(todo.blockchainNetwork)}</div>
               )}
             </div>
           </div>
 
-          {showActions && (
+          {showActions && actionsVisible && (
             <div className="card-actions justify-end mt-4">
               {renderSyncButton()}
-              <IconButton variant="ghost" size="sm" onClick={() => onEdit(todo)}>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                title="Edit todo"
+                aria-label="Edit todo"
+                onClick={() => onEdit(todo)}
+              >
                 <Edit className="h-4 w-4" />
               </IconButton>
-              <IconButton variant="ghost" size="sm" onClick={() => onDelete(todo.id)}>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                title="Delete todo"
+                aria-label="Delete todo"
+                onClick={() => onDelete(todo.id)}
+              >
                 <Trash2 className="h-4 w-4" />
               </IconButton>
             </div>
