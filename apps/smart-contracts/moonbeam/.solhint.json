@@ -6,8 +6,6 @@
     "visibility-modifier-order": "error",
     "no-unused-vars": "error",
     "const-name-snakecase": "error",
-    "contract-name-camelcase": "error",
-    "event-name-camelcase": "error",
     "modifier-name-mixedcase": "error",
     "private-vars-leading-underscore": "error",
     "use-forbidden-name": "error",
@@ -25,18 +23,26 @@
     "avoid-sha3": "error",
     "avoid-tx-origin": "error",
     "avoid-low-level-calls": "error",
-    "avoid-call-value": "warn",
-    "func-visibility": ["error", { "ignoreConstructors": true }],
+    "avoid-call-value": "off",
+    "func-visibility": [
+      "error",
+      {
+        "ignoreConstructors": true
+      }
+    ],
     "state-visibility": "error",
-    "not-rely-on-time": "warn",
-    "not-rely-on-block-hash": "warn",
-    "reentrancy": "warn",
-    "multiple-sends": "warn",
+    "not-rely-on-time": "off",
+    "not-rely-on-block-hash": "off",
+    "reentrancy": "off",
+    "multiple-sends": "off",
     "avoid-throw": "error",
     "func-param-name-mixedcase": "error",
     "var-name-mixedcase": "error",
-    "custom-errors": "warn",
-    "no-global-import": "warn"
+    "no-global-import": "off",
+    "use-natspec": "off",
+    "gas-indexed-events": "off",
+    "gas-strict-inequalities": "off",
+    "gas-increment-by-one": "off"
   },
   "excludedFiles": ["node_modules/**", "artifacts/**", "cache/**", "coverage/**", "typechain-types/**"]
 }

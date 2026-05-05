@@ -2,7 +2,6 @@
   "name": "@todo/moonbeam-blockchain",
   "version": "0.1.0",
   "private": true,
-
   "description": "Moonbeam smart contracts for todo management on Polkadot parachain",
   "scripts": {
     "compile": "npx hardhat compile",
@@ -31,11 +30,15 @@
     "@openzeppelin/contracts-upgradeable": "^5.4.0"
   },
   "devDependencies": {
+    "@moonbeam-network/api-augment": "^0.3700.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.11",
+    "@polkadot/api": "^16.4.4",
+    "@polkadot/util": "^13.2.3",
+    "@polkadot/util-crypto": "^13.2.3",
     "@typechain/ethers-v6": "^0.5.1",
     "@typechain/hardhat": "^9.1.0",
     "chai": "^4.5.0",
@@ -46,12 +49,8 @@
     "hardhat-gas-reporter": "^1.0.10",
     "prettier": "^3.4.2",
     "prettier-plugin-solidity": "^1.4.1",
-    "solhint": "^5.0.3",
+    "solhint": "^6.2.1",
     "solidity-coverage": "^0.8.14",
-    "typechain": "^8.3.2",
-    "@moonbeam-network/api-augment": "^0.3700.0",
-    "@polkadot/api": "^16.4.4",
-    "@polkadot/util": "^13.2.3",
-    "@polkadot/util-crypto": "^13.2.3"
+    "typechain": "^8.3.2"
   }
 }
