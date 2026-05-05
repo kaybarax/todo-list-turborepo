@@ -1,6 +1,7 @@
 import { User, type UserDocument, type IUser } from './user.model';
 import { ConflictError, NotFoundError } from '../../plugins/errors';
 import { type RegisterBody } from '../../schemas/auth';
+import { Trace } from '../../telemetry/trace.decorator';
 
 interface FindAllQuery {
   page?: number;
@@ -17,6 +18,7 @@ interface FindAllReturn {
 }
 
 export class UserService {
+  @Trace('UserService.create')
   async create(registerBody: RegisterBody): Promise<UserDocument> {
     const existing = await User.findOne({ email: registerBody.email });
     if (existing) {
@@ -34,6 +36,7 @@ export class UserService {
     }
   }
 
+  @Trace('UserService.findById')
   async findById(id: string): Promise<UserDocument> {
     const user = await User.findById(id);
     if (!user) {
@@ -42,14 +45,17 @@ export class UserService {
     return user;
   }
 
+  @Trace('UserService.findByEmail')
   async findByEmail(email: string): Promise<UserDocument | null> {
     return User.findOne({ email });
   }
 
+  @Trace('UserService.findByWalletAddress')
   async findByWalletAddress(walletAddress: string): Promise<UserDocument | null> {
     return User.findOne({ walletAddress });
   }
 
+  @Trace('UserService.updateById')
   async updateById(id: string, updateData: Partial<IUser>): Promise<UserDocument> {
     try {
       const updated = await User.findByIdAndUpdate(id, updateData, {
@@ -75,22 +81,27 @@ export class UserService {
     }
   }
 
+  @Trace('UserService.updateLastLogin')
   async updateLastLogin(id: string): Promise<void> {
     await User.findByIdAndUpdate(id, { lastLoginAt: new Date() });
   }
 
+  @Trace('UserService.deactivateUser')
   async deactivateUser(id: string): Promise<UserDocument> {
     return this.updateById(id, { isActive: false } as Partial<IUser>);
   }
 
+  @Trace('UserService.activateUser')
   async activateUser(id: string): Promise<UserDocument> {
     return this.updateById(id, { isActive: true } as Partial<IUser>);
   }
 
+  @Trace('UserService.verifyUser')
   async verifyUser(id: string): Promise<UserDocument> {
     return this.updateById(id, { isVerified: true } as Partial<IUser>);
   }
 
+  @Trace('UserService.deleteById')
   async deleteById(id: string): Promise<UserDocument> {
     const deleted = await User.findByIdAndDelete(id);
     if (!deleted) {
@@ -99,6 +110,7 @@ export class UserService {
     return deleted;
   }
 
+  @Trace('UserService.findAll')
   async findAll(query: FindAllQuery = {}): Promise<UserDocument[] | FindAllReturn> {
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 10;
@@ -135,6 +147,7 @@ export class UserService {
     };
   }
 
+  @Trace('UserService.getUserStats')
   async getUserStats(): Promise<{
     totalTodos: number;
     completedTodos: number;

@@ -7,6 +7,7 @@ import { userController } from './modules/user/user.controller';
 import { corsPlugin } from './plugins/cors';
 import { errors, UnauthorizedError } from './plugins/errors';
 import { jwtPlugin } from './plugins/jwt';
+import { logging } from './plugins/logging';
 import { openapi } from './plugins/openapi';
 import { rateLimitPlugin } from './plugins/rate-limit';
 import { security } from './plugins/security';
@@ -14,6 +15,7 @@ import { sanitizer } from './utils/sanitizer';
 
 export const app = new Elysia()
   .use(errors)
+  .use(logging)
   .use(corsPlugin)
   .use(security)
   .use(rateLimitPlugin)

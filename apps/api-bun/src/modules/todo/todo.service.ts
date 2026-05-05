@@ -3,7 +3,9 @@ import { type FilterQuery } from 'mongoose';
 import { Todo, type TodoDocument, type ITodo } from './todo.model';
 import { cache } from '../../cache';
 import { NotFoundError } from '../../plugins/errors';
+import { logger } from '../../plugins/logging';
 import { type TodoQuery, type CreateTodoBody, type UpdateTodoBody } from '../../schemas/todo';
+import { Trace } from '../../telemetry/trace.decorator';
 
 export interface PaginatedTodos {
   todos: TodoDocument[];
@@ -16,6 +18,7 @@ export interface PaginatedTodos {
 export class TodoService {
   private readonly CACHE_TTL = 300; // 5 minutes
 
+  @Trace('TodoService.create')
   async create(createTodoBody: CreateTodoBody, userId: string): Promise<TodoDocument> {
     const todoData = {
       ...createTodoBody,
@@ -31,6 +34,7 @@ export class TodoService {
     return todo;
   }
 
+  @Trace('TodoService.findAll')
   async findAll(query: TodoQuery, userId: string): Promise<PaginatedTodos> {
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 10;
@@ -101,6 +105,7 @@ export class TodoService {
     return result;
   }
 
+  @Trace('TodoService.findOne')
   async findOne(id: string, userId: string): Promise<TodoDocument> {
     // Try cache first
     const cacheKey = cache.generateTodoKey(id);
@@ -122,6 +127,7 @@ export class TodoService {
     return todo;
   }
 
+  @Trace('TodoService.update')
   async update(id: string, updateTodoBody: UpdateTodoBody, userId: string): Promise<TodoDocument> {
     const existing = await this.findOne(id, userId);
 
@@ -144,6 +150,7 @@ export class TodoService {
     return persisted;
   }
 
+  @Trace('TodoService.remove')
   async remove(id: string, userId: string): Promise<void> {
     await this.findOne(id, userId); // Verify ownership
     const deleted = await Todo.deleteOne({ _id: id, userId });
@@ -156,6 +163,7 @@ export class TodoService {
     await Promise.all([cache.del(cache.generateTodoKey(id)), this.invalidateUserCache(userId)]);
   }
 
+  @Trace('TodoService.getStats')
   async getStats(userId: string): Promise<{
     total: number;
     completed: number;
@@ -223,6 +231,7 @@ export class TodoService {
     return stats;
   }
 
+  @Trace('TodoService.toggleComplete')
   async toggleComplete(id: string, userId: string): Promise<TodoDocument> {
     const todo = await this.findOne(id, userId);
     todo.completed = !todo.completed;
@@ -236,6 +245,7 @@ export class TodoService {
     return persisted;
   }
 
+  @Trace('TodoService.invalidateUserCache')
   private async invalidateUserCache(userId: string): Promise<void> {
     try {
       // Invalidate all user-related cache entries
@@ -244,7 +254,7 @@ export class TodoService {
         cache.del(cache.generateUserStatsKey(userId)),
       ]);
     } catch (error) {
-      console.error(`Error invalidating cache for user ${userId}:`, error);
+      logger.error(`Error invalidating cache for user ${userId}:`, error);
     }
   }
 }

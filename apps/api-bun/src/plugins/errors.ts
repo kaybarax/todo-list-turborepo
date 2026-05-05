@@ -35,6 +35,8 @@ export class ConflictError extends Error {
   }
 }
 
+import { logger } from './logging';
+
 export const errors = (app: Elysia) =>
   app
     .error({
@@ -44,7 +46,28 @@ export const errors = (app: Elysia) =>
       NOT_FOUND: NotFoundError,
       CONFLICT: ConflictError,
     })
-    .onError(({ code, error, set }) => {
+    .onError(({ code, error, set, request, path }) => {
+      const status = typeof set.status === 'number' ? set.status : Number(set.status) || 500;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+
+      // Log errors using structured logger
+      if (status >= 500) {
+        logger.error(`${request.method} ${path} - ${errorMessage}`, {
+          code,
+          path,
+          method: request.method,
+          stack: errorStack,
+        });
+      } else {
+        logger.warn(`${request.method} ${path} - ${errorMessage}`, {
+          code,
+          statusCode: status,
+          path,
+          method: request.method,
+        });
+      }
+
       switch (code) {
         case 'BAD_REQUEST':
         case 'VALIDATION':
@@ -97,7 +120,6 @@ export const errors = (app: Elysia) =>
             };
           }
 
-          console.error(error);
           set.status = 500;
           return {
             statusCode: 500,

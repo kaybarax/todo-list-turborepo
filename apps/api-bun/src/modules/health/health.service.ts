@@ -22,6 +22,11 @@ export class HealthService {
       },
       memory: process.memoryUsage(),
       version: process.version,
+      telemetry: {
+        enabled: true, // Placeholder Trace is always enabled
+        serviceName: 'api-bun',
+        endpoint: process.env.JAEGER_ENDPOINT ?? 'console',
+      },
     };
   }
 

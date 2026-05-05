@@ -16,6 +16,8 @@ export const BlockchainNetworkEnum = t.Enum({
   solana: 'solana',
   polkadot: 'polkadot',
   polygon: 'polygon',
+  moonbeam: 'moonbeam',
+  base: 'base',
 });
 
 /**

@@ -1,7 +1,8 @@
-import { UnauthorizedError, ConflictError } from '../../plugins/errors';
-import { type RegisterBody, type LoginBody, type AuthResponse } from '../../schemas/auth';
+import { ConflictError, UnauthorizedError } from '../../plugins/errors';
+import { type AuthResponse, type LoginBody, type RegisterBody } from '../../schemas/auth';
+import { Trace } from '../../telemetry/trace.decorator';
 import { type UserDocument } from '../user/user.model';
-import { userService, type UserService } from '../user/user.service';
+import { type UserService, userService } from '../user/user.service';
 
 export interface JwtSigner {
   sign(payload: { sub: string; email: string }): Promise<string>;
@@ -13,6 +14,7 @@ export class AuthService {
   /**
    * Register a new user
    */
+  @Trace('AuthService.register')
   async register(body: RegisterBody, jwt: JwtSigner): Promise<AuthResponse> {
     const { email } = body;
 
@@ -30,6 +32,7 @@ export class AuthService {
   /**
    * Login a user
    */
+  @Trace('AuthService.login')
   async login(body: LoginBody, jwt: JwtSigner): Promise<AuthResponse> {
     const { email, password } = body;
 
@@ -53,6 +56,7 @@ export class AuthService {
   /**
    * Refresh token
    */
+  @Trace('AuthService.refreshToken')
   async refreshToken(userId: string, jwt: JwtSigner): Promise<AuthResponse> {
     try {
       const user = await this.userService.findById(userId);
@@ -66,6 +70,7 @@ export class AuthService {
   /**
    * Generate authentication response with token and user info
    */
+  @Trace('AuthService.generateTokenResponse')
   private async generateTokenResponse(user: UserDocument, jwt: JwtSigner): Promise<AuthResponse> {
     const token = await jwt.sign({
       sub: user.id,
