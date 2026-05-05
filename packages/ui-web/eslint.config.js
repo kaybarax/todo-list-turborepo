@@ -1,6 +1,6 @@
 import { createRequire } from 'module';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { dirname } from 'node:path';
 import globals from 'globals';
 
 const require = createRequire(import.meta.url);

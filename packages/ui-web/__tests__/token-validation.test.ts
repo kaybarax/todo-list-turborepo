@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 // Import generated tokens for validation
 const getGeneratedTokens = async () => {

@@ -41,7 +41,7 @@
     "prebuild": "npm run tokens:build",
     "build": "vite build",
     "dev": "concurrently \"npm run tokens:watch\" \"vite build --watch\"",
-    "test": "vitest run --config vitest.config.ts",
+    "test": "pnpm run tokens:build && vitest run --config vitest.config.ts",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",

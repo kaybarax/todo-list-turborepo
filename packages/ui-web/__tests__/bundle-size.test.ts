@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync, statSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync, statSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 describe('Bundle Size Tests', () => {
   const distPath = resolve(__dirname, '../../dist');

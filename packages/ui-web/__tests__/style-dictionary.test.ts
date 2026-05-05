@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { describe, it, expect, beforeAll } from 'vitest';
-import { existsSync, readFileSync } from 'fs';
-import { resolve } from 'path';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 // Import core token files
 import coreColors from '../lib/../tokens/core/colors.json';
