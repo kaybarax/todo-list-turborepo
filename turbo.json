@@ -217,6 +217,20 @@
       "dependsOn": ["build-storybook"],
       "outputs": ["chromatic-results/**"],
       "inputs": ["src/**/*.{ts,tsx}", "src/**/*.stories.{ts,tsx}", "storybook-static/**"]
+    },
+    "openapi:export": {
+      "dependsOn": ["build"],
+      "outputs": ["docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json"],
+      "inputs": ["src/**/*.ts", "package.json"]
+    },
+    "openapi:compare": {
+      "dependsOn": ["openapi:export"],
+      "inputs": [
+        "docs/BUN_ELYSIA_API_BASELINE_OPENAPI.json",
+        "docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json",
+        "scripts/compare-openapi.ts"
+      ],
+      "cache": false
     }
   }
 }

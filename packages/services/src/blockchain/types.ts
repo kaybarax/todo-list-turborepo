@@ -1,4 +1,4 @@
-import { TransactionStatus, type TransactionReceipt } from '@todo/utils/blockchain/monitoring';
+import { TransactionStatus, type TransactionReceipt } from '@todo/utils/blockchain';
 import { getEnvVar } from '@todo/utils/common/env';
 import { z } from 'zod';
 

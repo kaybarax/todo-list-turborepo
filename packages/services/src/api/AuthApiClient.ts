@@ -45,7 +45,8 @@ export class AuthApiClient extends BaseApiClient {
         }
 
         // Set the auth token for future requests
-        this.setAuthToken(authResult.data.token, authResult.data.refreshToken);
+        const token = authResult.data.access_token || authResult.data.token || '';
+        this.setAuthToken(token, authResult.data.refreshToken);
 
         return {
           ...response,
@@ -89,7 +90,8 @@ export class AuthApiClient extends BaseApiClient {
         }
 
         // Set the auth token for future requests
-        this.setAuthToken(authResult.data.token, authResult.data.refreshToken);
+        const token = authResult.data.access_token || authResult.data.token || '';
+        this.setAuthToken(token, authResult.data.refreshToken);
 
         return {
           ...response,
@@ -150,7 +152,8 @@ export class AuthApiClient extends BaseApiClient {
         }
 
         // Update the auth token
-        this.setAuthToken(authResult.data.token, authResult.data.refreshToken);
+        const token = authResult.data.access_token || authResult.data.token || '';
+        this.setAuthToken(token, authResult.data.refreshToken);
 
         return {
           ...response,

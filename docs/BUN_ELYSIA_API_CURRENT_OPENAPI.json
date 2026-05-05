@@ -1,0 +1,2210 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Todo API",
+    "description": "A modern todo application API with blockchain integration",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "App",
+      "description": "General endpoints"
+    },
+    {
+      "name": "Authentication",
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User management endpoints"
+    },
+    {
+      "name": "Todos",
+      "description": "Todo management endpoints"
+    },
+    {
+      "name": "Health",
+      "description": "Health and readiness checks"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {}
+  },
+  "paths": {
+    "/api/v1/": {
+      "get": {
+        "tags": ["App"],
+        "summary": "Get API information",
+        "responses": {
+          "200": {
+            "description": "API information retrieved successfully"
+          }
+        },
+        "operationId": "getApiV1"
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User registration",
+        "requestBody": {
+          "description": "User registration request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "User registration request body",
+                "type": "object",
+                "required": ["email", "password", "name"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "description": "User email address",
+                    "example": "user@example.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "minLength": 6,
+                    "maxLength": 100,
+                    "description": "User password",
+                    "example": "SecurePassword123!",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 100,
+                    "description": "User display name",
+                    "example": "John Doe",
+                    "type": "string"
+                  },
+                  "walletAddress": {
+                    "maxLength": 100,
+                    "description": "User wallet address",
+                    "example": "0x1234567890abcdef",
+                    "type": "string"
+                  },
+                  "preferredNetwork": {
+                    "description": "Preferred blockchain network",
+                    "enum": ["solana", "polkadot", "polygon"],
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "User registration request body",
+                "type": "object",
+                "required": ["email", "password", "name"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "description": "User email address",
+                    "example": "user@example.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "minLength": 6,
+                    "maxLength": 100,
+                    "description": "User password",
+                    "example": "SecurePassword123!",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 100,
+                    "description": "User display name",
+                    "example": "John Doe",
+                    "type": "string"
+                  },
+                  "walletAddress": {
+                    "maxLength": 100,
+                    "description": "User wallet address",
+                    "example": "0x1234567890abcdef",
+                    "type": "string"
+                  },
+                  "preferredNetwork": {
+                    "description": "Preferred blockchain network",
+                    "enum": ["solana", "polkadot", "polygon"],
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "User registration request body",
+                "type": "object",
+                "required": ["email", "password", "name"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "description": "User email address",
+                    "example": "user@example.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "minLength": 6,
+                    "maxLength": 100,
+                    "description": "User password",
+                    "example": "SecurePassword123!",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 100,
+                    "description": "User display name",
+                    "example": "John Doe",
+                    "type": "string"
+                  },
+                  "walletAddress": {
+                    "maxLength": 100,
+                    "description": "User wallet address",
+                    "example": "0x1234567890abcdef",
+                    "type": "string"
+                  },
+                  "preferredNetwork": {
+                    "description": "Preferred blockchain network",
+                    "enum": ["solana", "polkadot", "polygon"],
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Authentication response",
+                  "type": "object",
+                  "required": ["access_token", "user"],
+                  "properties": {
+                    "access_token": {
+                      "description": "JWT access token",
+                      "type": "string"
+                    },
+                    "user": {
+                      "description": "Publicly visible user information",
+                      "type": "object",
+                      "required": ["id", "email", "name"],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "walletAddress": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiV1AuthRegister"
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User login",
+        "requestBody": {
+          "description": "User login request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "User login request body",
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "description": "User email address",
+                    "example": "user@example.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "maxLength": 100,
+                    "description": "User password",
+                    "example": "SecurePassword123!",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "User login request body",
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "description": "User email address",
+                    "example": "user@example.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "maxLength": 100,
+                    "description": "User password",
+                    "example": "SecurePassword123!",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "User login request body",
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 255,
+                    "description": "User email address",
+                    "example": "user@example.com",
+                    "type": "string"
+                  },
+                  "password": {
+                    "maxLength": 100,
+                    "description": "User password",
+                    "example": "SecurePassword123!",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Authentication response",
+                  "type": "object",
+                  "required": ["access_token", "user"],
+                  "properties": {
+                    "access_token": {
+                      "description": "JWT access token",
+                      "type": "string"
+                    },
+                    "user": {
+                      "description": "Publicly visible user information",
+                      "type": "object",
+                      "required": ["id", "email", "name"],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "walletAddress": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiV1AuthLogin"
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh access token",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authentication response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Authentication response",
+                  "type": "object",
+                  "required": ["access_token", "user"],
+                  "properties": {
+                    "access_token": {
+                      "description": "JWT access token",
+                      "type": "string"
+                    },
+                    "user": {
+                      "description": "Publicly visible user information",
+                      "type": "object",
+                      "required": ["id", "email", "name"],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "walletAddress": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiV1AuthRefresh"
+      }
+    },
+    "/api/v1/auth/profile": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get current user profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Publicly visible user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Publicly visible user information",
+                  "type": "object",
+                  "required": ["id", "email", "name"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "walletAddress": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiV1AuthProfile"
+      }
+    },
+    "/api/v1/users/profile": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user profile",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full user profile information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Full user profile information",
+                  "type": "object",
+                  "required": ["id", "email", "name", "isVerified", "isActive", "createdAt", "updatedAt"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "maxLength": 255,
+                      "type": "string"
+                    },
+                    "name": {
+                      "maxLength": 100,
+                      "type": "string"
+                    },
+                    "walletAddress": {
+                      "maxLength": 100,
+                      "type": "string"
+                    },
+                    "preferredNetwork": {
+                      "type": "string"
+                    },
+                    "settings": {
+                      "type": "object",
+                      "properties": {
+                        "theme": {
+                          "type": "string"
+                        },
+                        "notifications": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "isVerified": {
+                      "type": "boolean"
+                    },
+                    "isActive": {
+                      "type": "boolean"
+                    },
+                    "lastLoginAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiV1UsersProfile"
+      }
+    },
+    "/api/v1/todos/": {
+      "post": {
+        "tags": ["Todos"],
+        "summary": "Create a new todo",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Create Todo request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Create Todo request body",
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "description": "Todo title",
+                    "example": "Complete project documentation",
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "description": "Todo description",
+                    "example": "Write comprehensive documentation for the todo application",
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "description": "Todo due date",
+                    "example": "2024-01-15T00:00:00.000Z",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "description": "Todo tags",
+                    "example": ["work", "documentation"],
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Create Todo request body",
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "description": "Todo title",
+                    "example": "Complete project documentation",
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "description": "Todo description",
+                    "example": "Write comprehensive documentation for the todo application",
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "description": "Todo due date",
+                    "example": "2024-01-15T00:00:00.000Z",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "description": "Todo tags",
+                    "example": ["work", "documentation"],
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Create Todo request body",
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "description": "Todo title",
+                    "example": "Complete project documentation",
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "description": "Todo description",
+                    "example": "Write comprehensive documentation for the todo application",
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "description": "Todo due date",
+                    "example": "2024-01-15T00:00:00.000Z",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "description": "Todo tags",
+                    "example": ["work", "documentation"],
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Individual Todo object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Individual Todo object",
+                  "type": "object",
+                  "required": ["id", "title", "completed", "priority", "tags", "userId", "createdAt", "updatedAt"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    },
+                    "dueDate": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "blockchainNetwork": {
+                      "type": "string",
+                      "enum": ["solana", "polkadot", "polygon"]
+                    },
+                    "transactionHash": {
+                      "type": "string"
+                    },
+                    "blockchainAddress": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Response for status 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiV1Todos"
+      },
+      "get": {
+        "tags": ["Todos"],
+        "summary": "Get all todos with filtering and pagination",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "description": "Page number for pagination",
+              "anyOf": [
+                {
+                  "format": "numeric",
+                  "default": 0,
+                  "type": "string"
+                },
+                {
+                  "minimum": 1,
+                  "default": 1,
+                  "description": "Page number for pagination",
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "description": "Number of items per page",
+              "anyOf": [
+                {
+                  "format": "numeric",
+                  "default": 0,
+                  "type": "string"
+                },
+                {
+                  "minimum": 1,
+                  "maximum": 100,
+                  "default": 10,
+                  "description": "Number of items per page",
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          {
+            "name": "completed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Filter by completion status",
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            }
+          },
+          {
+            "name": "blockchainNetwork",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["solana", "polkadot", "polygon"]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "maxLength": 100,
+              "description": "Search in title and description",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "maxLength": 100,
+              "description": "Filter by tag",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["createdAt", "updatedAt", "title", "priority", "dueDate"]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of Todos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Paginated list of Todos",
+                  "type": "object",
+                  "required": ["todos", "total", "page", "limit", "totalPages"],
+                  "properties": {
+                    "todos": {
+                      "type": "array",
+                      "items": {
+                        "description": "Individual Todo object",
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "title",
+                          "completed",
+                          "priority",
+                          "tags",
+                          "userId",
+                          "createdAt",
+                          "updatedAt"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "completed": {
+                            "type": "boolean"
+                          },
+                          "priority": {
+                            "type": "string",
+                            "enum": ["low", "medium", "high"]
+                          },
+                          "dueDate": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "blockchainNetwork": {
+                            "type": "string",
+                            "enum": ["solana", "polkadot", "polygon"]
+                          },
+                          "transactionHash": {
+                            "type": "string"
+                          },
+                          "blockchainAddress": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "page": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "totalPages": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiV1Todos"
+      }
+    },
+    "/api/v1/todos/stats": {
+      "get": {
+        "tags": ["Todos"],
+        "summary": "Get todo statistics",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todo statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Todo statistics",
+                  "type": "object",
+                  "required": ["total", "completed", "active", "overdue", "byPriority", "byBlockchainNetwork"],
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "completed": {
+                      "type": "number"
+                    },
+                    "active": {
+                      "type": "number"
+                    },
+                    "overdue": {
+                      "type": "number"
+                    },
+                    "byPriority": {
+                      "additionalProperties": {
+                        "type": "number"
+                      },
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "byBlockchainNetwork": {
+                      "additionalProperties": {
+                        "type": "number"
+                      },
+                      "type": "object",
+                      "properties": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiV1TodosStats"
+      }
+    },
+    "/api/v1/todos/{id}": {
+      "get": {
+        "tags": ["Todos"],
+        "summary": "Get a todo by ID",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual Todo object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Individual Todo object",
+                  "type": "object",
+                  "required": ["id", "title", "completed", "priority", "tags", "userId", "createdAt", "updatedAt"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    },
+                    "dueDate": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "blockchainNetwork": {
+                      "type": "string",
+                      "enum": ["solana", "polkadot", "polygon"]
+                    },
+                    "transactionHash": {
+                      "type": "string"
+                    },
+                    "blockchainAddress": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiV1TodosById"
+      },
+      "patch": {
+        "tags": ["Todos"],
+        "summary": "Update a todo (Partial)",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update Todo request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update Todo request body",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  },
+                  "completed": {
+                    "type": "boolean"
+                  },
+                  "blockchainNetwork": {
+                    "type": "string",
+                    "enum": ["solana", "polkadot", "polygon"]
+                  },
+                  "transactionHash": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "blockchainAddress": {
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update Todo request body",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  },
+                  "completed": {
+                    "type": "boolean"
+                  },
+                  "blockchainNetwork": {
+                    "type": "string",
+                    "enum": ["solana", "polkadot", "polygon"]
+                  },
+                  "transactionHash": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "blockchainAddress": {
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update Todo request body",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  },
+                  "completed": {
+                    "type": "boolean"
+                  },
+                  "blockchainNetwork": {
+                    "type": "string",
+                    "enum": ["solana", "polkadot", "polygon"]
+                  },
+                  "transactionHash": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "blockchainAddress": {
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Individual Todo object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Individual Todo object",
+                  "type": "object",
+                  "required": ["id", "title", "completed", "priority", "tags", "userId", "createdAt", "updatedAt"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    },
+                    "dueDate": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "blockchainNetwork": {
+                      "type": "string",
+                      "enum": ["solana", "polkadot", "polygon"]
+                    },
+                    "transactionHash": {
+                      "type": "string"
+                    },
+                    "blockchainAddress": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Response for status 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "patchApiV1TodosById"
+      },
+      "put": {
+        "tags": ["Todos"],
+        "summary": "Update a todo (Full/Alias)",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Update Todo request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update Todo request body",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  },
+                  "completed": {
+                    "type": "boolean"
+                  },
+                  "blockchainNetwork": {
+                    "type": "string",
+                    "enum": ["solana", "polkadot", "polygon"]
+                  },
+                  "transactionHash": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "blockchainAddress": {
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update Todo request body",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  },
+                  "completed": {
+                    "type": "boolean"
+                  },
+                  "blockchainNetwork": {
+                    "type": "string",
+                    "enum": ["solana", "polkadot", "polygon"]
+                  },
+                  "transactionHash": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "blockchainAddress": {
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Update Todo request body",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high"]
+                  },
+                  "dueDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "maxLength": 50,
+                      "type": "string"
+                    }
+                  },
+                  "completed": {
+                    "type": "boolean"
+                  },
+                  "blockchainNetwork": {
+                    "type": "string",
+                    "enum": ["solana", "polkadot", "polygon"]
+                  },
+                  "transactionHash": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "blockchainAddress": {
+                    "maxLength": 255,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Individual Todo object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Individual Todo object",
+                  "type": "object",
+                  "required": ["id", "title", "completed", "priority", "tags", "userId", "createdAt", "updatedAt"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    },
+                    "dueDate": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "blockchainNetwork": {
+                      "type": "string",
+                      "enum": ["solana", "polkadot", "polygon"]
+                    },
+                    "transactionHash": {
+                      "type": "string"
+                    },
+                    "blockchainAddress": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Response for status 400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiV1TodosById"
+      },
+      "delete": {
+        "tags": ["Todos"],
+        "summary": "Delete a todo",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Response for status 204",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "deleteApiV1TodosById"
+      }
+    },
+    "/api/v1/todos/{id}/toggle": {
+      "patch": {
+        "tags": ["Todos"],
+        "summary": "Toggle todo completion status",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Individual Todo object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Individual Todo object",
+                  "type": "object",
+                  "required": ["id", "title", "completed", "priority", "tags", "userId", "createdAt", "updatedAt"],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    },
+                    "dueDate": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "blockchainNetwork": {
+                      "type": "string",
+                      "enum": ["solana", "polkadot", "polygon"]
+                    },
+                    "transactionHash": {
+                      "type": "string"
+                    },
+                    "blockchainAddress": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response for status 401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["statusCode", "message", "error"],
+                  "properties": {
+                    "statusCode": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "patchApiV1TodosByIdToggle"
+      }
+    }
+  }
+}

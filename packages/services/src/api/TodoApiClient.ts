@@ -142,7 +142,7 @@ export class TodoApiClient extends BaseApiClient {
         throw ApiError.validationError(`Invalid todo data: ${result.error.message}`);
       }
 
-      const response = await this.put<ApiTodo>(`/todos/${id}`, result.data);
+      const response = await this.patch<ApiTodo>(`/todos/${id}`, result.data);
 
       // Validate response data
       if (response.success && response.data) {

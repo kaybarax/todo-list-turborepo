@@ -112,9 +112,10 @@ export type User = z.infer<typeof userSchema>;
  */
 export const authResponseSchema = z.object({
   user: userSchema,
-  token: z.string(),
+  access_token: z.string(),
+  token: z.string().optional(), // for backward compatibility if needed
   refreshToken: z.string().optional(),
-  expiresAt: z.string(),
+  expiresAt: z.string().optional(),
 });
 
 /**
