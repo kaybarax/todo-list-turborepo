@@ -30,7 +30,7 @@ describe('OpenAPI & Routing Parity', () => {
     const response = await app.handle(new Request('http://localhost/api/docs/json'));
     const currentSpec = await response.text();
 
-    const baselinePath = resolve(process.cwd(), '../../docs/BUN_ELYSIA_API_BASELINE_OPENAPI.json');
+    const baselinePath = resolve(process.cwd(), '../../docs/api/openapi/bun-elysia-api-baseline.openapi.json');
     let baselineSpec = '';
 
     try {

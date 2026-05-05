@@ -568,13 +568,13 @@ docker compose -f docker-compose.dev.yml restart
 
 ## 📚 Additional Resources
 
-- [Monorepo Architecture Guide](../docs/ARCHITECTURE.md)
+- [Documentation Index](../docs/README.md)
 - [API Documentation](../apps/api/README.md)
 - [Web App Documentation](../apps/web/README.md)
 - [Mobile App Documentation](../apps/mobile/README.md)
 - [Blockchain Development Guide](../apps/smart-contracts/README.md)
-- [Testing Guide](../docs/TESTING.md)
-- [Deployment Guide](./DEPLOYMENT.md)
+- [Testing Guide](../docs/testing/testing-strategy.md)
+- [Deployment Guide](../docs/deployment/deployment-guide.md)
 
 ## 🤝 Support
 

@@ -36,7 +36,7 @@ pnpm start:api-bun
 
 ## Documentation
 
-Full technical documentation and parity notes can be found in [docs/BUN_ELYSIA_API_GUIDE.md](../../docs/BUN_ELYSIA_API_GUIDE.md).
+Full technical documentation and parity notes can be found in [docs/api/bun-elysia-api-guide.md](../../docs/api/bun-elysia-api-guide.md).
 
 - **Swagger UI**: `/api/docs` (when running: `http://localhost:3002/api/docs`)
 - **OpenAPI JSON**: `/api/docs/json`

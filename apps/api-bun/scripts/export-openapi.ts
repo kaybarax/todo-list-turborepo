@@ -15,7 +15,7 @@ async function exportOpenAPI() {
   }
 
   const spec = await response.json();
-  const outputPath = resolve(__dirname, '../../../docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json');
+  const outputPath = resolve(__dirname, '../../../docs/api/openapi/bun-elysia-api-current.openapi.json');
 
   writeFileSync(outputPath, JSON.stringify(spec, null, 2));
   console.log(`OpenAPI spec exported to: ${outputPath}`);

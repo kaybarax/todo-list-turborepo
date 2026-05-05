@@ -272,11 +272,11 @@ Deployments are automated via GitHub Actions with manual approval gates:
 
 ### Network-Specific Guides
 
-- **[Polygon Setup Guide](../../docs/POLYGON_SETUP.md)**
-- **[Moonbeam Setup Guide](../../docs/MOONBEAM_SETUP.md)**
-- **[Base Setup Guide](../../docs/BASE_SETUP.md)**
-- **[Solana Setup Guide](../../docs/SOLANA_SETUP.md)**
-- **[Polkadot Setup Guide](../../docs/POLKADOT_SETUP.md)**
+- **[Polygon Setup Guide](polygon/README.md)**
+- **[Moonbeam Setup Guide](../../docs/blockchain/moonbeam-setup.md)**
+- **[Base Setup Guide](../../docs/blockchain/base-setup.md)**
+- **[Solana Setup Guide](solana/PROGRAM_GUIDE.md)**
+- **[Polkadot Setup Guide](polkadot/README.md)**
 
 ### API Documentation
 

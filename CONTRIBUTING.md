@@ -4,7 +4,7 @@ Thank you for your interest in contributing to the Todo App! This document provi
 
 ## 🤝 Code of Conduct
 
-By participating in this project, you agree to abide by our [Code of Conduct](./CODE_OF_CONDUCT.md). Please read it before contributing.
+By participating in this project, you agree to follow the collaboration and contribution standards in this guide.
 
 ## 🚀 Getting Started
 
@@ -505,10 +505,10 @@ pnpm contracts:deploy      # Deploy contracts
 
 ### Documentation Resources
 
-- **[Architecture Guide](./docs/ARCHITECTURE.md)**: System design and patterns
-- **[API Documentation](./docs/API.md)**: Complete API reference
-- **[Testing Guide](./docs/TESTING.md)**: Testing strategies and examples
-- **[Deployment Guide](./docs/DEPLOYMENT.md)**: Production deployment instructions
+- **[API Gateway Architecture](./docs/api/gateway/02-target-architecture.md)**: System design and gateway patterns
+- **[Bun + Elysia API Guide](./docs/api/bun-elysia-api-guide.md)**: Bun API technical reference
+- **[Testing Guide](./docs/testing/testing-strategy.md)**: Testing strategies and examples
+- **[Deployment Guide](./docs/deployment/deployment-guide.md)**: Production deployment instructions
 
 ### Mentorship
 

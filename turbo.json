@@ -232,14 +232,14 @@
     },
     "openapi:export": {
       "dependsOn": ["build"],
-      "outputs": ["docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json"],
+      "outputs": ["docs/api/openapi/bun-elysia-api-current.openapi.json"],
       "inputs": ["src/**/*.ts", "package.json"]
     },
     "openapi:compare": {
       "dependsOn": ["openapi:export"],
       "inputs": [
-        "docs/BUN_ELYSIA_API_BASELINE_OPENAPI.json",
-        "docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json",
+        "docs/api/openapi/bun-elysia-api-baseline.openapi.json",
+        "docs/api/openapi/bun-elysia-api-current.openapi.json",
         "scripts/compare-openapi.ts"
       ],
       "cache": false

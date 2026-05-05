@@ -5,8 +5,8 @@ import { resolve } from 'path';
 import openapiDiff from 'openapi-diff';
 
 async function compareOpenAPI() {
-  const baselinePath = resolve(__dirname, '../../../docs/BUN_ELYSIA_API_BASELINE_OPENAPI.json');
-  const currentPath = resolve(__dirname, '../../../docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json');
+  const baselinePath = resolve(__dirname, '../../../docs/api/openapi/bun-elysia-api-baseline.openapi.json');
+  const currentPath = resolve(__dirname, '../../../docs/api/openapi/bun-elysia-api-current.openapi.json');
 
   console.log(`Comparing: \nBaseline: ${baselinePath}\nCurrent:  ${currentPath}\n`);
 

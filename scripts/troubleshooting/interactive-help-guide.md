@@ -201,7 +201,7 @@ Potential improvements:
 
 ## Related Documentation
 
-- [Blockchain Development Setup](../docs/BLOCKCHAIN_SETUP.md)
-- [Troubleshooting Guide](../docs/TROUBLESHOOTING.md)
-- [Build System Documentation](../docs/BUILD_SYSTEM.md)
-- [Dependency Management](../docs/DEPENDENCY_MANAGEMENT.md)
+- [Blockchain Development Setup](../../docs/blockchain/setup.md)
+- [Troubleshooting Guide](../../docs/support/troubleshooting.md)
+- [Documentation Index](../../docs/README.md)
+- [Dependency Management Tests](../../test/dependency-management/README.md)
