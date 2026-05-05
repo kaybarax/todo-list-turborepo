@@ -67,7 +67,7 @@ export default [
       // Some TS assertions in tests/components are benign
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       // Make nullish-coalescing preference non-blocking
-      '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
