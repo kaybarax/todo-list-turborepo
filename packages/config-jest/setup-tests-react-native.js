@@ -52,9 +52,13 @@ jest.mock('react-native-gesture-handler', () => {
 });
 
 // Mock WalletConnect
-jest.mock('@walletconnect/react-native-compat', () => ({
-  // Mock implementation
-}));
+jest.mock(
+  '@walletconnect/react-native-compat',
+  () => ({
+    // Mock implementation
+  }),
+  { virtual: true },
+);
 
 // Silence the warning: Animated: `useNativeDriver` is not supported
 // Note: React Native 0.76+ has different internal structure
@@ -85,6 +89,7 @@ jest.mock('@todo/ui-mobile', () => {
   };
   const Card = ({ children, ...rest }) => React.createElement(View, { ...rest }, children);
   const CardContent = ({ children, ...rest }) => React.createElement(View, { ...rest }, children);
+  const ButtonGroup = ({ children, ...rest }) => React.createElement(View, { ...rest }, children);
   const lightTheme = {
     colors: {
       background: '#fff',
@@ -108,5 +113,13 @@ jest.mock('@todo/ui-mobile', () => {
     borders: { radius: { sm: 4 }, width: { sm: 1 } },
     shadows: {},
   };
-  return { Button, Card, CardContent, useTheme: () => ({ theme: lightTheme }), lightTheme };
+  return {
+    Button,
+    Card,
+    CardContent,
+    ButtonGroup,
+    useTheme: () => ({ theme: lightTheme }),
+    useEnhancedTheme: () => ({ theme: lightTheme, toggleTheme: () => {}, isDark: false }),
+    lightTheme,
+  };
 });

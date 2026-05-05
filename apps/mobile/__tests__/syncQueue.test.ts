@@ -9,6 +9,17 @@ jest.mock('@react-native-async-storage/async-storage', () =>
 // Mock @todo/services to avoid real network/blockchain calls
 jest.mock('@todo/services', () => {
   return {
+    ApiClientFactory: class {
+      constructor() {}
+      getTodoClient() {
+        return {
+          getTodos: async () => ({ success: true, data: [] }),
+        };
+      }
+      getAuthClient() {
+        return {};
+      }
+    },
     TodoApiClient: class {
       async getTodos() {
         return { success: true, data: [] };

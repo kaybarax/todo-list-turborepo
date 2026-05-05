@@ -195,7 +195,7 @@ exports[`Visual Regression Tests > Button Component Screenshots > should match b
   <button
     aria-busy="true"
     aria-disabled="true"
-    class="btn bg-primary h-10 btn-primary btn-md loading"
+    class="btn bg-primary h-10 btn-primary btn-md"
     disabled=""
     type="button"
   >
@@ -224,7 +224,7 @@ exports[`Visual Regression Tests > Button Component Screenshots > should match b
   <button
     aria-busy="true"
     aria-disabled="true"
-    class="btn bg-primary h-10 btn-primary btn-md loading"
+    class="btn bg-primary h-10 btn-primary btn-md"
     disabled=""
     type="button"
   >
@@ -342,7 +342,7 @@ exports[`Visual Regression Tests > Button Component Screenshots > should match b
     <button
       aria-busy="true"
       aria-disabled="true"
-      class="btn bg-primary h-10 btn-primary btn-md loading"
+      class="btn bg-primary h-10 btn-primary btn-md"
       disabled=""
       type="button"
     >
@@ -397,7 +397,7 @@ exports[`Visual Regression Tests > Card Component Screenshots > should match car
       class="card-body flex flex-col space-y-1.5 p-6"
     >
       <h3
-        class="card-title text-2xl font-semibold"
+        class="text-2xl font-semibold tracking-tight card-title"
       >
         Basic Card
       </h3>
@@ -435,7 +435,7 @@ exports[`Visual Regression Tests > Card Component Screenshots > should match car
         class="flex items-center justify-between"
       >
         <h3
-          class="card-title text-2xl font-semibold"
+          class="text-2xl font-semibold tracking-tight card-title"
         >
           Card with Badge
         </h3>
@@ -476,7 +476,7 @@ exports[`Visual Regression Tests > Card Component Screenshots > should match com
       >
         <div>
           <h3
-            class="card-title text-2xl font-semibold"
+            class="text-2xl font-semibold tracking-tight card-title"
           >
             Project Dashboard
           </h3>
@@ -606,7 +606,7 @@ exports[`Visual Regression Tests > Cross-platform Consistency > should match com
           class="flex items-center justify-between"
         >
           <h3
-            class="card-title text-2xl font-semibold"
+            class="text-2xl font-semibold tracking-tight card-title"
           >
             User Profile
           </h3>
@@ -693,7 +693,7 @@ exports[`Visual Regression Tests > Cross-platform Consistency > should match com
         class="card-body flex flex-col space-y-1.5 p-6"
       >
         <h3
-          class="card-title text-2xl font-semibold"
+          class="text-2xl font-semibold tracking-tight card-title"
         >
           Project Status
         </h3>
@@ -810,7 +810,7 @@ exports[`Visual Regression Tests > Dark Mode Screenshots > should match dark mod
         class="card-body flex flex-col space-y-1.5 p-6"
       >
         <h3
-          class="card-title text-2xl font-semibold text-white"
+          class="text-2xl font-semibold tracking-tight card-title text-white"
         >
           Dark Card
         </h3>

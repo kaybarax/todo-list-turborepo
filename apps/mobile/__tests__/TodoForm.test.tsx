@@ -8,7 +8,12 @@ jest.mock('../src/store/todoStore', () => ({
 it('TodoForm: validates, cancels, and submits', () => {
   const tokensModule = require('../src/hooks/useDesignTokens');
   jest.spyOn(tokensModule, 'useDesignTokens').mockReturnValue({
-    colors: { border: { default: '#ddd', error: '#f00' }, error: '#f00' },
+    colors: {
+      border: { default: '#ddd', error: '#f00' },
+      text: { primary: '#111', secondary: '#444', disabled: '#999', inverse: '#fff' },
+      surface: '#fff',
+      error: '#f00',
+    },
     spacing: { xs: 4, sm: 8, md: 12 },
     typography: { fontSize: { sm: 14 } },
   });

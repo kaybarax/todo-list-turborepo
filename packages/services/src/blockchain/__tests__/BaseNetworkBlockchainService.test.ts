@@ -21,8 +21,12 @@ describe('BaseNetworkBlockchainService', () => {
   };
 
   beforeEach(() => {
-    service = new BaseNetworkBlockchainService(mockOptions);
     jest.clearAllMocks();
+    // Re-establish mock return values after clearAllMocks wipes them
+    mockSigner.getAddress.mockResolvedValue('0xAddress');
+    mockSigner.getChainId.mockResolvedValue(8453);
+    mockProvider.getSigner.mockReturnValue(mockSigner);
+    service = new BaseNetworkBlockchainService(mockOptions);
   });
 
   describe('constructor', () => {

@@ -5,7 +5,11 @@ it('TodoFilters: renders and updates filters', () => {
   jest.resetModules();
   const tokensModule = require('../src/hooks/useDesignTokens');
   jest.spyOn(tokensModule, 'useDesignTokens').mockReturnValue({
-    colors: { border: { default: '#ddd' } },
+    colors: {
+      border: { default: '#ddd' },
+      text: { primary: '#111', secondary: '#444', disabled: '#999', inverse: '#fff' },
+      surface: '#fff',
+    },
     spacing: { xs: 4, sm: 8, md: 12 },
     typography: { fontSize: { sm: 14 } },
   });
