@@ -39,7 +39,7 @@ module.exports = [
       'no-unreachable': 'off', // Temporary fix for false positives in catch blocks
       '@typescript-eslint/require-await': 'off', // Many methods are async for interface compatibility but don't await in mock implementations
       '@typescript-eslint/no-non-null-assertion': 'off', // Some blockchain operations require non-null assertions for known-good data
-      'no-console': ['warn', { allow: ['warn', 'error', 'info', 'log'] }], // Allow console.log for blockchain debugging
+      'no-console': 'off', // Allow console.log for blockchain debugging
     },
   },
 ];
