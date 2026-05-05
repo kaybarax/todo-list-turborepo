@@ -1,6 +1,8 @@
 import { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { z } from 'zod';
 
+import { BlockchainNetwork } from '../blockchain/types';
+
 /**
  * API response wrapper schema
  */
@@ -53,6 +55,9 @@ export const apiTodoSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   userId: z.string(),
+  blockchainNetwork: z.nativeEnum(BlockchainNetwork).optional(),
+  transactionHash: z.string().optional(),
+  blockchainAddress: z.string().optional(),
 });
 
 /**
@@ -92,7 +97,7 @@ export const userSchema = z.object({
   id: z.string(),
   email: z.string().email().optional(),
   walletAddress: z.string().optional(),
-  preferredNetwork: z.enum(['solana', 'polkadot', 'polygon']).optional(),
+  preferredNetwork: z.nativeEnum(BlockchainNetwork).optional(),
   settings: z.object({
     theme: z.enum(['light', 'dark']).default('light'),
     notifications: z.boolean().default(true),

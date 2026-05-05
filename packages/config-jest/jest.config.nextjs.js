@@ -8,11 +8,8 @@ module.exports = {
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@todo/utils/(.*)$': '<rootDir>/../../packages/utils/src/$1',
-    '^@todo/services/(.*)$': '<rootDir>/../../packages/services/src/$1',
-    '^@todo/ui-web/(.*)$': '<rootDir>/../../packages/ui-web/src/$1',
-    '^@todo/ui-mobile/(.*)$': '<rootDir>/../../packages/ui-mobile/src/$1',
-    '^@todo/(.*)$': '<rootDir>/../../packages/$1/src',
+    '^@todo/([^/]+)$': '<rootDir>/../../packages/$1/src',
+    '^@todo/([^/]+)/(.*)$': '<rootDir>/../../packages/$1/src/$2',
     // Handle CSS imports (with CSS modules)
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
     // Handle CSS imports (without CSS modules)
