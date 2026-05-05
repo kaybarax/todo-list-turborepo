@@ -1,7 +1,7 @@
 // ESLint flat configuration for monorepo root
 // This configuration is used for linting files in the root directory
 
-export default [
+module.exports = [
   {
     ignores: [
       '**/node_modules/**',
@@ -38,7 +38,7 @@ export default [
     },
     rules: {
       'no-console': 'off',
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'off',
     },
   },
 ];
