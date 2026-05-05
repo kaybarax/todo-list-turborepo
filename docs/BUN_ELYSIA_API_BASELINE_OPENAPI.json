@@ -1,0 +1,775 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "API information retrieved successfully"
+          }
+        },
+        "summary": "Get API information",
+        "tags": ["App"]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "409": {
+            "description": "User already exists"
+          }
+        },
+        "summary": "User registration",
+        "tags": ["Authentication"]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "summary": "User login",
+        "tags": ["Authentication"]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Refresh access token",
+        "tags": ["Authentication"]
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "operationId": "AuthController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": ["Authentication"]
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "operationId": "UserController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user profile",
+        "tags": ["Users"]
+      }
+    },
+    "/todos": {
+      "post": {
+        "operationId": "TodoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTodoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Todo created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new todo",
+        "tags": ["Todos"]
+      },
+      "get": {
+        "operationId": "TodoController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "completed",
+            "required": false,
+            "in": "query",
+            "description": "Filter by completion status",
+            "schema": {
+              "example": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "priority",
+            "required": false,
+            "in": "query",
+            "description": "Filter by priority",
+            "schema": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            }
+          },
+          {
+            "name": "blockchainNetwork",
+            "required": false,
+            "in": "query",
+            "description": "Filter by blockchain network",
+            "schema": {
+              "type": "string",
+              "enum": ["solana", "polkadot", "polygon"]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search in title and description",
+            "schema": {
+              "example": "documentation",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "required": false,
+            "in": "query",
+            "description": "Filter by tag",
+            "schema": {
+              "example": "work",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["createdAt", "updatedAt", "title", "priority", "dueDate"]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todos retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all todos with filtering and pagination",
+        "tags": ["Todos"]
+      }
+    },
+    "/todos/stats": {
+      "get": {
+        "operationId": "TodoController_getStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Statistics retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get todo statistics",
+        "tags": ["Todos"]
+      }
+    },
+    "/todos/{id}": {
+      "get": {
+        "operationId": "TodoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todo retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Todo not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a todo by ID",
+        "tags": ["Todos"]
+      },
+      "patch": {
+        "operationId": "TodoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTodoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Todo updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Todo not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a todo",
+        "tags": ["Todos"]
+      },
+      "delete": {
+        "operationId": "TodoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Todo deleted successfully"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Todo not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a todo",
+        "tags": ["Todos"]
+      }
+    },
+    "/todos/{id}/toggle": {
+      "patch": {
+        "operationId": "TodoController_toggleComplete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Todo toggled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Todo not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Toggle todo completion status",
+        "tags": ["Todos"]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "summary": "Health check endpoint",
+        "tags": ["Health"]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "HealthController_",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          }
+        },
+        "summary": "Readiness check endpoint",
+        "tags": ["Health"]
+      }
+    }
+  },
+  "info": {
+    "title": "Todo API",
+    "description": "A modern todo application API with blockchain integration",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "SecurePassword123!",
+            "minLength": 6
+          },
+          "name": {
+            "type": "string",
+            "description": "User display name",
+            "example": "John Doe",
+            "maxLength": 100
+          },
+          "walletAddress": {
+            "type": "string",
+            "description": "User wallet address",
+            "example": "0x1234567890abcdef"
+          },
+          "preferredNetwork": {
+            "type": "string",
+            "description": "Preferred blockchain network",
+            "enum": ["solana", "polkadot", "polygon"]
+          }
+        },
+        "required": ["email", "password", "name"]
+      },
+      "PublicUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "walletAddress": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "email", "name"]
+      },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT access token"
+          },
+          "user": {
+            "description": "User information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicUserDto"
+              }
+            ]
+          }
+        },
+        "required": ["access_token", "user"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "SecurePassword123!"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "CreateTodoDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Todo title",
+            "example": "Complete project documentation",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "description": "Todo description",
+            "example": "Write comprehensive documentation for the todo application",
+            "maxLength": 1000
+          },
+          "priority": {
+            "type": "string",
+            "description": "Todo priority level",
+            "enum": ["low", "medium", "high"],
+            "example": "medium"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Todo due date",
+            "example": "2024-01-15T00:00:00.000Z"
+          },
+          "tags": {
+            "description": "Todo tags",
+            "example": ["work", "documentation"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["title"]
+      },
+      "Todo": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Todo title",
+            "example": "Complete project documentation"
+          },
+          "description": {
+            "type": "string",
+            "description": "Todo description",
+            "example": "Write comprehensive documentation for the todo application"
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "Todo completion status",
+            "example": false
+          },
+          "priority": {
+            "type": "string",
+            "description": "Todo priority level",
+            "enum": ["low", "medium", "high"],
+            "example": "medium"
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Todo due date",
+            "example": "2024-01-15T00:00:00.000Z"
+          },
+          "tags": {
+            "description": "Todo tags",
+            "example": ["work", "documentation"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID who owns this todo",
+            "example": "user123"
+          },
+          "blockchainNetwork": {
+            "type": "string",
+            "description": "Blockchain network where todo is stored",
+            "enum": ["solana", "polkadot", "polygon"]
+          },
+          "transactionHash": {
+            "type": "string",
+            "description": "Blockchain transaction hash",
+            "example": "0x1234567890abcdef"
+          },
+          "blockchainAddress": {
+            "type": "string",
+            "description": "Blockchain address",
+            "example": "solana-address-123"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": ["title", "completed", "priority", "tags", "userId", "createdAt", "updatedAt"]
+      },
+      "UpdateTodoDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Todo title",
+            "example": "Complete project documentation",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "description": "Todo description",
+            "example": "Write comprehensive documentation for the todo application",
+            "maxLength": 1000
+          },
+          "priority": {
+            "type": "string",
+            "description": "Todo priority level",
+            "enum": ["low", "medium", "high"],
+            "example": "medium"
+          },
+          "dueDate": {
+            "type": "string",
+            "description": "Todo due date",
+            "example": "2024-01-15T00:00:00.000Z"
+          },
+          "tags": {
+            "description": "Todo tags",
+            "example": ["work", "documentation"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "Todo completion status",
+            "example": false
+          },
+          "blockchainNetwork": {
+            "type": "string",
+            "description": "Blockchain network where todo is stored",
+            "enum": ["solana", "polkadot", "polygon"]
+          },
+          "transactionHash": {
+            "type": "string",
+            "description": "Blockchain transaction hash",
+            "example": "0x1234567890abcdef"
+          },
+          "blockchainAddress": {
+            "type": "string",
+            "description": "Blockchain address",
+            "example": "solana-address-123"
+          }
+        }
+      }
+    }
+  }
+}
