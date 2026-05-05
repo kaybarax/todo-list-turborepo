@@ -13,7 +13,7 @@ import { rateLimitPlugin } from './plugins/rate-limit';
 import { security } from './plugins/security';
 import { sanitizer } from './utils/sanitizer';
 
-export const app = new Elysia()
+export const app = new Elysia({ normalize: false })
   .use(errors)
   .use(logging)
   .use(corsPlugin)

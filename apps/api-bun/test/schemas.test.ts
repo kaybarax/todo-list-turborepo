@@ -52,6 +52,15 @@ describe('Schemas Validation', () => {
       };
       expect(Value.Check(LoginBodySchema, data)).toBe(true);
     });
+
+    it('should reject login body with unknown properties', () => {
+      const data = {
+        email: 'test@example.com',
+        password: 'password123',
+        unknown: 'property',
+      };
+      expect(Value.Check(LoginBodySchema, data)).toBe(false);
+    });
   });
 
   describe('Todo Schemas', () => {

@@ -43,6 +43,7 @@ describe('Auth Integration', () => {
       expect(body.access_token).toBeDefined();
       expect(body.user.email).toBe('test@example.com');
       expect(body.user.name).toBe('Test User');
+      expect(body.user.password).toBeUndefined();
     });
 
     it('should return 409 if email already exists', async () => {
@@ -123,6 +124,7 @@ describe('Auth Integration', () => {
       const body = (await response.json()) as any;
       expect(body.access_token).toBeDefined();
       expect(body.user.email).toBe('login@example.com');
+      expect(body.user.password).toBeUndefined();
     });
 
     it('should return 401 with incorrect password', async () => {
@@ -202,6 +204,19 @@ describe('Auth Integration', () => {
 
       expect(response.status).toBe(401);
     });
+
+    it('should return 401 for an invalid token', async () => {
+      const response = await app.handle(
+        new Request('http://localhost/api/v1/auth/refresh', {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer invalid-token',
+          },
+        }),
+      );
+
+      expect(response.status).toBe(401);
+    });
   });
 
   describe('GET /api/v1/auth/profile', () => {
@@ -237,10 +252,23 @@ describe('Auth Integration', () => {
       const body = (await response.json()) as any;
       expect(body.email).toBe('profile@example.com');
       expect(body.name).toBe('Profile User');
+      expect(body.password).toBeUndefined();
     });
 
     it('should return 401 if no token provided', async () => {
       const response = await app.handle(new Request('http://localhost/api/v1/auth/profile'));
+      expect(response.status).toBe(401);
+    });
+
+    it('should return 401 for an invalid token', async () => {
+      const response = await app.handle(
+        new Request('http://localhost/api/v1/auth/profile', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer invalid-token',
+          },
+        }),
+      );
       expect(response.status).toBe(401);
     });
   });

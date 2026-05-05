@@ -103,6 +103,24 @@ describe('Todo Integration', () => {
 
       expect(response.status).toBe(401);
     });
+
+    it('should return 400 when extra fields are provided (security)', async () => {
+      const response = await app.handle(
+        new Request('http://localhost/api/v1/todos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            title: 'Valid Title',
+            unknownField: 'hacking',
+          }),
+        }),
+      );
+
+      expect(response.status).toBe(400);
+    });
   });
 
   describe('GET /api/v1/todos', () => {
@@ -363,6 +381,10 @@ describe('Todo Integration', () => {
         }),
       );
 
+      if (response.status !== 204) {
+        console.log('Delete failure status:', response.status);
+        console.log('Delete failure body:', await response.text());
+      }
       expect(response.status).toBe(204);
 
       const check = await Todo.findById(todoId);
