@@ -8,7 +8,7 @@
     "build": "bun build src/index.ts --target=bun --outdir=dist",
     "start:prod": "bun dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "bun test test/schemas.test.ts && bun test test/smoke.test.ts && bun test test/cache.test.ts && bun test test/redis-integration.test.ts && bun test test/db-smoke.test.ts && bun test test/auth.test.ts && bun test test/todo.test.ts && bun test test/openapi.test.ts && bun test test/modules/auth/auth.service.test.ts && bun test test/modules/health/health.test.ts && bun test test/modules/user/user.integration.test.ts && bun test test/modules/user/user.service.test.ts",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "openapi:export": "bun scripts/export-openapi.ts",
     "openapi:compare": "bun scripts/compare-openapi.ts"

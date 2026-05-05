@@ -1,19 +1,25 @@
 import { describe, expect, it, beforeAll, afterAll } from 'bun:test';
 
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+
 import { app } from '../../../src/app';
 import { cache } from '../../../src/cache';
-import { connectToDatabase, disconnectFromDatabase } from '../../../src/db/mongo';
 import { type HealthResponse, type ReadinessResponse } from '../../../src/schemas/health';
 
 describe('Health Module', () => {
+  let mongod: MongoMemoryServer;
+
   beforeAll(async () => {
-    await connectToDatabase();
+    mongod = await MongoMemoryServer.create();
+    await mongoose.connect(mongod.getUri());
     await cache.initialize();
   });
 
   afterAll(async () => {
     await cache.quit();
-    await disconnectFromDatabase();
+    await mongoose.disconnect();
+    await mongod.stop();
   });
 
   describe('GET /api/v1/health', () => {
