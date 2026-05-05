@@ -131,7 +131,7 @@ CMD ["node", "apps/api/dist/main.js"]
 
 ### Files Created
 
-**File**: `docs/API_SECRETS_AND_CONFIGURATION.md`
+**File**: `docs/api/secrets-and-configuration.md`
 
 A comprehensive 400+ line guide covering:
 
@@ -231,7 +231,7 @@ module "api_secrets" {
 
 ### Files Created
 
-**File**: `docs/API_DATABASE_MIGRATION_POLICY.md`
+**File**: `docs/api/database-migration-policy.md`
 
 A comprehensive 400+ line policy document covering:
 
@@ -419,8 +419,8 @@ Updated "API Deployment Todo" section:
 | --------------------------------------------- | -------------- | ------------------------------------------- | --- |
 | `.github/workflows/build-api-image.yml`       | Workflow       | Build and push API Docker image to ECR      | 130 |
 | `.github/workflows/migrate-api-database.yml`  | Workflow       | Production database migration orchestration | 340 |
-| `docs/API_SECRETS_AND_CONFIGURATION.md`       | Documentation  | Secrets management and configuration guide  | 420 |
-| `docs/API_DATABASE_MIGRATION_POLICY.md`       | Documentation  | Database migration policies and procedures  | 430 |
+| `docs/api/secrets-and-configuration.md`       | Documentation  | Secrets management and configuration guide  | 420 |
+| `docs/api/database-migration-policy.md`       | Documentation  | Database migration policies and procedures  | 430 |
 | `infra/terraform/modules/api-secrets/main.tf` | Infrastructure | Terraform module for secrets management     | 210 |
 
 ### Files Modified:

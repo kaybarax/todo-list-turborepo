@@ -372,4 +372,4 @@ export function ThemeSwitcher() {
 - [Style Dictionary Documentation](https://amzn.github.io/style-dictionary/)
 - [DaisyUI Documentation](https://daisyui.com/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
-- [Project Storybook](./storybook) - Interactive component examples
+- [Storybook Guidelines](../../STORYBOOK_GUIDELINES.md) - Interactive component examples and workflow

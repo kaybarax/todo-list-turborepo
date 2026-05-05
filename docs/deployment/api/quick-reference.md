@@ -9,8 +9,8 @@ All 5 major tasks from "API Deployment Todo" are now complete:
 | **Dockerfile Fix**              | ✅     | `apps/api/Dockerfile`                                                                  |
 | **Image Build Workflow**        | ✅     | `.github/workflows/build-api-image.yml`                                                |
 | **Deploy Workflow Enhancement** | ✅     | `.github/workflows/deploy-api-aws.yml`                                                 |
-| **Secrets Management**          | ✅     | `docs/API_SECRETS_AND_CONFIGURATION.md`, `infra/terraform/modules/api-secrets/main.tf` |
-| **Database Migrations**         | ✅     | `docs/API_DATABASE_MIGRATION_POLICY.md`, `.github/workflows/migrate-api-database.yml`  |
+| **Secrets Management**          | ✅     | `docs/api/secrets-and-configuration.md`, `infra/terraform/modules/api-secrets/main.tf` |
+| **Database Migrations**         | ✅     | `docs/api/database-migration-policy.md`, `.github/workflows/migrate-api-database.yml`  |
 
 ---
 
@@ -82,18 +82,18 @@ gh workflow run migrate-api-database.yml \
 
 ### Essential Reading (In Order):
 
-1. **`docs/API_DEPLOYMENT_COMPLETION_SUMMARY.md`** (📍 START HERE)
+1. **`docs/deployment/api/completion-summary.md`** (📍 START HERE)
    - Overview of all completed tasks
    - Summary of changes to each file
    - Next steps for integration
 
-2. **`docs/API_SECRETS_AND_CONFIGURATION.md`**
+2. **`docs/api/secrets-and-configuration.md`**
    - How to store and manage secrets in AWS
    - Environment variable reference
    - ECS task definition examples
    - Secret rotation procedures
 
-3. **`docs/API_DATABASE_MIGRATION_POLICY.md`**
+3. **`docs/api/database-migration-policy.md`**
    - Database migration policies
    - How to create and run migrations
    - Rollback procedures
@@ -467,7 +467,7 @@ terraform fmt -check infra/terraform/modules/api-secrets/
 
 **Understanding the Deployment Flow**:
 
-1. Read `docs/API_DEPLOYMENT_COMPLETION_SUMMARY.md`
+1. Read `docs/deployment/api/completion-summary.md`
 2. Review the workflow files in `.github/workflows/`
 3. Study the Dockerfile in `apps/api/Dockerfile`
 4. Review Terraform module in `infra/terraform/modules/api-secrets/`

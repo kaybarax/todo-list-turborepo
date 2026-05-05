@@ -38,7 +38,7 @@ I have successfully completed all tasks in the "API Deployment Todo" section of 
 
 - **Status**: Fully documented and IaC-ready
 - **Files Created**:
-  - `docs/API_SECRETS_AND_CONFIGURATION.md` (420 lines)
+  - `docs/api/secrets-and-configuration.md` (420 lines)
   - `infra/terraform/modules/api-secrets/main.tf` (210 lines)
 - **Covers**: Secrets Manager, SSM, Terraform module, ECS integration
 
@@ -46,7 +46,7 @@ I have successfully completed all tasks in the "API Deployment Todo" section of 
 
 - **Status**: Policy and automation complete
 - **Files Created**:
-  - `docs/API_DATABASE_MIGRATION_POLICY.md` (430 lines)
+  - `docs/api/database-migration-policy.md` (430 lines)
   - `.github/workflows/migrate-api-database.yml` (340 lines)
 - **Features**: Safe migrations, backup/rollback, Slack notifications
 
@@ -58,11 +58,11 @@ I have successfully completed all tasks in the "API Deployment Todo" section of 
 
 1. `.github/workflows/build-api-image.yml` - Docker image build/push
 2. `.github/workflows/migrate-api-database.yml` - Database migration orchestration
-3. `docs/API_SECRETS_AND_CONFIGURATION.md` - Secrets management guide
-4. `docs/API_DATABASE_MIGRATION_POLICY.md` - Migration policy & procedures
-5. `docs/API_DEPLOYMENT_COMPLETION_SUMMARY.md` - Detailed completion report
-6. `docs/API_DEPLOYMENT_QUICK_REFERENCE.md` - Quick reference guide
-7. `docs/API_DEPLOYMENT_SUMMARY.txt` - Text summary report
+3. `docs/api/secrets-and-configuration.md` - Secrets management guide
+4. `docs/api/database-migration-policy.md` - Migration policy & procedures
+5. `docs/deployment/api/completion-summary.md` - Detailed completion report
+6. `docs/deployment/api/quick-reference.md` - Quick reference guide
+7. `docs/deployment/api/summary.txt` - Text summary report
 8. `infra/terraform/modules/api-secrets/main.tf` - Secrets management IaC
 
 ### Modified Files (3):
@@ -81,16 +81,16 @@ I have successfully completed all tasks in the "API Deployment Todo" section of 
 
 ```bash
 # Start here - comprehensive overview
-open docs/API_DEPLOYMENT_COMPLETION_SUMMARY.md
+open docs/deployment/api/completion-summary.md
 
 # Quick reference with commands
-open docs/API_DEPLOYMENT_QUICK_REFERENCE.md
+open docs/deployment/api/quick-reference.md
 
 # Secrets management setup
-open docs/API_SECRETS_AND_CONFIGURATION.md
+open docs/api/secrets-and-configuration.md
 
 # Database migration procedures
-open docs/API_DATABASE_MIGRATION_POLICY.md
+open docs/api/database-migration-policy.md
 ```
 
 ### Trigger Workflows
@@ -176,10 +176,10 @@ gh workflow run migrate-api-database.yml \
 
 All documentation is production-ready and comprehensive:
 
-- `docs/API_DEPLOYMENT_COMPLETION_SUMMARY.md` - 400+ lines
-- `docs/API_DEPLOYMENT_QUICK_REFERENCE.md` - 450+ lines
-- `docs/API_SECRETS_AND_CONFIGURATION.md` - 420+ lines
-- `docs/API_DATABASE_MIGRATION_POLICY.md` - 430+ lines
+- `docs/deployment/api/completion-summary.md` - 400+ lines
+- `docs/deployment/api/quick-reference.md` - 450+ lines
+- `docs/api/secrets-and-configuration.md` - 420+ lines
+- `docs/api/database-migration-policy.md` - 430+ lines
 
 Each includes:
 
@@ -228,10 +228,10 @@ All created files have been verified:
 
 Refer to:
 
-- **Dockerfile**: Check `docs/API_DEPLOYMENT_QUICK_REFERENCE.md`
+- **Dockerfile**: Check `docs/deployment/api/quick-reference.md`
 - **Workflows**: Review `.github/workflows/` files
-- **Secrets**: Read `docs/API_SECRETS_AND_CONFIGURATION.md`
-- **Migrations**: Review `docs/API_DATABASE_MIGRATION_POLICY.md`
+- **Secrets**: Read `docs/api/secrets-and-configuration.md`
+- **Migrations**: Review `docs/api/database-migration-policy.md`
 - **Terraform**: Check `infra/terraform/modules/api-secrets/main.tf`
 
 ---

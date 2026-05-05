@@ -78,7 +78,7 @@ The mobile app uses EAS for builds and submissions.
 
 - **Secrets**: Stored in **AWS Secrets Manager** (runtime) or **GitHub Secrets** (build-time/deployment).
 - **Configuration**: Managed via **Terraform Outputs** and injected into GitHub Environments.
-- **Environment Variables**: Defined in [docs/ENVIRONMENT_VARIABLES.md](file:///Users/kevin/workspace/todo-list-turborepo/docs/ENVIRONMENT_VARIABLES.md).
+- **Environment Variables**: Defined in [Environment Variables](../development/environment-variables.md).
 
 ### Updating Secrets
 

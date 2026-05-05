@@ -56,7 +56,7 @@ Consolidated the mobile app's theme architecture from multiple competing systems
    - Architecture documentation
    - Usage patterns and migration guide
 
-2. **`docs/THEME_SYSTEM_CLEANUP.md`** (this file)
+2. **`docs/design-system/theme-system-cleanup.md`** (this file)
    - Cleanup summary
    - Rationale and decisions
 

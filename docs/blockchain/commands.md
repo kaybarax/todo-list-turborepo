@@ -253,9 +253,9 @@ pnpm test:integration:blockchain
 
 ## 📖 Related Documentation
 
-- [BLOCKCHAIN_SETUP.md](BLOCKCHAIN_SETUP.md) - Detailed setup instructions
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Comprehensive troubleshooting guide
-- [README.md](../README.md) - Main project documentation
+- [Blockchain Setup](./setup.md) - Detailed setup instructions
+- [Troubleshooting](../support/troubleshooting.md) - Comprehensive troubleshooting guide
+- [Documentation Index](../README.md) - Main documentation index
 - `scripts/troubleshooting/` - Platform-specific troubleshooting guides
 
 ## 🔄 Keeping Tools Updated

@@ -414,4 +414,4 @@ After completing the setup:
 3. **Start Development**: Use `pnpm dev` to start the development environment
 4. **Deploy Contracts**: Follow the deployment guides for each network
 
-For more detailed information about development workflows, see the main [README.md](../README.md) and other documentation in the `docs/` directory.
+For more detailed information about development workflows, see the main [README.md](../../README.md) and the [documentation index](../README.md).

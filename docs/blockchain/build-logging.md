@@ -365,7 +365,7 @@ When adding new logging features:
 
 ## Related Documentation
 
-- [Blockchain Development Setup](./BASE_SETUP.md)
-- [Testing Guide](./TESTING.md)
-- [Troubleshooting](./TROUBLESHOOTING.md)
-- [Deployment Guide](./DEPLOYMENT.md)
+- [Blockchain Development Setup](./setup.md)
+- [Testing Guide](../testing/testing-strategy.md)
+- [Troubleshooting](../support/troubleshooting.md)
+- [Deployment Guide](../deployment/deployment-guide.md)

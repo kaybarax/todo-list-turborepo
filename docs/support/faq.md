@@ -804,12 +804,12 @@ pnpm dev
 
 ## 📚 Additional Resources
 
-- **[Architecture Guide](./ARCHITECTURE.md)** - System design and patterns
-- **[API Documentation](./API.md)** - Complete API reference
-- **[Testing Guide](./TESTING.md)** - Testing strategies and examples
-- **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment instructions
-- **[Troubleshooting Guide](./TROUBLESHOOTING.md)** - Common issues and solutions
-- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute to the project
+- **[API Gateway Architecture](../api/gateway/02-target-architecture.md)** - System design and gateway patterns
+- **[Bun + Elysia API Guide](../api/bun-elysia-api-guide.md)** - Bun API technical reference
+- **[Testing Guide](../testing/testing-strategy.md)** - Testing strategies and examples
+- **[Deployment Guide](../deployment/deployment-guide.md)** - Production deployment instructions
+- **[Troubleshooting Guide](./troubleshooting.md)** - Common issues and solutions
+- **[Contributing Guide](../../CONTRIBUTING.md)** - How to contribute to the project
 
 ---
 
