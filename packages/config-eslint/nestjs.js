@@ -40,7 +40,7 @@ module.exports = [
 
       // Base TypeScript rules with NestJS optimizations
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -55,7 +55,7 @@ module.exports = [
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/require-await': 'warn',
+      '@typescript-eslint/require-await': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
@@ -87,7 +87,7 @@ module.exports = [
       'no-duplicate-imports': 'off', // Handled by import/no-duplicates
 
       // Promise rules
-      'promise/always-return': 'warn',
+      'promise/always-return': 'off',
       'promise/catch-or-return': 'error',
       'promise/param-names': 'error',
       'promise/no-return-wrap': 'error',

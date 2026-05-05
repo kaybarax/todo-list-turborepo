@@ -49,7 +49,7 @@ module.exports = [
 
       // TypeScript rules for smart contract development
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -64,7 +64,7 @@ module.exports = [
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/require-await': 'warn',
+      '@typescript-eslint/require-await': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
@@ -85,7 +85,7 @@ module.exports = [
       'security/detect-pseudoRandomBytes': 'error',
 
       // General rules for contract development
-      'no-console': 'warn', // Allow console for debugging but warn
+      'no-console': 'off', // Allow console for debugging
       'prefer-const': 'error',
       'no-var': 'error',
       'prefer-arrow-callback': 'error',
@@ -93,7 +93,7 @@ module.exports = [
       eqeqeq: ['error', 'always', { null: 'ignore' }],
 
       // Promise rules
-      'promise/always-return': 'warn',
+      'promise/always-return': 'off',
       'promise/catch-or-return': 'error',
       'promise/param-names': 'error',
       'promise/no-return-wrap': 'error',

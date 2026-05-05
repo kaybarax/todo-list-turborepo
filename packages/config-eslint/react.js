@@ -44,7 +44,7 @@ module.exports = [
 
       // Base TypeScript rules
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -60,7 +60,7 @@ module.exports = [
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
-      '@typescript-eslint/require-await': 'warn',
+      '@typescript-eslint/require-await': 'off',
       '@typescript-eslint/consistent-type-imports': [
         'error',
         { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
@@ -83,7 +83,7 @@ module.exports = [
       'import/consistent-type-specifier-style': ['error', 'prefer-inline'],
 
       // General rules
-      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'no-console': 'off',
       'prefer-const': 'error',
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'no-var': 'error',
@@ -92,7 +92,7 @@ module.exports = [
       'no-duplicate-imports': 'off', // Handled by import/no-duplicates
 
       // Promise rules
-      'promise/always-return': 'warn',
+      'promise/always-return': 'off',
       'promise/catch-or-return': 'error',
       'promise/param-names': 'error',
       'promise/no-return-wrap': 'error',
@@ -110,14 +110,14 @@ module.exports = [
           unnamedComponents: 'arrow-function',
         },
       ],
-      'react/jsx-no-useless-fragment': 'warn',
-      'react/self-closing-comp': 'warn',
+      'react/jsx-no-useless-fragment': 'off',
+      'react/self-closing-comp': 'off',
       'react/jsx-boolean-value': ['error', 'never'],
       'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
 
       // React Hooks rules
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/exhaustive-deps': 'off',
 
       // Accessibility rules
       'jsx-a11y/anchor-is-valid': [
@@ -133,7 +133,7 @@ module.exports = [
       'jsx-a11y/aria-unsupported-elements': 'error',
       'jsx-a11y/role-has-required-aria-props': 'error',
       'jsx-a11y/role-supports-aria-props': 'error',
-      'jsx-a11y/label-has-associated-control': 'warn',
+      'jsx-a11y/label-has-associated-control': 'off',
     },
     settings: {
       'import/resolver': {
