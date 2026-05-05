@@ -36,7 +36,6 @@ describe('AuthService', () => {
     updatedAt: new Date('2024-01-01'),
     comparePassword: jest.fn(),
     toJSON: jest.fn(),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any; // Mock UserDocument for testing - complex Mongoose Document interface
 
   beforeEach(async () => {

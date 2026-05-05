@@ -3,11 +3,9 @@
  * This is a placeholder implementation for OpenTelemetry tracing
  */
 export function Trace(operationName: string) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     descriptor.value = async function (...args: any[]) {
       const isTest = process.env.NODE_ENV === 'test';
 

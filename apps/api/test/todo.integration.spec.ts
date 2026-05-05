@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Integration test file: allowing 'any' type for request mocking and test utilities
 import { type INestApplication } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';

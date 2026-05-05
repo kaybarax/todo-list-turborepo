@@ -59,7 +59,6 @@ export class TodoRepository {
     return !!result;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async aggregate(pipeline: PipelineStage[]): Promise<any[]> {
     return this.todoModel.aggregate(pipeline).exec();
   }
