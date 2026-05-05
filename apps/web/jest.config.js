@@ -1,4 +1,5 @@
 const nextJest = require('next/jest');
+const path = require('path');
 const baseConfig = require('@todo/config-jest/jest.config.nextjs.js');
 
 const createJestConfig = nextJest({
@@ -11,12 +12,8 @@ const customJestConfig = {
   ...baseConfig,
   setupFilesAfterEnv: ['<rootDir>/../../packages/config-jest/setup-tests.js', '<rootDir>/jest.setup.js'],
   moduleNameMapper: {
+    ...baseConfig.moduleNameMapper,
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@todo/utils/(.*)$': '<rootDir>/../../packages/utils/src/$1',
-    '^@todo/services$': '<rootDir>/../../packages/services/src',
-    '^@todo/services/(.*)$': '<rootDir>/../../packages/services/src/$1',
-    '^@todo/ui-web$': '<rootDir>/../../packages/ui-web/src',
-    '^@todo/ui-web/(.*)$': '<rootDir>/../../packages/ui-web/src/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
 };

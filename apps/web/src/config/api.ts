@@ -16,7 +16,7 @@ export const getApiBaseUrl = (): string => {
  */
 export const apiFactory = new ApiClientFactory({
   baseUrl: getApiBaseUrl(),
-  environment: (process.env.NODE_ENV as any) || 'development',
+  environment: (process.env.NODE_ENV as 'development' | 'staging' | 'production') || 'development',
 });
 
 /**

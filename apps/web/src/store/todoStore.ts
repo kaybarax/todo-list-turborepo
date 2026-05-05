@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { TodoData as Todo } from '@/components/todo/TodoItem';
 import { createBlockchainService, todoToBlockchainTodo, type TransactionResult } from '@/services/blockchainService';
-import type { BlockchainNetwork } from '@todo/services';
+import type { BlockchainNetwork, ApiTodo, ApiResponse } from '@todo/services';
 import { todoClient } from '@/config/api';
 
 interface TodoStore {
@@ -216,21 +216,20 @@ export const useTodoStore = create<TodoStore>()(
       fetchTodos: async () => {
         set({ isLoading: true, error: null });
         try {
-          const response = await todoClient.getTodos();
+          const response: ApiResponse<ApiTodo[]> = await todoClient.getTodos();
           if (response.success && response.data) {
-            // Map API todos to store format
-            const mappedTodos: Todo[] = response.data.map(todo => ({
+            const mappedTodos: Todo[] = response.data.map((todo: ApiTodo) => ({
               id: todo.id,
               title: todo.title,
               description: todo.description,
               completed: todo.completed,
-              priority: todo.priority as any,
+              priority: todo.priority,
               dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
               tags: todo.tags,
               userId: todo.userId,
               createdAt: new Date(todo.createdAt),
               updatedAt: new Date(todo.updatedAt),
-              blockchainNetwork: todo.blockchainNetwork as any,
+              blockchainNetwork: todo.blockchainNetwork,
               transactionHash: todo.transactionHash,
               blockchainAddress: todo.blockchainAddress,
             }));

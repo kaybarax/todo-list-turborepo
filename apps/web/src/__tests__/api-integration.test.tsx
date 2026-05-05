@@ -3,8 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import React from 'react';
 import { TodoApiClient } from '@todo/services';
-import { TodoList } from '@/components/todo/TodoList';
-import { TodoForm } from '@/components/todo/TodoForm';
+import { TodoList, TodoForm } from '@/components/todo';
 import { apiTodoToTodo } from './test-utils';
 
 // Mock data

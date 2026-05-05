@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ThemeSwitcher } from '../theme/ThemeSwitcher';
-import { ThemeProvider } from '../theme/ThemeProvider';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 
 // Mock the theme context
 const mockSetTheme = jest.fn();

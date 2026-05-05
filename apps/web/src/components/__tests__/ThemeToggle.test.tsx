@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ThemeToggle } from '../theme/ThemeToggle';
-import { ThemeProvider } from '../theme/ThemeProvider';
+import { ThemeProvider } from '@/components/theme/theme-provider';
 
 // Mock the theme context
 const mockSetMode = jest.fn();
