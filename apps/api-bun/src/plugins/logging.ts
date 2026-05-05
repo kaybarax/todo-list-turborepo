@@ -1,5 +1,5 @@
-import { type Elysia } from 'elysia';
 import { createApiLogger } from '@todo/utils/logging';
+import { type Elysia } from 'elysia';
 
 const apiLogger = createApiLogger({
   service: 'api-bun',
@@ -8,19 +8,19 @@ const apiLogger = createApiLogger({
 /**
  * Redacts sensitive information from objects (deep clone with redaction)
  */
-function redact(obj: any): any {
+function redact(obj: unknown): unknown {
   if (!obj || typeof obj !== 'object') return obj;
 
   const sensitiveKeys = ['password', 'token', 'access_token', 'refreshToken', 'secret'];
-  const redacted = Array.isArray(obj) ? [] : {};
+  const redacted: Record<string, unknown> | unknown[] = Array.isArray(obj) ? [] : {};
 
-  for (const key in obj) {
+  for (const [key, value] of Object.entries(obj)) {
     if (sensitiveKeys.includes(key.toLowerCase())) {
-      (redacted as any)[key] = '[REDACTED]';
-    } else if (typeof obj[key] === 'object') {
-      (redacted as any)[key] = redact(obj[key]);
+      redacted[key as keyof typeof redacted] = '[REDACTED]';
+    } else if (value && typeof value === 'object') {
+      redacted[key as keyof typeof redacted] = redact(value);
     } else {
-      (redacted as any)[key] = obj[key];
+      redacted[key as keyof typeof redacted] = value;
     }
   }
 
@@ -40,22 +40,25 @@ export const logging = (app: Elysia) =>
     })
     .onAfterHandle(({ request, set, _logStart, body, query, path }) => {
       const end = performance.now();
-      const duration = Math.round(end - (_logStart as number));
+      const duration = Math.round(end - _logStart);
+      const status = set.status ?? 200;
+      const serializedBody = JSON.stringify(body ?? {});
 
-      apiLogger.info(`${request.method} ${path} ${set.status || 200} - ${duration}ms`, {
+      apiLogger.info(`${request.method} ${path} ${status} - ${duration}ms`, {
         method: request.method,
         path,
-        status: set.status || 200,
+        status,
         duration,
         query: redact(query),
         // We only log body for non-GET requests and small bodies
-        body: request.method !== 'GET' && JSON.stringify(body || {}).length < 1000 ? redact(body) : undefined,
+        body: request.method !== 'GET' && serializedBody.length < 1000 ? redact(body) : undefined,
       });
     })
     .onError(({ request, error, path, set }) => {
       const errorMessage = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      const status = typeof set.status === 'number' ? set.status : Number(set.status) || 500;
+      const statusValue = typeof set.status === 'number' ? set.status : set.status == null ? 500 : Number(set.status);
+      const status = Number.isNaN(statusValue) ? 500 : statusValue;
 
       apiLogger.error(`${request.method} ${path} FAILED - ${errorMessage}`, {
         method: request.method,

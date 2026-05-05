@@ -37,6 +37,38 @@ export class ConflictError extends Error {
 
 import { logger } from './logging';
 
+function getStatusCode(code: string, error: unknown, status: unknown) {
+  switch (code) {
+    case 'BAD_REQUEST':
+    case 'VALIDATION':
+      return 400;
+    case 'UNAUTHORIZED':
+      return 401;
+    case 'FORBIDDEN':
+      return 403;
+    case 'NOT_FOUND':
+      return 404;
+    case 'CONFLICT':
+      return 409;
+    default: {
+      if (error instanceof Error && error.name === 'CastError') {
+        return 400;
+      }
+
+      if (typeof status === 'number') {
+        return status;
+      }
+
+      if (status == null) {
+        return 500;
+      }
+
+      const numericStatus = Number(status);
+      return Number.isNaN(numericStatus) ? 500 : numericStatus;
+    }
+  }
+}
+
 export const errors = (app: Elysia) =>
   app
     .error({
@@ -47,7 +79,7 @@ export const errors = (app: Elysia) =>
       CONFLICT: ConflictError,
     })
     .onError(({ code, error, set, request, path }) => {
-      const status = typeof set.status === 'number' ? set.status : Number(set.status) || 500;
+      const status = getStatusCode(code, error, set.status);
       const errorMessage = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
 

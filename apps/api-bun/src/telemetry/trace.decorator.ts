@@ -1,14 +1,41 @@
 import { logger } from '../plugins/logging';
 
+const handledErrorNames = new Set([
+  'BadRequestError',
+  'UnauthorizedError',
+  'ForbiddenError',
+  'NotFoundError',
+  'ConflictError',
+  'CastError',
+]);
+
+function getErrorDetails(error: unknown) {
+  if (error instanceof Error) {
+    return {
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+      isHandled: handledErrorNames.has(error.name),
+    };
+  }
+
+  return {
+    message: String(error),
+    name: 'UnknownError',
+    stack: undefined,
+    isHandled: false,
+  };
+}
+
 /**
  * Simple trace decorator for method tracing
  * This provides functional parity with the NestJS Trace decorator.
  */
 export function Trace(operationName: string) {
-  return function (_target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  return function (_target: unknown, propertyName: string, descriptor: PropertyDescriptor) {
     const method = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       const start = performance.now();
       logger.debug(`[TRACE] Starting operation: ${operationName}`, {
         operation: operationName,
@@ -24,14 +51,23 @@ export function Trace(operationName: string) {
           duration: `${duration}ms`,
         });
         return result;
-      } catch (error: any) {
+      } catch (error: unknown) {
         const duration = Math.round(performance.now() - start);
-        logger.error(`[TRACE] Error in operation: ${operationName}`, {
+        const errorDetails = getErrorDetails(error);
+        const metadata = {
           operation: operationName,
-          error: error.message,
+          error: errorDetails.message,
+          errorName: errorDetails.name,
           duration: `${duration}ms`,
-          stack: error.stack,
-        });
+          stack: errorDetails.isHandled ? undefined : errorDetails.stack,
+        };
+
+        if (errorDetails.isHandled) {
+          logger.debug(`[TRACE] Handled error in operation: ${operationName}`, metadata);
+        } else {
+          logger.error(`[TRACE] Error in operation: ${operationName}`, metadata);
+        }
+
         throw error;
       }
     };
