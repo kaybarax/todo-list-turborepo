@@ -18,14 +18,14 @@ export interface WalletContextType {
   supportedNetworks: ('solana' | 'polkadot' | 'polygon' | 'moonbeam' | 'base')[];
 
   // Actions
-  // eslint-disable-next-line no-unused-vars
+
   connect: (selectedNetwork: 'solana' | 'polkadot' | 'polygon' | 'moonbeam' | 'base') => Promise<void>;
   disconnect: () => Promise<void>;
-  // eslint-disable-next-line no-unused-vars
+
   switchNetwork: (selectedNetwork: 'solana' | 'polkadot' | 'polygon' | 'moonbeam' | 'base') => Promise<void>;
-  // eslint-disable-next-line no-unused-vars
+
   signMessage: (messageText: string) => Promise<string>;
-  // eslint-disable-next-line no-unused-vars
+
   sendTransaction: (recipientAddress: string, transferAmount: string, transactionData?: string) => Promise<string>;
 }
 

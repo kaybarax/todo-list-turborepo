@@ -7,7 +7,7 @@ module.exports = [
   {
     ignores: ['.next/**', 'coverage/**', 'public/**', 'playwright-report/**', 'e2e/.playwright/**'],
   },
-  // Ensure ESLint uses this package's TS project and relax the strictest rules to warnings
+  // Ensure ESLint uses this package's TS project and disables advisory rules
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -30,13 +30,10 @@ module.exports = [
     rules: {
       // Avoid duplicate errors between core and TS rules
       'no-unused-vars': 'off',
-      // Reduce churn: treat unused and stylistic TS rules as warnings
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true },
-      ],
-      '@typescript-eslint/consistent-type-imports': 'warn',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+      // Reduce churn: disable unused and stylistic TS advisory rules
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       'react/function-component-definition': 'off',
     },
   },

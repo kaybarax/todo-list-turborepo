@@ -3,8 +3,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Button, cn, Input, Select } from '@todo/ui-web';
-import { TodoData, TodoItem } from './TodoItem';
-import { BlockchainNetwork } from '@todo/services';
+import { type TodoData, TodoItem } from './TodoItem';
+import { type BlockchainNetwork } from '@todo/services';
 
 const todoListVariants = cva('w-full', {
   variants: {
@@ -269,7 +269,7 @@ const TodoList = React.forwardRef<HTMLDivElement, TodoListProps>(
       if (loading) {
         return (
           <div className="flex justify-center py-8">
-            <div className="loading loading-spinner loading-lg"></div>
+            <div className="loading loading-spinner loading-lg" />
           </div>
         );
       }

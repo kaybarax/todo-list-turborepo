@@ -84,7 +84,7 @@ export function ThemeProvider({
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
     if (stored && isValidTheme(stored)) {
-      setThemeState(stored as DaisyUITheme);
+      setThemeState(stored);
     } else {
       // Use system preference for default themes
       const preferredTheme = systemPreference === 'dark' ? DEFAULT_DARK_THEME : DEFAULT_LIGHT_THEME;

@@ -1,4 +1,4 @@
-import { DaisyUITheme } from './theme-provider';
+import { type DaisyUITheme } from './theme-provider';
 
 // Import generated theme tokens for validation
 let daisyuiThemes: Record<string, any> = {};
