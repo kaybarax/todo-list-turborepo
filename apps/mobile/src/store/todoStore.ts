@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  TodoApiClient,
-  BlockchainServiceFactory,
-  BlockchainNetwork,
-  type UpdateBlockchainTodoInput,
-} from '@todo/services';
+import { BlockchainServiceFactory, BlockchainNetwork, type UpdateBlockchainTodoInput } from '@todo/services';
+import { todoClient } from '../config/api';
 
 export type Todo = {
   id: string;
@@ -35,16 +31,14 @@ export const useTodoStore = () => {
   const QUEUE_KEY = '@todo/mobile/sync-queue';
   const processingRef = useRef(false);
 
-  const api = useMemo(() => new TodoApiClient({ baseUrl: 'http://localhost:3001/api/v1' }), []);
-
   const fetchTodos = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await api.getTodos();
+      const res = await todoClient.getTodos();
       if (res.success && res.data) {
         const data = (res.data as any[]).map(item => ({
-          id: String(item.id),
+          id: String(item.id || item._id),
           title: item.title,
           description: item.description,
           completed: !!item.completed,
@@ -58,7 +52,7 @@ export const useTodoStore = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [api]);
+  }, []);
 
   // Hydrate from AsyncStorage on mount
   useEffect(() => {
