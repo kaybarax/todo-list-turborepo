@@ -2,6 +2,8 @@
 /* eslint-disable no-undef */
 import '@testing-library/jest-dom';
 
+(globalThis as any).__DEV__ = false;
+
 jest.mock('react-native', () => ({
   // Mock components
   TouchableOpacity: 'TouchableOpacity',

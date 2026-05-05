@@ -9,6 +9,12 @@ const TextInput = 'TextInput';
 
 export const ApplicationProvider = ({ children }) => children;
 export const IconRegistry = () => null;
+export const useTheme = () => ({
+  'text-basic-color': '#111827',
+  'text-hint-color': '#6b7280',
+  'text-disabled-color': '#9ca3af',
+  'text-control-color': '#ffffff',
+});
 export const Button = ({
   children,
   onPress,
@@ -71,6 +77,7 @@ export const Icon = props => React.createElement(RNText, props);
 export default {
   ApplicationProvider,
   IconRegistry,
+  useTheme,
   Button,
   Text,
   Input,
