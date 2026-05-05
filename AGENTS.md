@@ -11,7 +11,7 @@
 ### Development Environment
 
 - **Full dev setup**: `pnpm dev` (runs `scripts/startDev.sh` - starts Docker infra + all apps)
-- **Service isolation**: `pnpm dev:web|api|mobile|ingestion` (uses `turbo run dev --filter`)
+- **Service isolation**: `pnpm dev:web|api|api-bun|mobile|ingestion` (uses `turbo run dev --filter`)
 - **Database**: `pnpm db:setup` (MongoDB migrations + seed), `pnpm db:reset` (clean rebuild)
 - **Blockchain tools**: `pnpm blockchain:deps:check` (diagnoses missing Rust/Solana/Anchor), `pnpm blockchain:deps:fix` (auto-installs)
 
@@ -45,7 +45,7 @@
 
 ### Code Organization
 
-- **API modules**: `apps/api/src/{auth,todo,user,blockchain,...}` (controllers/services/schemas)
+- **API modules**: `apps/api/src/{auth,todo,user,blockchain,...}` (NestJS) or `apps/api-bun/src/modules/` (Bun/Elysia)
 - **Shared services**: `packages/services/src/{api,blockchain,todo,utils}` (Axios clients, blockchain factory)
 - **UI components**: `packages/ui-web/ui-mobile` (DaisyUI + Style Dictionary tokens)
 - **Blockchain factory**: `packages/services/src/blockchain/BlockchainServiceFactory.ts` (network abstraction)
@@ -76,7 +76,7 @@
 
 - **Docker compose**: `docker-compose.dev.yml` (MongoDB:27017, Redis:6379, Jaeger:16686, MailHog:8025)
 - **Health checks**: API `/health`, Web `GET /api/health`
-- **Tracing**: OTEL in API (`JAEGER_ENDPOINT`, `OTEL_*` env vars) → Collector → Jaeger UI
+- **Tracing**: OTEL in API (`JAEGER_ENDPOINT`, `OTEL_*` env vars) → Collector → Jaeger UI (Supported in both NestJS and Bun APIs)
 
 ### External Dependencies
 
