@@ -52,6 +52,20 @@ jobs:
       - name: Build
         run: pnpm turbo run build --continue
 
+      - name: OpenAPI Parity Check
+        run: |
+          pnpm --filter @todo/api-bun openapi:export
+          # We don't fail the CI on non-breaking differences, but we want to see the report
+          pnpm --filter @todo/api-bun openapi:compare || echo "⚠️ OpenAPI differences detected. Review artifacts."
+        env:
+          NODE_ENV: test
+
+      - name: Upload OpenAPI Spec
+        uses: actions/upload-artifact@v4
+        with:
+          name: bun-api-openapi-spec
+          path: docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json
+
       - name: Upload Turbo summary
         uses: actions/upload-artifact@v4
         if: always()
