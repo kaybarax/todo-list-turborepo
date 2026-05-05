@@ -6,7 +6,12 @@
     "types": ["node", "react", "react-dom"],
     "paths": {
       "@/*": ["./src/*"],
-      "@todo/*": ["../../packages/*/src"]
+      "@todo/services": ["../../packages/services/src"],
+      "@todo/services/*": ["../../packages/services/src/*"],
+      "@todo/ui-web": ["../../packages/ui-web/src"],
+      "@todo/ui-web/*": ["../../packages/ui-web/src/*"],
+      "@todo/utils": ["../../packages/utils/src"],
+      "@todo/utils/*": ["../../packages/utils/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/types/**/*.d.ts"],
