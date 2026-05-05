@@ -11,24 +11,24 @@ export const RegisterBodySchema = t.Object(
       format: 'email',
       maxLength: 255,
       description: 'User email address',
-      examples: ['user@example.com'],
+      example: 'user@example.com',
     }),
     password: t.String({
       minLength: 6,
       maxLength: 100,
       description: 'User password',
-      examples: ['SecurePassword123!'],
+      example: 'SecurePassword123!',
     }),
     name: t.String({
       maxLength: 100,
       description: 'User display name',
-      examples: ['John Doe'],
+      example: 'John Doe',
     }),
     walletAddress: t.Optional(
       t.String({
         maxLength: 100,
         description: 'User wallet address',
-        examples: ['0x1234567890abcdef'],
+        example: '0x1234567890abcdef',
       }),
     ),
     preferredNetwork: t.Optional(
@@ -53,12 +53,12 @@ export const LoginBodySchema = t.Object(
       format: 'email',
       maxLength: 255,
       description: 'User email address',
-      examples: ['user@example.com'],
+      example: 'user@example.com',
     }),
     password: t.String({
       maxLength: 100,
       description: 'User password',
-      examples: ['SecurePassword123!'],
+      example: 'SecurePassword123!',
     }),
   },
   {

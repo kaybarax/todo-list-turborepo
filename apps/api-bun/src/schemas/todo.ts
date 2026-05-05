@@ -27,13 +27,13 @@ export const CreateTodoBodySchema = t.Object(
       minLength: 1,
       maxLength: 200,
       description: 'Todo title',
-      examples: ['Complete project documentation'],
+      example: 'Complete project documentation',
     }),
     description: t.Optional(
       t.String({
         maxLength: 1000,
         description: 'Todo description',
-        examples: ['Write comprehensive documentation for the todo application'],
+        example: 'Write comprehensive documentation for the todo application',
       }),
     ),
     priority: t.Optional(PriorityEnum),
@@ -41,13 +41,13 @@ export const CreateTodoBodySchema = t.Object(
       t.String({
         format: 'date-time',
         description: 'Todo due date',
-        examples: ['2024-01-15T00:00:00.000Z'],
+        example: '2024-01-15T00:00:00.000Z',
       }),
     ),
     tags: t.Optional(
       t.Array(t.String({ maxLength: 50 }), {
         description: 'Todo tags',
-        examples: [['work', 'documentation']],
+        example: ['work', 'documentation'],
       }),
     ),
   },
@@ -200,8 +200,8 @@ export const TodoStatsSchema = t.Object(
     completed: t.Number(),
     active: t.Number(),
     overdue: t.Number(),
-    byPriority: t.Record(t.String(), t.Number()),
-    byBlockchainNetwork: t.Record(t.String(), t.Number()),
+    byPriority: t.Object({}, { additionalProperties: t.Number() }),
+    byBlockchainNetwork: t.Object({}, { additionalProperties: t.Number() }),
   },
   {
     description: 'Todo statistics',
