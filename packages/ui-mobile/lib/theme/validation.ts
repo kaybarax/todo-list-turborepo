@@ -43,13 +43,37 @@ export const isValidColor = (color: string): boolean => {
  * Validates color contrast ratio for accessibility
  */
 export const validateContrastRatio = (foreground: string, background: string): number => {
-  // This is a simplified implementation
-  // In a real app, you'd use a proper color contrast calculation library
+  const expandHex = (color: string): string | null => {
+    const normalized = color.trim().toLowerCase();
+    const match = normalized.match(/^#([a-f0-9]{3}|[a-f0-9]{6})$/);
+    if (!match) return null;
+
+    const hex = match[1];
+    return hex.length === 3
+      ? hex
+          .split('')
+          .map(character => character + character)
+          .join('')
+      : hex;
+  };
+
+  const getLinearChannel = (channel: number): number => {
+    const normalized = channel / 255;
+    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+
   const getLuminance = (color: string): number => {
-    // Simplified luminance calculation
-    if (color === '#FFFFFF' || color === 'white') return 1;
-    if (color === '#000000' || color === 'black') return 0;
-    return 0.5; // Default for other colors
+    if (color === 'white') return 1;
+    if (color === 'black') return 0;
+
+    const hex = expandHex(color);
+    if (!hex) return 0.5;
+
+    const red = getLinearChannel(Number.parseInt(hex.slice(0, 2), 16));
+    const green = getLinearChannel(Number.parseInt(hex.slice(2, 4), 16));
+    const blue = getLinearChannel(Number.parseInt(hex.slice(4, 6), 16));
+
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
   };
 
   const l1 = getLuminance(foreground);

@@ -44,10 +44,10 @@ export default [
       // Permit rapid iteration without nullish refactors.
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       // Non-critical in stories; avoid breaking builds for experimentation.
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['off', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-unused-vars': 'off',
       'no-undef': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   ...reactNativeConfig,

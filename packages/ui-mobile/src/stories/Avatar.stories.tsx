@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { withUIKitten } from './decorators/UIKittenProvider';
