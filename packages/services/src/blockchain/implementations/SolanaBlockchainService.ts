@@ -21,8 +21,8 @@ export class SolanaBlockchainService extends BaseBlockchainService {
   // @ts-ignore - Used in real implementation
   private program: Record<string, unknown> | null = null; // Anchor Program
 
-  constructor() {
-    super(BlockchainNetwork.SOLANA, 'https://explorer.solana.com', {
+  constructor(network: BlockchainNetwork = BlockchainNetwork.SOLANA) {
+    super(network, 'https://explorer.solana.com', {
       maxAttempts: 20,
       pollingInterval: 3000,
       timeout: 180000, // 3 minutes for Solana

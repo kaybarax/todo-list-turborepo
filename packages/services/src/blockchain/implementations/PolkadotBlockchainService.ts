@@ -21,8 +21,8 @@ export class PolkadotBlockchainService extends BaseBlockchainService {
   // @ts-ignore - Used in real implementation
   private signer: Record<string, unknown> | null = null; // Polkadot Signer
 
-  constructor() {
-    super(BlockchainNetwork.POLKADOT, 'https://polkadot.subscan.io', {
+  constructor(network: BlockchainNetwork = BlockchainNetwork.POLKADOT) {
+    super(network, 'https://polkadot.subscan.io', {
       maxAttempts: 25,
       pollingInterval: 6000,
       timeout: 300000, // 5 minutes for Polkadot

@@ -117,19 +117,19 @@ export class BlockchainServiceFactory {
         break;
 
       case BlockchainNetwork.SOLANA:
-        service = new SolanaBlockchainService();
+        service = new SolanaBlockchainService(network);
         break;
 
       case BlockchainNetwork.SOLANA_DEVNET:
-        service = new SolanaBlockchainService();
+        service = new SolanaBlockchainService(network);
         break;
 
       case BlockchainNetwork.POLKADOT:
-        service = new PolkadotBlockchainService();
+        service = new PolkadotBlockchainService(network);
         break;
 
       case BlockchainNetwork.POLKADOT_TESTNET:
-        service = new PolkadotBlockchainService();
+        service = new PolkadotBlockchainService(network);
         break;
 
       case BlockchainNetwork.MOONBEAM:

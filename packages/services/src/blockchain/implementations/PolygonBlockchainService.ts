@@ -72,7 +72,7 @@ export class PolygonBlockchainService extends BaseBlockchainService {
    * @param provider - Ethereum provider (e.g., from WalletConnect)
    */
 
-  async connectWallet(_provider: Record<string, unknown>): Promise<WalletInfo> {
+  async connectWallet(provider: any): Promise<WalletInfo> {
     try {
       // In a real implementation, we would:
       // 1. Connect to the provider
@@ -80,19 +80,26 @@ export class PolygonBlockchainService extends BaseBlockchainService {
       // 3. Initialize contracts
       // 4. Return wallet info
 
-      // Mock implementation
-      this._signer = {
-        /* Mock signer */
-      };
+      // Mock implementation using the provided provider
+      const signer = provider.getSigner();
+      this._signer = signer;
 
       // Initialize contracts
       await this.initializeContracts();
 
-      // Get wallet address
-      const address = '0x1234567890123456789012345678901234567890'; // Mock address
+      // Get wallet address from provider/signer
+      const address = await signer.getAddress();
 
-      // Get chain ID to ensure we're on the right network
-      const chainId = this._chainId;
+      // Get chain ID from provider/signer to ensure we're on the right network
+      const chainId = await signer.getChainId();
+
+      // Verify we're on the correct network
+      if (Number(chainId) !== this._chainId) {
+        throw BlockchainError.networkSwitchRequired(
+          `Please switch to ${this.network === BlockchainNetwork.POLYGON ? 'Polygon' : 'Polygon Mumbai'} network`,
+          this.network,
+        );
+      }
 
       // Create wallet info
       this.walletInfo = {
@@ -104,6 +111,9 @@ export class PolygonBlockchainService extends BaseBlockchainService {
 
       return this.walletInfo;
     } catch (error) {
+      if (error instanceof BlockchainError) {
+        throw error;
+      }
       throw BlockchainError.walletConnectionFailed('Failed to connect to Polygon wallet', error, this.network);
     }
   }
@@ -336,7 +346,7 @@ export class PolygonBlockchainService extends BaseBlockchainService {
           blockNumber: 12345678,
           blockHash: '0x9876543210987654321098765432109876543210987654321098765432109876',
           status: TransactionStatus.CONFIRMED,
-          from: this.walletInfo?.address ?? '',
+          from: this.walletInfo?.address ?? '0x1234567890123456789012345678901234567890',
           to: this.todoListFactoryAddress,
           gasUsed: '100000',
           effectiveGasPrice: '20000000000',
@@ -349,7 +359,20 @@ export class PolygonBlockchainService extends BaseBlockchainService {
           blockNumber: 12345679,
           blockHash: '0x8765432109876543210987654321098765432109876543210987654321098765',
           status: TransactionStatus.FAILED,
-          from: this.walletInfo?.address ?? '',
+          from: this.walletInfo?.address ?? '0x1234567890123456789012345678901234567890',
+          to: this.todoListFactoryAddress,
+          gasUsed: '100000',
+          effectiveGasPrice: '20000000000',
+          network: this.network,
+          timestamp: new Date(),
+        };
+      } else if (txHash.endsWith('6')) {
+        return {
+          transactionHash: txHash,
+          blockNumber: 12345678,
+          blockHash: '0x3456789012345678901234567890123456789012345678901234567890123456',
+          status: TransactionStatus.CONFIRMED,
+          from: this.walletInfo?.address ?? '0x1234567890123456789012345678901234567890',
           to: this.todoListFactoryAddress,
           gasUsed: '100000',
           effectiveGasPrice: '20000000000',
