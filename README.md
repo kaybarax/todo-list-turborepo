@@ -1,783 +1,453 @@
-# Todo List Monorepo
+# Todo List Turborepo
 
-**A comprehensive monorepo template designed to empower developers with a powerful, yet simple-to-use foundation for end-to-end enterprise-grade development.** This template provides all batteries included across multiple fronts - web, mobile, backend, blockchain, DevOps, and infrastructure - while maintaining an opinionated approach with carefully selected, modern technologies.
+A full-stack Todo application built as a pnpm + Turborepo monorepo. The repository includes web, mobile, two API runtimes, background ingestion, shared UI and service packages, multi-network blockchain contracts, Docker-based local infrastructure, and Terraform/Terragrunt infrastructure.
 
-A modern, full-stack Todo application built as a comprehensive monorepo showcasing best practices for enterprise-grade development with blockchain integration.
+## What Is Included
 
-## 🚀 Features
+- **Web app**: Next.js 15 App Router, TypeScript, Tailwind CSS, DaisyUI, and the shared web design system.
+- **Mobile app**: Expo React Native with shared mobile UI components and theming.
+- **NestJS API**: The primary Node.js API service with MongoDB, Redis, JWT auth, Swagger, validation, and OpenTelemetry.
+- **Bun API**: A high-performance Bun + Elysia API implementation with MongoDB, Redis/in-memory cache fallback, JWT auth, TypeBox schemas, OpenAPI docs, rate limiting, and security middleware.
+- **Ingestion service**: Background worker for blockchain data ingestion and database updates.
+- **Smart contracts**: Polygon, Solana, Polkadot, Moonbeam, and Base contract workspaces.
+- **Shared packages**: UI libraries, blockchain/API services, utilities, and shared ESLint, TypeScript, Jest, and release configuration.
+- **Infrastructure**: Docker Compose for local dependencies, Terraform modules, Terragrunt live environments, GitHub Actions, AWS ECS deployment assets, and Vercel/EAS deployment paths.
 
-### Core Applications
-
-- **Web App**: Next.js 15 with App Router, TypeScript, and comprehensive design system
-- **Mobile App**: Expo React Native with Eva Design integration and comprehensive theming
-- **API**: NestJS with MongoDB, Redis, and comprehensive validation
-- **Ingestion Service**: Background processing for blockchain data
-
-### Blockchain Integration
-
-- **Multi-Network Support**: Polygon, Solana, Polkadot, Moonbeam, and Base integration
-- **Smart Contracts**: Solidity, Rust (Anchor), and Substrate pallets across 5 networks
-- **Wallet Connectivity**: WalletConnect v2 for seamless Web3 integration
-- **Decentralized Storage**: Todo items stored on multiple blockchain networks
-
-### Development Infrastructure
-
-- **Monorepo Management**: pnpm workspaces with Turborepo orchestration
-- **Shared Packages**: UI components, services, and configurations
-- **Database**: MongoDB with migrations, seeding, and validation
-- **Caching**: Redis for performance optimization
-- **Testing**: Unit, integration, E2E, and contract testing
-- **DevOps**: Infrastructure as Code with Terraform and Terragrunt, Decoupled Deployment with GitHub Actions, AWS OIDC authentication, and comprehensive CI/CD pipelines
-
-## 📦 Repository Structure
+## Repository Structure
 
 ```text
 .
 ├── apps/
-│   ├── web/                 # Next.js 15 with App Router and Tailwind CSS
-│   ├── mobile/              # Expo React Native with TypeScript
-│   ├── api/                 # NestJS with MongoDB and Redis
-│   ├── ingestion/           # Blockchain data processing service
-│   └── smart-contracts/     # Multi-network smart contracts
-│       ├── polygon/         # Solidity contracts with Hardhat
-│       ├── solana/          # Rust programs with Anchor
+│   ├── web/                 # Next.js 15 web app
+│   ├── mobile/              # Expo React Native app
+│   ├── api/                 # NestJS API service
+│   ├── api-bun/             # Bun + Elysia API service
+│   ├── ingestion/           # Blockchain ingestion worker
+│   └── smart-contracts/     # Multi-network contracts
+│       ├── polygon/         # Solidity / Hardhat contracts
+│       ├── solana/          # Rust / Anchor programs
 │       ├── polkadot/        # Substrate pallets
-│       ├── moonbeam/        # Moonbeam EVM contracts with Hardhat
-│       └── base/            # Base L2 contracts with Hardhat
+│       ├── moonbeam/        # Moonbeam EVM contracts
+│       └── base/            # Base L2 contracts
 ├── packages/
-│   ├── ui-web/              # React component library with DaisyUI + Style Dictionary integration
-│   ├── ui-mobile/           # React Native UI library with Eva Design integration
-│   ├── services/            # Shared blockchain and API services
-│   ├── config-eslint/       # ESLint configurations for all frameworks
-│   ├── config-ts/           # TypeScript configurations
-│   └── config-jest/         # Jest testing configurations
-├── db/
-│   ├── migrations/          # MongoDB migration files with schema validation
-│   ├── setup.js             # Database setup and validation script
-│   ├── migrate.js           # Migration runner with CLI interface
-│   └── seed-todos.js        # Comprehensive seeding with sample data
-├── scripts/
-│   ├── build.sh             # Comprehensive build script with multi-env support
-│   ├── build-quick.sh       # Fast development builds
-│   ├── build-production.sh  # Production builds with security scanning
-│   └── build-contracts.sh   # Blockchain contract compilation
-├── .devcontainer/           # Complete development container setup
-│   ├── Dockerfile           # Multi-tool development environment
-│   ├── post-create.sh       # Automated environment setup
-│   └── devcontainer.json    # VS Code integration with extensions
+│   ├── ui-web/              # React component library, DaisyUI, Style Dictionary tokens
+│   ├── ui-mobile/           # React Native component library
+│   ├── services/            # API clients and blockchain service factory
+│   ├── utils/               # Shared utility helpers
+│   ├── config-eslint/       # Shared ESLint config
+│   ├── config-ts/           # Shared TypeScript config
+│   ├── config-jest/         # Shared Jest config
+│   └── config-release/      # Shared release config
+├── db/                      # MongoDB setup, migrations, and seed scripts
+├── docs/                    # Architecture, API, blockchain, deployment, and design docs
 ├── infra/
-│   ├── terraform/           # Reusable Terraform modules for AWS and GitHub
-│   ├── terragrunt/          # Environment-specific live configuration (dev, staging, prod)
-│   ├── kubernetes/          # Legacy/Reference Kubernetes manifests
-│   ├── nginx/               # NGINX configurations
-│   └── redis/               # Redis configurations
-├── .github/
-│   ├── workflows/           # CI/CD pipelines
-│   └── dependabot.yml       # Automated dependency updates
-├── turbo.json               # Turborepo build orchestration
-├── pnpm-workspace.yaml      # Workspace configuration
-├── docker-compose.dev.yml   # Development environment
-├── docker-compose.yml       # Production environment
-├── Makefile                 # Infrastructure and local deployment utilities
+│   ├── terraform/           # Reusable Terraform modules
+│   ├── terragrunt/          # Dev/staging/prod live infrastructure config
+│   ├── kubernetes/          # Reference Kubernetes manifests
+│   ├── nginx/               # NGINX config
+│   └── redis/               # Redis config
+├── scripts/                 # Development, build, deployment, blockchain, and cleanup scripts
+├── test/                    # Root integration and dependency-management tests
+├── docker-compose.dev.yml   # Local MongoDB, Redis, tracing, mail, and blockchain services
+├── docker-compose.yml       # Production-oriented Compose file
+├── turbo.json               # Turborepo task graph
+├── pnpm-workspace.yaml      # Workspace package definitions and catalog
+├── package.json             # Root scripts and workspace metadata
 └── README.md
 ```
 
-## 🏗️ Monorepo Architecture
+## Architecture
 
-This project uses a monorepo architecture powered by pnpm workspaces and Turborepo:
+The user-facing clients call an API service, which persists application data in MongoDB, uses Redis for caching where available, and delegates blockchain-specific behavior to shared services in `packages/services`.
 
-### pnpm Workspaces
-
-The monorepo uses pnpm workspaces to manage dependencies across multiple packages and applications. The workspace configuration is defined in `pnpm-workspace.yaml`:
-
-```yaml
-packages:
-  - 'apps/*'
-  - 'packages/*'
+```text
+Web / Mobile
+    |
+    | REST + JWT
+    v
+NestJS API or Bun API
+    |
+    | Mongoose / Redis
+    v
+MongoDB / Redis
+    ^
+    |
+Ingestion worker
+    |
+    v
+Blockchain networks
 ```
 
-This allows for:
+The repository currently contains two API implementations:
 
-- Shared dependencies across packages
-- Local package linking (packages can depend on each other without publishing)
-- Efficient installation with a single `pnpm install` command
-- Consistent dependency versions across the entire project
+- `apps/api` (`@todo/api`) is the NestJS API and remains the default full-stack backend used by the existing backend dev orchestration.
+- `apps/api-bun` (`@todo/api-bun`) is the Bun + Elysia API. It runs on port `3002` by default and is useful for performance-focused development, parity testing, and Bun runtime deployment experiments.
 
-### Turborepo
+Both API services use the same local MongoDB and Redis infrastructure, so they can be run independently or side by side as long as their ports are distinct.
 
-Turborepo is used for build orchestration and task running. The configuration in `turbo.json` defines:
+## Prerequisites
 
-- Task dependencies (what needs to run before what)
-- Caching rules for faster builds
-- Output artifacts for each task
-- Development mode configurations
+- **Node.js >= 22.18.0**. The root `engines` field is authoritative.
+- **pnpm >= 9.0.0**. The repo currently pins `pnpm@9.12.0` in `packageManager`.
+- **Bun** for `apps/api-bun`.
+- **Docker Desktop** or Docker Engine with Docker Compose.
+- **Git**.
 
-Key tasks defined in Turborepo:
+Optional blockchain tooling:
 
-- `build`: Builds all packages and applications
-- `dev`: Starts development servers
-- `test`: Runs tests across the monorepo
-- `lint`: Runs linters across the monorepo
-- `format`: Formats code using Prettier
-- `clean`: Cleans build artifacts
-- `deploy`: Handles deployment (depends on build, test, and lint)
-- `storybook`: Starts Storybook development servers
-- `build-storybook`: Builds static Storybook sites
+- Rust and Cargo.
+- Solana CLI.
+- Anchor CLI.
+- Substrate tooling.
 
-To run a task for a specific package:
+Use the repo scripts to inspect or install optional blockchain tools:
 
 ```bash
-pnpm --filter <package-name> <task>
-```
-
-Example:
-
-```bash
-# Run tests only for the web app
-pnpm --filter @todo/web test
-
-# Start development server for the API
-pnpm --filter @todo/api dev
-```
-
-## ✨ Recent Modernization Accomplishments
-
-This monorepo has been comprehensively modernized with enterprise-grade features and blockchain integration:
-
-### 🚀 Infrastructure & Deployment Modernization (Phase 1-10)
-
-- **Infrastructure as Code**: Unified management of AWS and GitHub resources using Terraform and Terragrunt
-- **Decoupled Deployment**: Independent deployment paths for Web (Vercel), API (AWS ECS), Ingestion (AWS ECS), and Mobile (EAS)
-- **GitHub Actions Redesign**: Optimized pipelines with affected-CI filtering and secure OIDC-based AWS authentication
-- **Production Readiness**: Automated smoke tests, immutable image digests, and multi-environment approval gates
-- **Observability**: Centralized logging and alarms using AWS CloudWatch and OpenTelemetry
-- **Kubernetes Decommissioning**: Legacy manifests archived as reference material in favor of managed AWS services
-
-### ⛓️ Blockchain Integration
-
-- **Multi-Network Support**: Integrated Polygon (Solidity), Solana (Rust/Anchor), Polkadot (Substrate), Moonbeam (EVM), and Base (L2)
-- **Smart Contracts**: Complete contract suites for decentralized todo storage across 5 blockchain networks
-- **Wallet Integration**: WalletConnect v2 implementation for seamless Web3 connectivity
-- **Transaction Management**: Comprehensive blockchain transaction tracking and status monitoring
-
-### 🚀 Application Modernization
-
-- **Next.js 15 Web App**: Rebuilt with App Router, server components, and comprehensive design system
-- **NestJS API**: Complete rewrite with proper architecture, validation, and OpenTelemetry tracing
-- **Expo React Native**: Modern mobile app with design system integration and theme support
-- **Design System**: DaisyUI + Style Dictionary integration with 30+ themes and design tokens
-
-### 🎨 Design System Integration
-
-- **Style Dictionary**: Token-based design system with automated generation
-- **DaisyUI Integration**: 30+ built-in themes with semantic color system
-- **Component Library**: React components built on DaisyUI foundation
-- **Theme Switching**: Runtime theme switching with persistence and system preference detection
-- **Design Tokens**: Centralized tokens for colors, spacing, typography, and more
-- **Visual Testing**: Chromatic integration for cross-theme visual regression testing
-
-### 🧪 Testing Excellence
-
-- **Comprehensive Coverage**: Unit, integration, E2E, and contract testing across all applications
-- **Blockchain Testing**: Specialized test suites for smart contracts on all supported networks
-- **Cross-Platform E2E**: Playwright for web and React Native testing frameworks for mobile
-- **Performance Testing**: Load testing and blockchain transaction validation
-
-### 🔧 Developer Experience
-
-- **Advanced Build System**: Multi-stage builds with parallel processing and caching optimization
-- **Security Integration**: Vulnerability scanning, container security, and code quality enforcement
-- **Documentation**: Comprehensive guides for setup, development, and deployment
-- **Automation**: Complete CI/CD pipelines with automated testing and deployment
-
-## 🛠️ Getting Started
-
-### Prerequisites
-
-- **Node.js 20+** (see .nvmrc for exact version)
-- **Docker Desktop** or Docker Engine with Docker Compose
-- **pnpm 9+** (required for workspace management)
-- **Git** for version control
-
-### For Blockchain Development (Optional)
-
-The project includes automated setup for blockchain development tools:
-
-- **Rust** and Cargo for Solana/Polkadot development
-- **Solana CLI** for Solana program deployment
-- **Anchor CLI** for Solana program development
-- **Substrate tools** for Polkadot development
-
-**Quick blockchain setup**: Run `pnpm blockchain:deps:fix` after project installation
-
-### Quick Start
-
-1. **Install pnpm** (if not already installed)
-
-   ```bash
-   npm install -g pnpm@9.12.0
-   ```
-
-2. **Clone and setup**
-
-   ```bash
-   git clone https://github.com/yourusername/todo-list-monorepo.git
-   cd todo-list-monorepo
-   pnpm install
-   ```
-
-3. **Setup blockchain development (optional)**
-
-   ```bash
-   # Automated blockchain tools installation
-   pnpm blockchain:deps:fix
-
-   # Or check what's needed first
-   pnpm blockchain:deps:check
-   ```
-
-4. **Start development environment**
-
-   ```bash
-   # Option 1: Use development container (recommended)
-   # Open in VS Code and select "Reopen in Container"
-
-   # Option 2: Local development
-   docker compose -f docker-compose.dev.yml up -d
-   pnpm db:setup  # Setup database with sample data
-   pnpm dev       # Start all development servers
-   ```
-
-5. **Access applications**
-   - **Web App**: http://localhost:3000
-   - **API**: http://localhost:3001
-   - **Mobile (Expo)**: http://localhost:19000
-   - **Jaeger Tracing**: http://localhost:16686
-   - **MailHog**: http://localhost:8025
-
-### Development Container (Recommended)
-
-The project includes a fully configured development container with all tools pre-installed:
-
-```bash
-# Open in VS Code
-code .
-
-# Select "Reopen in Container" when prompted
-# Or use Command Palette: "Dev Containers: Reopen in Container"
-```
-
-The devcontainer includes:
-
-- Node.js 20, pnpm, and all JavaScript tools
-- Rust, Solana CLI, and Anchor for blockchain development
-- Docker-in-Docker for container management
-- kubectl and Helm for Kubernetes development
-- All VS Code extensions for the tech stack
-
-### Development Workflow
-
-#### Building
-
-```bash
-# Full build (apps, packages, contracts) — no Docker
-pnpm build
-
-# Quick development build (skips Docker and tests)
-pnpm build:quick
-
-# Production build with security scanning (no Docker)
-pnpm build:production
-
-# Docker images (optional)
-pnpm docker:build           # Build dev images
-pnpm docker:build:prod      # Build prod images
-
-# Build specific components
-pnpm build:packages    # Shared packages only
-pnpm build:apps        # Applications only
-pnpm build:contracts   # Blockchain contracts only
-```
-
-#### Development Servers
-
-```bash
-# Start all development servers
-pnpm dev
-
-# Start individual services
-pnpm dev:web          # Next.js web app
-pnpm dev:api          # NestJS API
-pnpm dev:mobile       # React Native/Expo
-pnpm dev:ingestion    # Ingestion service
-```
-
-#### Testing
-
-```bash
-# Run all tests
-pnpm test
-
-# Specific test types
-pnpm test:unit        # Unit tests
-pnpm test:integration # Integration tests
-pnpm test:e2e         # End-to-end tests
-pnpm test:contracts   # Blockchain contract tests
-```
-
-#### Blockchain Development
-
-**Dependency Management**:
-
-```bash
-# Check blockchain development environment
 pnpm blockchain:deps:check
-
-# Automatically install missing dependencies
 pnpm blockchain:deps:fix
-
-# For more options, pass flags to the script, e.g.:
-pnpm blockchain:deps:check -- --verbose
-pnpm blockchain:deps:check -- --network=polygon
 ```
 
-**Tool Installation**:
+## Quick Start
 
 ```bash
-# Install all blockchain tools
+pnpm install
+
+# Start local infrastructure: MongoDB, Redis, Jaeger, MailHog, OTEL collector, Hardhat node
+docker compose -f docker-compose.dev.yml up -d
+
+# Prepare MongoDB with migrations and seed data
+pnpm db:setup
+
+# Start the standard development environment
+pnpm dev
+```
+
+Default local URLs:
+
+| Service              | URL                                                                  |
+| -------------------- | -------------------------------------------------------------------- |
+| Web app              | `http://localhost:3000`                                              |
+| NestJS API           | `http://localhost:3001`                                              |
+| NestJS API health    | `http://localhost:3001/health`                                       |
+| NestJS API docs      | `http://localhost:3001/api`                                          |
+| Bun API              | `http://localhost:3002`                                              |
+| Bun API health       | `http://localhost:3002/api/v1/health`                                |
+| Bun API docs         | `http://localhost:3002/api/docs`                                     |
+| Bun API OpenAPI JSON | `http://localhost:3002/api/docs/json`                                |
+| Expo Metro           | `http://localhost:8081`                                              |
+| Jaeger               | `http://localhost:16686`                                             |
+| MailHog              | `http://localhost:8025`                                              |
+| MongoDB              | `mongodb://admin:password@localhost:27017/todo-app?authSource=admin` |
+| Redis                | `redis://localhost:6379`                                             |
+
+## Development Commands
+
+### All Apps
+
+```bash
+pnpm dev             # Full dev setup through scripts/startDev.sh
+pnpm dev:frontend    # Web + mobile
+pnpm dev:backend     # NestJS API + ingestion
+```
+
+`pnpm dev` runs `scripts/startDev.sh`, which checks prerequisites, installs dependencies when needed, starts Docker infrastructure, sets up the database, builds shared packages, and runs Turborepo dev tasks.
+
+### Individual Apps
+
+```bash
+pnpm dev:web         # Next.js web app
+pnpm dev:mobile      # Expo app
+pnpm dev:api         # NestJS API on port 3001
+pnpm dev:api-bun     # Bun + Elysia API on port 3002
+pnpm dev:ingestion   # Ingestion worker
+```
+
+### Bun API
+
+The Bun API lives in `apps/api-bun` and is exposed at `/api/v1/*`.
+
+```bash
+pnpm dev:api-bun       # Hot reload with bun --watch
+pnpm build:api-bun     # Bun production bundle
+pnpm test:api-bun      # Bun test suite
+
+# Package-local OpenAPI workflows
+pnpm --filter @todo/api-bun openapi:export
+pnpm --filter @todo/api-bun openapi:compare
+```
+
+Required environment variables for `@todo/api-bun`:
+
+| Variable          | Required | Default                                       | Notes                                                          |
+| ----------------- | -------- | --------------------------------------------- | -------------------------------------------------------------- |
+| `NODE_ENV`        | No       | `development`                                 | `development`, `test`, `staging`, or `production`              |
+| `PORT`            | No       | `3002`                                        | HTTP port                                                      |
+| `MONGODB_URI`     | Yes      | none                                          | MongoDB connection string                                      |
+| `JWT_SECRET`      | Yes      | none                                          | JWT signing secret                                             |
+| `REDIS_URI`       | No       | none                                          | Uses Redis when provided; cache code has an in-memory fallback |
+| `CORS_ORIGIN`     | No       | `http://localhost:3000,http://localhost:5173` | Comma-separated origins                                        |
+| `JAEGER_ENDPOINT` | No       | none                                          | OpenTelemetry/Jaeger endpoint                                  |
+
+With the local Docker Compose defaults:
+
+```bash
+export MONGODB_URI='mongodb://admin:password@localhost:27017/todo-app?authSource=admin'
+export REDIS_URI='redis://localhost:6379'
+export JWT_SECRET='local-development-secret'
+pnpm dev:api-bun
+```
+
+## Build Commands
+
+```bash
+pnpm build              # Full monorepo build without Docker
+pnpm build:quick        # Fast development build
+pnpm build:production   # Production build with extra checks
+
+pnpm build:packages     # Shared packages only
+pnpm build:apps         # Apps only
+pnpm build:web
+pnpm build:api
+pnpm build:api-bun
+pnpm build:mobile
+pnpm build:ingestion
+pnpm build:contracts
+```
+
+Docker build helpers:
+
+```bash
+pnpm docker:build
+pnpm docker:build:prod
+pnpm infra:compose:build
+```
+
+## Testing And Quality
+
+```bash
+pnpm test                   # All Turbo test tasks
+pnpm test:unit
+pnpm test:integration
+pnpm test:integration:all
+pnpm test:e2e
+pnpm test:contracts
+pnpm test:api-bun           # Bun API schema, smoke, cache, DB, auth, todo, OpenAPI, and module tests
+
+pnpm lint
+pnpm lint:fix
+pnpm lint:sh
+pnpm typecheck
+pnpm quality                # lint + typecheck + shellcheck
+pnpm format
+pnpm format:check
+```
+
+Testing coverage spans:
+
+- React unit and integration tests.
+- Playwright E2E tests in `apps/web/e2e`.
+- NestJS service, controller, and endpoint tests.
+- Bun API tests using `bun test`.
+- Root integration tests in `test/integration`.
+- Blockchain contract test suites for supported networks.
+- UI visual testing through Chromatic for `@todo/ui-web`.
+
+## Database
+
+```bash
+pnpm db:setup      # Run setup, migrations, validation, and seed flow
+pnpm db:migrate    # Run pending migrations
+pnpm db:seed       # Seed sample todo data
+pnpm db:reset      # Reset database
+pnpm db:rebuild    # Reset and setup
+```
+
+The local Compose stack exposes:
+
+- MongoDB on `localhost:27017`.
+- Redis on `localhost:6379`.
+
+## Blockchain Development
+
+```bash
+pnpm blockchain:deps:check
+pnpm blockchain:deps:fix
 pnpm blockchain:tools:install
-
-# For more options, pass flags to the script, e.g.:
-pnpm blockchain:tools:install -- --tool=rust
-```
-
-**Contract Compilation** (with automatic dependency checking):
-
-```bash
-# Compile all contracts
-pnpm contracts:compile
-
-# Network-specific builds
-pnpm contracts:polygon   # Solidity contracts
-pnpm contracts:solana    # Rust programs
-pnpm contracts:polkadot  # Substrate pallets
-pnpm contracts:moonbeam  # Moonbeam EVM contracts
-pnpm contracts:base      # Base L2 contracts
-
-# Deploy contracts
-pnpm contracts:deploy
-```
-
-**Help and Troubleshooting**:
-
-```bash
-# Get blockchain development help
 pnpm blockchain:help
-
-# Interactive help system
 pnpm blockchain:help:interactive
 ```
 
-#### Database Management
+Compile and test contracts:
 
 ```bash
-# Complete database setup
-pnpm db:setup
-
-# Run migrations
-pnpm db:migrate
-
-# Seed with sample data
-pnpm db:seed
-
-# Reset database
-pnpm db:reset
+pnpm contracts:compile
+pnpm contracts:polygon
+pnpm contracts:solana
+pnpm contracts:polkadot
+pnpm contracts:moonbeam
+pnpm contracts:base
+pnpm test:contracts
 ```
 
-#### Code Quality
+Deploy contracts:
 
 ```bash
-# Lint and fix issues
-pnpm lint
-pnpm lint:fix
-
-# Format code
-pnpm format
-
-# Type checking
-pnpm typecheck
+pnpm deploy:contracts
 ```
 
-## 🧪 Comprehensive Testing Strategy
+Network configuration and factory logic live in:
 
-The project implements enterprise-grade testing across all layers:
+- `packages/services/src/blockchain/networkConfig.ts`
+- `packages/services/src/blockchain/BlockchainServiceFactory.ts`
 
-### Frontend Testing
+## Design System
 
-- **Unit Tests**: Jest with React Testing Library for components
-- **Integration Tests**: API integration with mock servers
-- **E2E Tests**: Playwright for complete user journeys
-- **Visual Testing**: Component visual regression testing
-- **Mobile Testing**: React Native testing with platform-specific scenarios
-
-### Backend Testing
-
-- **Unit Tests**: NestJS services and controllers with comprehensive mocking
-- **Integration Tests**: Database integration with test containers
-- **API Tests**: Supertest for endpoint validation
-- **Performance Tests**: Load testing for critical endpoints
-
-### Blockchain Testing
-
-- **Contract Tests**: Comprehensive smart contract testing on all networks
-  - **Polygon**: Hardhat with Chai for Solidity contracts
-  - **Solana**: Anchor testing framework for Rust programs
-  - **Polkadot**: Substrate testing framework for pallets
-- **Integration Tests**: Blockchain service integration with test networks
-- **Transaction Tests**: End-to-end transaction flow validation
-
-### Cross-Platform Testing
-
-- **Multi-Environment**: Tests run across development, staging, and production configs
-- **Browser Testing**: Cross-browser compatibility with Playwright
-- **Mobile Testing**: iOS and Android testing scenarios
-- **Network Testing**: Multi-blockchain network testing
-
-### Running Tests
+The web design system uses DaisyUI, Tailwind CSS, and Style Dictionary tokens. Mobile has a separate shared component package.
 
 ```bash
-# All tests with coverage
-pnpm test
+pnpm tokens:build
+pnpm tokens:watch
+pnpm tokens:validate
+pnpm design-system:build
+pnpm design-system:test
 
-# Specific test suites
-pnpm test:unit           # Unit tests across all apps
-pnpm test:integration    # Integration tests
-pnpm test:e2e           # End-to-end tests
-pnpm test:contracts     # All blockchain contract tests
-
-# Network-specific contract tests
-pnpm contracts:polygon --test
-pnpm contracts:solana --test
-pnpm contracts:polkadot --test
-pnpm contracts:moonbeam --test
-pnpm contracts:base --test
-
-# Watch mode for development
-pnpm test --watch
+pnpm storybook:web
+pnpm storybook:build:web
+pnpm storybook:mobile
+pnpm storybook:build:mobile
 ```
 
-### Test Coverage
+Key package locations:
 
-- **Minimum 80% coverage** across all applications
-- **100% coverage** for critical business logic
-- **Contract coverage** for all smart contract functions
-- **E2E coverage** for all user workflows
+- `packages/ui-web/src/components`
+- `packages/ui-web/tokens`
+- `packages/ui-mobile`
 
-## 📚 Documentation
+## Documentation
 
-### Component Documentation
+- [Bun + Elysia API Guide](docs/BUN_ELYSIA_API_GUIDE.md)
+- [Bun API package README](apps/api-bun/README.md)
+- [API database migration policy](docs/API_DATABASE_MIGRATION_POLICY.md)
+- [API secrets and configuration](docs/API_SECRETS_AND_CONFIGURATION.md)
+- [API deployment quick reference](docs/API_DEPLOYMENT_QUICK_REFERENCE.md)
+- [Deployment guide](docs/DEPLOYMENT.md)
+- [Blockchain setup guide](docs/BLOCKCHAIN_SETUP.md)
+- [Blockchain commands reference](docs/BLOCKCHAIN_COMMANDS.md)
+- [Troubleshooting guide](docs/TROUBLESHOOTING.md)
+- [DaisyUI + Style Dictionary integration guide](docs/DAISYUI_STYLE_DICTIONARY_INTEGRATION.md)
+- [Token management guide](docs/TOKEN_MANAGEMENT_GUIDE.md)
+- [Component development workflow](docs/COMPONENT_DEVELOPMENT_WORKFLOW.md)
+- [Contributing guide](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
 
-- Component documentation is available through Storybook
-  ```bash
-  # Start Storybook for web components
-  pnpm --filter @todo/ui-web storybook
-  ```
+API documentation while running locally:
 
-### API Documentation
+- NestJS API Swagger: `http://localhost:3001/api`
+- Bun API Swagger: `http://localhost:3002/api/docs`
+- Bun API OpenAPI JSON: `http://localhost:3002/api/docs/json`
 
-- API documentation is available at `/api/docs` when running the API server
+## Infrastructure And Deployment
 
-### Blockchain Development
-
-- **[Blockchain Setup Guide](docs/BLOCKCHAIN_SETUP.md)** - Comprehensive setup instructions for blockchain development
-- **[Blockchain Commands Reference](docs/BLOCKCHAIN_COMMANDS.md)** - Quick reference for dependency management commands
-- **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Solutions to common development issues
-
-### Design System Documentation
-
-- **[DaisyUI + Style Dictionary Integration Guide](docs/DAISYUI_STYLE_DICTIONARY_INTEGRATION.md)** - Complete integration architecture and setup
-- **[Token Management Guide](docs/TOKEN_MANAGEMENT_GUIDE.md)** - Design token creation and customization
-- **[Component Development Workflow](docs/COMPONENT_DEVELOPMENT_WORKFLOW.md)** - Best practices for component development
-
-### Additional Guides
-
-- **[Contributing Guidelines](CONTRIBUTING.md)** - How to contribute to the project
-- **[Security Policy](SECURITY.md)** - Security guidelines and reporting
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
-
-### 🏗️ Infrastructure as Code (Primary Path)
-
-The project uses a modern IaC stack with Terraform and Terragrunt for predictable, versioned infrastructure management.
+Infrastructure is managed primarily with Terraform and Terragrunt:
 
 ```bash
-# Initialize and plan infrastructure changes
 cd infra/terragrunt/dev/aws
 terragrunt run-all plan
-
-# Apply changes (requires environment approval for production)
 terragrunt run-all apply
 ```
 
-### 🚢 Decoupled Deployment Strategy
+Deployment model:
 
-Each component is deployed to its optimized platform:
+| Component        | Primary platform                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| Web app          | Vercel                                                                                           |
+| NestJS API       | AWS ECS Fargate                                                                                  |
+| Bun API          | Containerized service, suitable for AWS ECS Fargate or another Bun-compatible container platform |
+| Ingestion worker | AWS ECS Fargate                                                                                  |
+| Mobile app       | Expo Application Services                                                                        |
+| Shared packages  | Consumed through pnpm workspace builds                                                           |
 
-- **Web App**: Deployed to **Vercel** for the best Next.js experience.
-- **API Server**: Deployed to **AWS ECS Fargate** for scalable, containerized backend performance.
-- **Ingestion Service**: Deployed to **AWS ECS Fargate** as a private background worker.
-- **Mobile App**: Built and submitted via **Expo Application Services (EAS)**.
+Security and operations features include:
 
-### ☸️ Kubernetes (Reference Only)
+- Terraform state locking and environment-specific configuration.
+- AWS OIDC roles for credential-less GitHub Actions access.
+- AWS Secrets Manager and GitHub Environment Secrets.
+- Immutable container image deployment.
+- OpenTelemetry tracing and Jaeger support.
+- CloudWatch logging and alarms for AWS-hosted services.
 
-While managed services are the primary path, the project maintains legacy Kubernetes manifests for reference or specialized environments:
+Reference Kubernetes manifests remain under `infra/kubernetes`, but managed services are the primary deployment path.
 
-```bash
-# Reference Kubernetes manifests are located in infra/kubernetes
-cd infra/kubernetes
-# See infra/kubernetes/README.md for usage
-```
-
-**Infrastructure Features**:
-
-- **Predictability**: Terraform state locking and environment-specific configuration.
-- **Security**: GitHub Actions OIDC trust for AWS (no static keys).
-- **Scalability**: AWS ECS Fargate autoscaling and Vercel's global edge network.
-- **Reliability**: Automated smoke tests and image digest-based deployments.
-
-### 🛠️ Infrastructure Utilities (Makefile)
-
-The project includes a `Makefile` to simplify common infrastructure and local development tasks:
+## Makefile Utilities
 
 ```bash
-# Show all available targets
 make help
-
-# IaC Quality & Validation
-make terraform-fmt      # Recursively format all Terraform modules
-make terraform-validate # Initialize and validate all modules
-make tflint             # Run TFLint recursively
-make infra-iac-check    # Run both validate and tflint
-
-# Local Colima/Kubernetes Deployment (Reference)
-make colima-deploy-web  # Build and deploy Web app to local Colima cluster
-make colima-deploy-api  # Build and deploy API to local Colima cluster
+make terraform-fmt
+make terraform-validate
+make tflint
+make infra-iac-check
+make colima-deploy-web
+make colima-deploy-api
 ```
 
-### Docker Deployment
+## Troubleshooting
+
+### Dependency Or Workspace Issues
 
 ```bash
-# Production build with Docker
-pnpm build:production
-
-# Deploy with Docker Compose
-docker compose up -d
-
-# Or deploy individual services
-docker run -d todo-api:latest
-docker run -d todo-web:latest
-```
-
-### Environment Configuration
-
-```bash
-# Development
-export ENVIRONMENT=development
-./scripts/build.sh
-
-# Staging
-export ENVIRONMENT=staging
-export DOCKER_REGISTRY=staging.registry.com
-./scripts/build.sh --push
-
-# Production
-export ENVIRONMENT=production
-export VERSION=v1.0.0
-export DOCKER_REGISTRY=prod.registry.com
-./scripts/build-production.sh
-```
-
-### CI/CD Pipeline
-
-- **Continuous Integration**: Automated testing, linting, and security scanning
-- **Continuous Deployment**: Automated deployment to staging and production
-- **Security Scanning**: Container and dependency vulnerability scanning
-- **Performance Monitoring**: Automated performance regression detection
-
-### Blockchain Deployment
-
-```bash
-# Deploy contracts to all networks
-pnpm contracts:deploy
-
-# Network-specific deployment
-cd apps/smart-contracts/polygon
-pnpm deploy:mainnet
-
-cd ../solana
-anchor deploy --provider.cluster mainnet
-
-cd ../polkadot
-./target/release/node-template --chain=polkadot
-```
-
-## 🚨 Troubleshooting
-
-### Blockchain Development Environment Issues
-
-If you encounter issues with blockchain development tools, use our automated troubleshooting system:
-
-```bash
-# Check all blockchain dependencies
-pnpm blockchain:deps:check
-
-# Automatically fix missing dependencies
-pnpm blockchain:deps:fix
-
-# For more options, pass flags to the script, e.g.:
-pnpm blockchain:deps:check -- --diagnose
-pnpm blockchain:deps:fix -- --interactive
-```
-
-### Common Issues and Solutions
-
-#### Smart Contract Compilation Failures
-
-**Problem**: Contract compilation fails with missing dependencies
-
-```bash
-# Solution: Check and install missing blockchain tools
-pnpm blockchain:deps:check -- --verbose
-pnpm blockchain:deps:fix
-```
-
-**Problem**: Anchor CLI not found or outdated
-
-```bash
-# Solution: Install/update Anchor CLI
-pnpm blockchain:tools:install -- --tool=anchor
-# Or manually:
-cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
-avm install 0.29.0 && avm use 0.29.0
-```
-
-**Problem**: Solana CLI configuration issues
-
-```bash
-# Solution: Configure Solana CLI
-solana config set --url devnet
-solana-keygen new --outfile ~/.config/solana/id.json
-```
-
-#### Development Environment Issues
-
-**Problem**: pnpm workspace dependencies not resolving
-
-```bash
-# Solution: Clean and reinstall dependencies
 pnpm clean
 rm -rf node_modules
 pnpm install
 ```
 
-**Problem**: Docker containers failing to start
+### Docker Or Database Issues
 
 ```bash
-# Solution: Reset Docker environment
-docker compose down -v
-docker system prune -f
-pnpm db:setup
-docker compose -f docker-compose.dev.yml up -d
-```
-
-**Problem**: Database connection issues
-
-```bash
-# Solution: Reset and setup database
-pnpm db:reset
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d mongodb redis
 pnpm db:setup
 ```
 
-#### Network-Specific Issues
+### Bun API Startup Issues
 
-**Polygon/Hardhat Issues**:
+The Bun API validates environment variables on startup. If it exits immediately, check `MONGODB_URI` and `JWT_SECRET` first.
 
 ```bash
-# Check Node.js version (requires 20+)
-node --version
-# Reinstall Hardhat dependencies
-cd apps/smart-contracts/polygon && pnpm install
+export MONGODB_URI='mongodb://admin:password@localhost:27017/todo-app?authSource=admin'
+export JWT_SECRET='local-development-secret'
+export REDIS_URI='redis://localhost:6379'
+pnpm dev:api-bun
 ```
 
-**Solana Issues**:
+Health check:
 
 ```bash
-# Check Rust and Solana CLI versions
-pnpm blockchain:deps:check -- --network=solana
-# Update Solana CLI
-solana-install update
+curl http://localhost:3002/api/v1/health
+curl http://localhost:3002/api/v1/health/ready
 ```
 
-**Polkadot Issues**:
+### Blockchain Tooling Issues
 
 ```bash
-# Install missing Substrate tools
-pnpm blockchain:tools:install -- --tool=substrate
-# Add WebAssembly target
-rustup target add wasm32-unknown-unknown
+pnpm blockchain:deps:check -- --diagnose
+pnpm blockchain:deps:fix -- --interactive
 ```
 
-### Getting Help
-
-1. **Automated Diagnostics**: Run `pnpm blockchain:deps:check -- --diagnose` for detailed environment analysis
-2. **Interactive Help**: Use `pnpm blockchain:help:interactive` for guided troubleshooting
-3. **Documentation**: Check [BLOCKCHAIN_SETUP.md](docs/BLOCKCHAIN_SETUP.md) for detailed setup instructions
-4. **Platform-Specific Guides**: Review guides in `scripts/troubleshooting/` directory
-
-### Development Container Issues
-
-If you're using the development container and encounter issues:
+### Slow Builds
 
 ```bash
-# Rebuild the container
-# In VS Code: Command Palette > "Dev Containers: Rebuild Container"
-
-# Or manually rebuild
-docker build -f .devcontainer/Dockerfile -t todo-devcontainer .
-```
-
-### Performance Issues
-
-**Slow builds**:
-
-```bash
-# Use quick build for development
 pnpm build:quick
-
-# Enable Turborepo caching
 export TURBO_CACHE_DIR=.turbo
 ```
 
-**Memory issues during contract compilation**:
+## Contributing
 
-```bash
-# Increase Node.js memory limit
-export NODE_OPTIONS="--max-old-space-size=8192"
-```
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.
 
-For more detailed troubleshooting information, see:
+## Security
 
-- [BLOCKCHAIN_SETUP.md](docs/BLOCKCHAIN_SETUP.md) - Blockchain environment setup
-- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - General troubleshooting guide
-- `scripts/troubleshooting/` - Platform-specific troubleshooting guides
+Report security issues according to [SECURITY.md](SECURITY.md).
 
-## 📝 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## 🔒 Security
-
-If you discover a security vulnerability, please follow the guidelines in [SECURITY.md](SECURITY.md).
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
