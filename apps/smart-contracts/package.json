@@ -13,7 +13,7 @@
     "compile:all": "../../scripts/blockchain-deps-check.sh --fix && pnpm compile:polygon && pnpm compile:moonbeam && pnpm compile:base && pnpm compile:solana && pnpm compile:polkadot",
     "deps:check": "../../scripts/blockchain-deps-check.sh",
     "deps:fix": "../../scripts/blockchain-deps-check.sh --fix",
-    "test": "hardhat test",
+    "test": "echo \"No root tests\"",
     "test:polygon": "cd polygon && pnpm test",
     "test:moonbeam": "cd moonbeam && pnpm test",
     "test:base": "cd base && pnpm test",

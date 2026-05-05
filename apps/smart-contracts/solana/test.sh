@@ -26,13 +26,18 @@ if anchor test --help 2>&1 | grep -q "+solana"; then
 fi
 
 set +e
-anchor test
-status=$?
+TMP_LOG=$(mktemp)
+# Run anchor test, duplicating stderr and stdout to TMP_LOG, and also to the terminal
+anchor test 2>&1 | tee "$TMP_LOG"
+# PIPESTATUS[0] gets the exit code of 'anchor test', not 'tee'
+status=${PIPESTATUS[0]}
 set -euo pipefail
 
-if [[ $status -ne 0 ]] && grep -qi "no such command: \`+solana\`" .turbo/turbo-test.log 2>/dev/null; then
+if [[ $status -ne 0 ]] && grep -qi "no such command: \`+solana\`" "$TMP_LOG"; then
   echo "[solana] '+solana' toolchain unavailable; skipping tests (optional)." >&2
+  rm -f "$TMP_LOG"
   exit 0
 fi
 
+rm -f "$TMP_LOG"
 exit $status

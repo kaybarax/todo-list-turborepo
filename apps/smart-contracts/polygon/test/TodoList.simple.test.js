@@ -37,17 +37,23 @@ describe('TodoList Contract - Simple Tests', function () {
     });
 
     it('Should fail with empty title', async function () {
-      await expect(todoList.createTodo('', 'Description', 1)).to.be.revertedWith('Title cannot be empty');
+      await expect(todoList.createTodo('', 'Description', 1)).to.be.revertedWithCustomError(todoList, 'TitleEmpty');
     });
 
     it('Should fail with title too long', async function () {
       const longTitle = 'a'.repeat(101); // Exceeds MAX_TITLE_LENGTH
-      await expect(todoList.createTodo(longTitle, 'Description', 1)).to.be.revertedWith('Title is too long');
+      await expect(todoList.createTodo(longTitle, 'Description', 1)).to.be.revertedWithCustomError(
+        todoList,
+        'TitleTooLong',
+      );
     });
 
     it('Should fail with description too long', async function () {
       const longDescription = 'a'.repeat(501); // Exceeds MAX_DESCRIPTION_LENGTH
-      await expect(todoList.createTodo('Title', longDescription, 1)).to.be.revertedWith('Description is too long');
+      await expect(todoList.createTodo('Title', longDescription, 1)).to.be.revertedWithCustomError(
+        todoList,
+        'DescriptionTooLong',
+      );
     });
   });
 
@@ -121,7 +127,7 @@ describe('TodoList Contract - Simple Tests', function () {
       await expect(todoList.deleteTodo(1)).to.emit(todoList, 'TodoDeleted').withArgs(owner.address, 1);
 
       // Should fail to get deleted todo
-      await expect(todoList.getTodo(1)).to.be.revertedWith('Todo not found');
+      await expect(todoList.getTodo(1)).to.be.revertedWithCustomError(todoList, 'TodoNotFound');
     });
   });
 });
