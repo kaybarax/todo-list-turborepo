@@ -10,12 +10,14 @@ on:
         required: true
 
 permissions:
+  checks: read
   contents: write
   pull-requests: write
+  statuses: read
 
 jobs:
-  enable-automerge:
-    name: Enable guarded auto-merge
+  check-and-merge:
+    name: Check required PR checks and merge
     if: |
       vars.AGENT_AUTOMERGE_ENABLED == 'true' &&
       (
@@ -23,11 +25,87 @@ jobs:
         contains(github.event.pull_request.labels.*.name, 'agent:auto-merge')
       )
     runs-on: ubuntu-latest
+    env:
+      REQUIRED_CHECKS: |
+        Affected Lint, Typecheck, Test
+        Analyze (javascript-typescript)
+        CodeQL
     steps:
-      - name: Enable GitHub auto-merge
+      - name: Verify required checks and merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          gh pr merge "$PR_NUMBER" --repo "$REPOSITORY" --squash --auto --delete-branch
+          set -euo pipefail
+
+          pr_json="$(gh pr view "$PR_NUMBER" \
+            --repo "$REPOSITORY" \
+            --json state,isDraft,headRefOid,labels,url \
+            --jq '.')"
+
+          pr_url="$(jq -r '.url' <<<"$pr_json")"
+          pr_state="$(jq -r '.state' <<<"$pr_json")"
+          is_draft="$(jq -r '.isDraft' <<<"$pr_json")"
+          head_sha="$(jq -r '.headRefOid' <<<"$pr_json")"
+
+          echo "Evaluating $pr_url at $head_sha"
+
+          if [ "$pr_state" != "OPEN" ]; then
+            echo "Refusing to merge: PR state is $pr_state, not OPEN."
+            exit 1
+          fi
+
+          if [ "$is_draft" = "true" ]; then
+            echo "Refusing to merge: PR is a draft."
+            exit 1
+          fi
+
+          if [ "$EVENT_NAME" != "workflow_dispatch" ]; then
+            has_merge_label="$(jq -r '[.labels[].name] | index("agent:auto-merge") != null' <<<"$pr_json")"
+            if [ "$has_merge_label" != "true" ]; then
+              echo "Refusing to merge: PR does not have the agent:auto-merge label."
+              exit 1
+            fi
+          fi
+
+          checks_json="$(gh api "repos/$REPOSITORY/commits/$head_sha/check-runs?per_page=100" \
+            --jq '[.check_runs[] | {name, status, conclusion, html_url, started_at, completed_at}]')"
+
+          missing=0
+          while IFS= read -r required_check; do
+            [ -n "$required_check" ] || continue
+
+            check_json="$(jq --arg name "$required_check" '
+              map(select(.name == $name))
+              | sort_by(.completed_at // .started_at // "")
+              | reverse
+              | .[0] // empty
+            ' <<<"$checks_json")"
+
+            if [ -z "$check_json" ]; then
+              echo "Required check is missing for current head SHA: $required_check"
+              missing=1
+              continue
+            fi
+
+            check_status="$(jq -r '.status' <<<"$check_json")"
+            conclusion="$(jq -r '.conclusion // ""' <<<"$check_json")"
+            url="$(jq -r '.html_url // ""' <<<"$check_json")"
+
+            if [ "$check_status" != "completed" ] || [ "$conclusion" != "success" ]; then
+              echo "Required check is not successful: $required_check status=$check_status conclusion=${conclusion:-none} $url"
+              missing=1
+              continue
+            fi
+
+            echo "Required check passed: $required_check"
+          done <<<"$REQUIRED_CHECKS"
+
+          if [ "$missing" -ne 0 ]; then
+            echo "Refusing to merge: one or more required checks are missing, pending, stale, or unsuccessful."
+            exit 1
+          fi
+
+          gh pr merge "$PR_NUMBER" --repo "$REPOSITORY" --squash --delete-branch

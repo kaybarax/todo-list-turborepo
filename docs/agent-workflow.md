@@ -75,6 +75,12 @@ Optional autonomous merge:
 
 1. Set repository variable `AGENT_AUTOMERGE_ENABLED=true`.
 2. Add `agent:auto-merge` to a PR.
-3. GitHub auto-merge is enabled with squash merge and branch deletion.
+3. The merge workflow verifies that the PR is open, not a draft, and has these required checks passing on the current head commit:
+   - `Affected Lint, Typecheck, Test`
+   - `Analyze (javascript-typescript)`
+   - `CodeQL`
+4. When the required checks pass, the workflow squash-merges the PR and deletes the branch.
 
-Keep auto-merge disabled until the workflow has successfully handled several low-risk specs.
+Manual dispatch can target a PR number directly, but the global `AGENT_AUTOMERGE_ENABLED=true` kill switch is still required.
+
+Keep auto-merge disabled until the workflow has successfully handled several low-risk specs. If branch protection is added later, keep this required-check list aligned with the protected checks.
