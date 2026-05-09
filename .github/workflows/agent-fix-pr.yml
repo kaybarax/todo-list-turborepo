@@ -1,0 +1,94 @@
+name: Agent Fix PR
+
+on:
+  pull_request:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to fix.
+        required: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: agent-fix-pr-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  openhands-fix:
+    name: Fix-loop agent
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.label.name == 'agent:fix') ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request != null &&
+        contains(github.event.comment.body, '@agent-fix')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout prompt assets
+        uses: actions/checkout@v4
+
+      - name: Build PR fix prompt
+        id: prompt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number }}
+        run: |
+          set -euo pipefail
+          pr_json="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json title,body,url,headRefName,comments,reviews,statusCheckRollup)"
+          pr_title="$(jq -r .title <<<"$pr_json")"
+          pr_url="$(jq -r .url <<<"$pr_json")"
+          head_ref="$(jq -r .headRefName <<<"$pr_json")"
+
+          cat > /tmp/agent-fix-prompt.md <<'PROMPT'
+          You are the autonomous fix-loop coder agent for kaybarax/todo-list-turborepo.
+
+          Follow AGENTS.md, CLAUDE.md, and .openhands_instructions.
+
+          Your job:
+          1. Inspect the PR, review comments, PR-Agent/Qodo comments, and failing checks.
+          2. Apply the smallest correct fixes to the PR branch.
+          3. Add or update tests if review feedback reveals missing coverage.
+          4. Run the relevant checks.
+          5. Push commits to the PR branch.
+          6. Reply on the PR with what was fixed and what checks were run.
+
+          Constraints:
+          - Use pnpm, never npm or yarn.
+          - Keep changes scoped to review/CI feedback.
+          - Do not merge the PR.
+          - If feedback is wrong or unsafe, explain that in a PR comment instead of making a bad change.
+          PROMPT
+
+          {
+            echo
+            echo "PR: #${PR_NUMBER} - ${pr_title}"
+            echo "URL: ${pr_url}"
+            echo "Head branch: ${head_ref}"
+            echo
+            echo "PR metadata, comments, reviews, and checks:"
+            echo "$pr_json"
+          } >> /tmp/agent-fix-prompt.md
+
+          echo "head_ref=$head_ref" >> "$GITHUB_OUTPUT"
+
+      - name: Run OpenHands fix agent
+        uses: All-Hands-AI/openhands-github-action@main
+        with:
+          prompt: /tmp/agent-fix-prompt.md
+          repository: ${{ github.repository }}
+          selected-branch: ${{ steps.prompt.outputs.head_ref }}
+          poll: "true"
+          timeout-seconds: "3600"
+          poll-interval-seconds: "30"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          openhands-api-key: ${{ secrets.OPENHANDS_API_KEY }}
