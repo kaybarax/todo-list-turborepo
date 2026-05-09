@@ -1,0 +1,58 @@
+name: Agent Spec
+description: Hand a fully scoped implementation spec to the autonomous agent workflow.
+title: "[agent-spec]: "
+labels:
+  - agent:ready
+  - agent:spec
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Write the spec as if another engineer will implement it without follow-up.
+        The agent workflow starts when this issue has the `agent:ready` label.
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be true when this work is done?
+      placeholder: Build...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Concrete checks the agent and reviewer should use.
+      placeholder: |
+        - ...
+        - ...
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Include intended files/apps/packages and anything explicitly out of scope.
+      placeholder: |
+        In scope:
+        Out of scope:
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Required Tests
+      description: Tell the agent what to run or add.
+      placeholder: |
+        - pnpm lint
+        - pnpm typecheck
+        - pnpm test
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Design notes, links, screenshots, migration constraints, rollout notes.
+    validations:
+      required: false

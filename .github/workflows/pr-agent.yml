@@ -1,0 +1,58 @@
+name: PR Agent Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize, review_requested]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: pr-agent-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-agent:
+    name: Review agent
+    if: |
+      github.event.sender.type != 'Bot' &&
+      (
+        github.event_name == 'pull_request' ||
+        (
+          github.event_name == 'issue_comment' &&
+          github.event.issue.pull_request != null &&
+          startsWith(github.event.comment.body, '/')
+        )
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check AI provider secrets
+        id: provider-secrets
+        env:
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -n "$OPENAI_KEY" ] || [ -n "$ANTHROPIC_KEY" ] || [ -n "$GEMINI_API_KEY" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "No PR-Agent provider secret configured. Skipping review."
+          fi
+
+      - name: Run PR-Agent
+        if: steps.provider-secrets.outputs.configured == 'true'
+        uses: qodo-ai/pr-agent@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          ANTHROPIC.KEY: ${{ secrets.ANTHROPIC_KEY }}
+          GOOGLE_AI_STUDIO.GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          github_action_config.auto_review: "true"
+          github_action_config.auto_describe: "true"
+          github_action_config.auto_improve: "true"
+          github_action_config.pr_actions: '["opened", "reopened", "ready_for_review", "synchronize", "review_requested"]'

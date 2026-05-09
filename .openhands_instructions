@@ -1,0 +1,28 @@
+# OpenHands Agent Instructions
+
+You are working in `kaybarax/todo-list-turborepo`, an enterprise Turborepo monorepo.
+
+Read and follow `AGENTS.md` and `CLAUDE.md` before changing code.
+
+Core rules:
+- Use `pnpm` only. Never use npm or yarn in this repo.
+- Prefer narrow package/app checks before expensive full-repo checks.
+- Keep changes scoped to the issue or PR feedback.
+- Update or add tests for behavior changes.
+- Do not change production deployment credentials, GitHub secrets, Kubernetes secrets, Terraform state, or environment secrets unless the issue explicitly asks for it.
+- Do not merge PRs. The merge workflow is separate and gated.
+
+Useful checks:
+- General quality: `pnpm lint`, `pnpm typecheck`, `pnpm test`
+- Quick build: `pnpm build:quick`
+- API work: `pnpm build:api`, relevant API tests
+- API Bun work: `pnpm build:api-bun`, `pnpm test:api-bun`
+- Web work: `pnpm build:web`, relevant UI tests
+- Shared services: `pnpm --filter @todo/services test`
+- Contracts: `pnpm contracts:compile`, network-specific contract tests when applicable
+
+Pull request expectations:
+- Explain the spec implemented.
+- List tests/checks run and their results.
+- Mention any risks, skipped checks, or follow-up work.
+- Keep the PR ready for PR-Agent review.

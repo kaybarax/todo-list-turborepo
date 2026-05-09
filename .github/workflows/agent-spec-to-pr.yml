@@ -1,0 +1,103 @@
+name: Agent Spec to PR
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number containing the spec to implement.
+        required: true
+      max_iterations:
+        description: Max OpenHands iterations.
+        required: false
+        default: "30"
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: agent-spec-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+jobs:
+  openhands-implement:
+    name: Coder agent
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.issue.pull_request == null &&
+        contains(github.event.issue.labels.*.name, 'agent:ready') &&
+        contains(github.event.issue.labels.*.name, 'agent:spec')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout prompt assets
+        uses: actions/checkout@v4
+
+      - name: Build implementation prompt
+        id: prompt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          REPOSITORY: ${{ github.repository }}
+          MAX_ITERATIONS: ${{ inputs.max_iterations || '30' }}
+        run: |
+          set -euo pipefail
+          issue_json="$(gh issue view "$ISSUE_NUMBER" --repo "$REPOSITORY" --json title,body,url,labels)"
+          issue_title="$(jq -r .title <<<"$issue_json")"
+          issue_url="$(jq -r .url <<<"$issue_json")"
+          issue_body="$(jq -r .body <<<"$issue_json")"
+
+          cat > /tmp/agent-prompt.md <<'PROMPT'
+          You are the autonomous coder agent for kaybarax/todo-list-turborepo.
+
+          Follow the repository instructions in AGENTS.md, CLAUDE.md, and .openhands_instructions.
+
+          Your job:
+          1. Implement the spec from the GitHub issue below.
+          2. Create or update tests that prove the acceptance criteria.
+          3. Run the narrowest meaningful checks first, then broader checks if the change warrants it.
+          4. Fix all failures you introduced.
+          5. Open a pull request against main.
+          6. In the PR body, include the implemented scope, test commands/results, and any residual risks.
+
+          Constraints:
+          - Use pnpm, never npm or yarn.
+          - Do not change secrets, deployment credentials, or production infrastructure unless explicitly requested.
+          - Keep the PR scoped to the issue.
+          - Do not consider the task complete until the PR exists and is ready for review.
+          - If blocked, open a draft PR with a clear blocker note.
+          PROMPT
+
+          {
+            echo
+            echo "Issue: #${ISSUE_NUMBER} - ${issue_title}"
+            echo "URL: ${issue_url}"
+            echo
+            echo "Spec:"
+            echo "$issue_body"
+          } >> /tmp/agent-prompt.md
+
+      - name: Run OpenHands implementation agent
+        uses: All-Hands-AI/openhands-github-action@main
+        with:
+          prompt: /tmp/agent-prompt.md
+          repository: ${{ github.repository }}
+          selected-branch: main
+          poll: "true"
+          timeout-seconds: "3600"
+          poll-interval-seconds: "30"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          openhands-api-key: ${{ secrets.OPENHANDS_API_KEY }}
+
+      - name: Mark issue as handed to agent
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Agent run completed or stopped. Check the Actions run and any linked PR."

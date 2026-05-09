@@ -1,0 +1,33 @@
+name: Agent Auto Merge
+
+on:
+  pull_request_target:
+    types: [labeled, ready_for_review, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to auto-merge.
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-automerge:
+    name: Enable guarded auto-merge
+    if: |
+      vars.AGENT_AUTOMERGE_ENABLED == 'true' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        contains(github.event.pull_request.labels.*.name, 'agent:auto-merge')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable GitHub auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: |
+          gh pr merge "$PR_NUMBER" --repo "$REPOSITORY" --squash --auto --delete-branch

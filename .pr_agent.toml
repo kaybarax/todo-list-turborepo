@@ -1,0 +1,27 @@
+[config]
+response_language = "en-US"
+model = "gpt-5.4"
+fallback_models = ["gpt-5.4-mini"]
+
+[pr_reviewer]
+extra_instructions = """\
+Review this Turborepo as a senior engineer.
+
+Focus on:
+- Correctness, security, data integrity, and regressions.
+- Whether the implementation satisfies the linked issue/spec acceptance criteria.
+- Monorepo boundaries: apps should use shared packages instead of duplicating logic.
+- TypeScript type safety and meaningful test coverage.
+- API changes that need docs, OpenAPI updates, migrations, or compatibility notes.
+- Blockchain changes that need contract tests and network-specific validation.
+
+Avoid low-value style comments that are already covered by ESLint, Prettier, or TypeScript.
+"""
+
+[pr_description]
+generate_ai_title = true
+use_description_markers = true
+
+[pr_code_suggestions]
+num_code_suggestions = 6
+suggestions_score_threshold = 7
