@@ -17,8 +17,9 @@ concurrency:
 
 jobs:
   pr-agent:
-    name: Review agent
+    name: Local review agent
     if: |
+      vars.PR_AGENT_LOCAL_OLLAMA_ENABLED == 'true' &&
       github.event.sender.type != 'Bot' &&
       (
         github.event_name == 'pull_request' ||
@@ -28,30 +29,22 @@ jobs:
           startsWith(github.event.comment.body, '/')
         )
       )
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
-      - name: Check AI provider secrets
-        id: provider-secrets
-        env:
-          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-          ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Check local Ollama
         run: |
-          if [ -n "$OPENAI_KEY" ] || [ -n "$ANTHROPIC_KEY" ] || [ -n "$GEMINI_API_KEY" ]; then
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "No PR-Agent provider secret configured. Skipping review."
-          fi
+          curl --fail --silent http://localhost:11434/api/tags >/dev/null
+          ollama list | grep -F "qwen2.5-coder:32b"
 
       - name: Run PR-Agent
-        if: steps.provider-secrets.outputs.configured == 'true'
         uses: qodo-ai/pr-agent@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-          ANTHROPIC.KEY: ${{ secrets.ANTHROPIC_KEY }}
-          GOOGLE_AI_STUDIO.GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          config.model: "ollama/qwen2.5-coder:32b"
+          config.fallback_models: '["ollama/qwen2.5-coder:32b"]'
+          config.custom_model_max_tokens: "32768"
+          config.duplicate_examples: "true"
+          OLLAMA.API_BASE: "http://localhost:11434"
           github_action_config.auto_review: "true"
           github_action_config.auto_describe: "true"
           github_action_config.auto_improve: "true"
