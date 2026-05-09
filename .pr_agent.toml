@@ -1,7 +1,12 @@
 [config]
 response_language = "en-US"
-model = "gpt-5.4"
-fallback_models = ["gpt-5.4-mini"]
+model = "ollama/qwen2.5-coder:32b"
+fallback_models = ["ollama/qwen2.5-coder:32b"]
+custom_model_max_tokens = 32768
+duplicate_examples = true
+
+[ollama]
+api_base = "http://localhost:11434"
 
 [pr_reviewer]
 extra_instructions = """\
