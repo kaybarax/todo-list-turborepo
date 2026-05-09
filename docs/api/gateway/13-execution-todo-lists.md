@@ -34,11 +34,11 @@ Confirm current behavior before adding the gateway so regressions are easy to id
   - [x] `pnpm build:api`
   - [x] `pnpm build:api-bun`
   - [x] `pnpm test:api-bun`
-- [ ] Start local infrastructure:
-  - [ ] MongoDB
-  - [ ] Redis
-  - [ ] OTEL Collector
-  - [ ] Jaeger
+- [x] Start local infrastructure:
+  - [x] MongoDB
+  - [x] Redis
+  - [x] OTEL Collector
+  - [x] Jaeger
 - [ ] Run existing NestJS API health check:
   - [ ] `GET http://localhost:3001/api/v1/health`
   - [ ] `GET http://localhost:3001/api/v1/health/ready`
