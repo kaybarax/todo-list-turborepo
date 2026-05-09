@@ -28,12 +28,12 @@ Confirm current behavior before adding the gateway so regressions are easy to id
 - [x] Confirm current branch and working tree state with `git status --short`.
 - [x] Confirm package manager version with `pnpm --version`.
 - [x] Confirm Bun is available with `bun --version`.
-- [ ] Confirm root scripts exist for current APIs:
-  - [ ] `pnpm dev:api`
-  - [ ] `pnpm dev:api-bun`
-  - [ ] `pnpm build:api`
-  - [ ] `pnpm build:api-bun`
-  - [ ] `pnpm test:api-bun`
+- [x] Confirm root scripts exist for current APIs:
+  - [x] `pnpm dev:api`
+  - [x] `pnpm dev:api-bun`
+  - [x] `pnpm build:api`
+  - [x] `pnpm build:api-bun`
+  - [x] `pnpm test:api-bun`
 - [ ] Start local infrastructure:
   - [ ] MongoDB
   - [ ] Redis
