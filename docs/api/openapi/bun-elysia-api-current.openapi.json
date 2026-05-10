@@ -727,7 +727,7 @@
                     },
                     "blockchainNetwork": {
                       "type": "string",
-                      "enum": ["solana", "polkadot", "polygon"]
+                      "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                     },
                     "transactionHash": {
                       "type": "string"
@@ -896,7 +896,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["solana", "polkadot", "polygon"]
+              "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
             }
           },
           {
@@ -995,7 +995,7 @@
                           },
                           "blockchainNetwork": {
                             "type": "string",
-                            "enum": ["solana", "polkadot", "polygon"]
+                            "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                           },
                           "transactionHash": {
                             "type": "string"
@@ -1213,7 +1213,7 @@
                     },
                     "blockchainNetwork": {
                       "type": "string",
-                      "enum": ["solana", "polkadot", "polygon"]
+                      "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                     },
                     "transactionHash": {
                       "type": "string"
@@ -1358,7 +1358,7 @@
                   },
                   "blockchainNetwork": {
                     "type": "string",
-                    "enum": ["solana", "polkadot", "polygon"]
+                    "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                   },
                   "transactionHash": {
                     "maxLength": 255,
@@ -1406,7 +1406,7 @@
                   },
                   "blockchainNetwork": {
                     "type": "string",
-                    "enum": ["solana", "polkadot", "polygon"]
+                    "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                   },
                   "transactionHash": {
                     "maxLength": 255,
@@ -1454,7 +1454,7 @@
                   },
                   "blockchainNetwork": {
                     "type": "string",
-                    "enum": ["solana", "polkadot", "polygon"]
+                    "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                   },
                   "transactionHash": {
                     "maxLength": 255,
@@ -1510,7 +1510,7 @@
                     },
                     "blockchainNetwork": {
                       "type": "string",
-                      "enum": ["solana", "polkadot", "polygon"]
+                      "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                     },
                     "transactionHash": {
                       "type": "string"
@@ -1687,7 +1687,7 @@
                   },
                   "blockchainNetwork": {
                     "type": "string",
-                    "enum": ["solana", "polkadot", "polygon"]
+                    "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                   },
                   "transactionHash": {
                     "maxLength": 255,
@@ -1735,7 +1735,7 @@
                   },
                   "blockchainNetwork": {
                     "type": "string",
-                    "enum": ["solana", "polkadot", "polygon"]
+                    "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                   },
                   "transactionHash": {
                     "maxLength": 255,
@@ -1783,7 +1783,7 @@
                   },
                   "blockchainNetwork": {
                     "type": "string",
-                    "enum": ["solana", "polkadot", "polygon"]
+                    "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                   },
                   "transactionHash": {
                     "maxLength": 255,
@@ -1839,7 +1839,7 @@
                     },
                     "blockchainNetwork": {
                       "type": "string",
-                      "enum": ["solana", "polkadot", "polygon"]
+                      "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                     },
                     "transactionHash": {
                       "type": "string"
@@ -1981,12 +1981,7 @@
           "204": {
             "description": "Response for status 204",
             "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
+              "type": "void"
             }
           },
           "401": {
@@ -2117,7 +2112,7 @@
                     },
                     "blockchainNetwork": {
                       "type": "string",
-                      "enum": ["solana", "polkadot", "polygon"]
+                      "enum": ["solana", "polkadot", "polygon", "moonbeam", "base"]
                     },
                     "transactionHash": {
                       "type": "string"
