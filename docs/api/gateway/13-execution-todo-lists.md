@@ -45,9 +45,9 @@ Confirm current behavior before adding the gateway so regressions are easy to id
 - [x] Run existing Bun API health check:
   - [x] `GET http://localhost:3002/api/v1/health`
   - [x] `GET http://localhost:3002/api/v1/health/ready`
-- [ ] Export or inspect current API contracts:
-  - [ ] NestJS OpenAPI via `apps/api/scripts/dump-openapi.ts`
-  - [ ] Bun OpenAPI via `apps/api-bun/scripts/export-openapi.ts`
+- [x] Export or inspect current API contracts:
+  - [x] NestJS OpenAPI via `apps/api/scripts/dump-openapi.ts`
+  - [x] Bun OpenAPI via `apps/api-bun/scripts/export-openapi.ts`
 - [ ] Capture current frontend env references:
   - [ ] `NEXT_PUBLIC_API_URL`
   - [ ] `NEXT_PUBLIC_API_BUN_URL`
