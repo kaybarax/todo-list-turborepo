@@ -48,13 +48,13 @@ Confirm current behavior before adding the gateway so regressions are easy to id
 - [x] Export or inspect current API contracts:
   - [x] NestJS OpenAPI via `apps/api/scripts/dump-openapi.ts`
   - [x] Bun OpenAPI via `apps/api-bun/scripts/export-openapi.ts`
-- [ ] Capture current frontend env references:
-  - [ ] `NEXT_PUBLIC_API_URL`
-  - [ ] `NEXT_PUBLIC_API_BUN_URL`
-  - [ ] `NEXT_PUBLIC_API_MODE`
-  - [ ] `EXPO_PUBLIC_API_URL`
-  - [ ] `EXPO_PUBLIC_API_BUN_URL`
-  - [ ] `EXPO_PUBLIC_API_MODE`
+- [x] Capture current frontend env references:
+  - [x] `NEXT_PUBLIC_API_URL` — Referenced in `apps/web/src/config/api.ts:8` (runtime), `apps/web/e2e/deploy-smoke.spec.ts:3,21,23`, `apps/web/.env.example:6`, `docker-compose.dev.yml:113`, `docker-compose.yml:112`, `docker-compose.test.yml:70,192`, `.github/workflows/deploy-web-vercel.yml:96`, `infra/kubernetes/web-deployment.yaml:65,69`, `infra/kubernetes/configmap.yaml:26`
+  - [x] `NEXT_PUBLIC_API_BUN_URL` — Referenced in `apps/web/src/config/api.ts:9` (runtime, fallback `http://localhost:3002`), migration docs only — no `.env.example`, docker-compose, or CI config definitions exist
+  - [x] `NEXT_PUBLIC_API_MODE` — Referenced in `apps/web/src/config/api.ts:7` (runtime, selects between `standard` and `bun` backends), migration docs only — no `.env.example`, docker-compose, or CI config definitions exist
+  - [x] `EXPO_PUBLIC_API_URL` — Referenced in `apps/mobile/src/config/api.ts:8` (runtime), `apps/mobile/.env.example:6`, migration docs
+  - [x] `EXPO_PUBLIC_API_BUN_URL` — Referenced in `apps/mobile/src/config/api.ts:9` (runtime, fallback `http://localhost:3002`), migration docs only — no `.env.example` definition exists
+  - [x] `EXPO_PUBLIC_API_MODE` — Referenced in `apps/mobile/src/config/api.ts:7` (runtime, selects between `standard` and `bun` backends), migration docs only — no `.env.example` definition exists
 - [ ] Identify runtime frontend call sites using `@todo/services`.
 - [ ] Identify tests with hardcoded `localhost:3001`.
 - [ ] Identify tests with hardcoded `localhost:3002`.
