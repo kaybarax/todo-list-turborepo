@@ -120,9 +120,9 @@ Create a runnable `apps/api-gateway` workspace app using Bun + Elysia.
 
 ### Todo
 
-- [ ] Create `apps/api-gateway/`.
-- [ ] Add `apps/api-gateway/package.json`.
-- [ ] Set package name to `@todo/api-gateway`.
+- [x] Create `apps/api-gateway/`.
+- [x] Add `apps/api-gateway/package.json`.
+- [x] Set package name to `@todo/api-gateway`.
 - [ ] Add scripts:
   - [ ] `dev`
   - [ ] `start`
