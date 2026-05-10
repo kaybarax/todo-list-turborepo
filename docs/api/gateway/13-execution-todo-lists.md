@@ -55,9 +55,38 @@ Confirm current behavior before adding the gateway so regressions are easy to id
   - [x] `EXPO_PUBLIC_API_URL` — Referenced in `apps/mobile/src/config/api.ts:8` (runtime), `apps/mobile/.env.example:6`, migration docs
   - [x] `EXPO_PUBLIC_API_BUN_URL` — Referenced in `apps/mobile/src/config/api.ts:9` (runtime, fallback `http://localhost:3002`), migration docs only — no `.env.example` definition exists
   - [x] `EXPO_PUBLIC_API_MODE` — Referenced in `apps/mobile/src/config/api.ts:7` (runtime, selects between `standard` and `bun` backends), migration docs only — no `.env.example` definition exists
-- [ ] Identify runtime frontend call sites using `@todo/services`.
-- [ ] Identify tests with hardcoded `localhost:3001`.
-- [ ] Identify tests with hardcoded `localhost:3002`.
+- [x] Identify runtime frontend call sites using `@todo/services`:
+  - **`apps/web/src/config/api.ts:8`** — `new ApiClientFactory(...)` (runtime)
+  - **`apps/web/src/components/blockchain/WalletConnect.tsx:7`** — `BlockchainNetwork` enum in props/switch (runtime)
+  - **`apps/web/src/components/WalletProvider.tsx:5`** — `getSupportedWalletNetworks`, `generateMockAddress` (runtime)
+  - **`apps/web/src/components/todo/TodoItem.tsx:7`** — `BlockchainNetwork` enum in props/defaults (runtime)
+  - **`apps/web/src/lib/sampleData.ts:8`** — `BlockchainNetwork` enum in sample data (runtime)
+  - **`apps/web/src/components/todo/TodoList.tsx:5`** — `type BlockchainNetwork` (type-only)
+  - **`apps/web/src/services/blockchainService.ts:2`** — `BlockchainNetwork` (type-only)
+  - **`apps/web/src/store/todoStore.ts:6`** — `type BlockchainNetwork, ApiTodo, ApiResponse` (type-only)
+  - **`apps/mobile/src/config/api.ts:8`** — `new ApiClientFactory(...)` (runtime)
+  - **`apps/mobile/app/(tabs)/todos.tsx:5`** — `mapWalletNetworkToBlockchainNetwork` (runtime)
+  - **`apps/mobile/src/providers/WalletProvider.tsx:5`** — `getSupportedWalletNetworks`, `generateMockAddress` (runtime)
+  - **`apps/mobile/src/store/todoStore.ts:6`** — `BlockchainServiceFactory`, `BlockchainNetwork` (runtime)
+  - **`packages/ui-mobile/lib/components/NetworkSelector/NetworkSelector.tsx:4`** — `getNetworkColor`, `getSupportedWalletNetworks` (runtime)
+  - No imports from `@todo/services` in `packages/ui-web` source files.
+- [x] Identify tests with hardcoded `localhost:3001`:
+  - **Test files (19 matches in 6 files):**
+    - `packages/services/src/api/__tests__/ApiClientFactory.test.ts:21,28,35,36,40,41,145` — 7 matches in ApiClientFactory unit tests
+    - `apps/web/src/__tests__/api-integration.test.tsx:39,77,97,123,150,176,236` — 7 matches in web API integration tests (MSW handlers + factory config)
+    - `packages/services/src/todo/__tests__/todoService.test.ts:21` — 1 match in TodoService unit test
+    - `packages/services/src/api/__tests__/AuthApiClient.test.ts:9` — 1 match in AuthApiClient unit test
+    - `packages/services/src/api/__tests__/TodoApiClient.test.ts:26` — 1 match in TodoApiClient unit test
+    - `packages/services/src/api/__tests__/BaseApiClient.test.ts:12` — 1 match in BaseApiClient unit test
+    - `test/integration/env-setup.ts:22` — 1 match in integration test env setup
+  - **Non-test files (2 matches, fallback defaults only):**
+    - `apps/web/src/config/api.ts:8` — `const standardUrl = ... || 'http://localhost:3001'` (fallback default, not hardcoded test URL)
+    - `apps/mobile/src/config/api.ts:8` — `const standardUrl = ... || 'http://localhost:3001'` (fallback default, not hardcoded test URL)
+- [x] Identify tests with hardcoded `localhost:3002`:
+  - **Test files:** No test files contain `localhost:3002`.
+  - **Non-test files (2 matches, fallback defaults only):**
+    - `apps/web/src/config/api.ts:9` — `const bunUrl = ... || 'http://localhost:3002'` (fallback default, not hardcoded test URL)
+    - `apps/mobile/src/config/api.ts:9` — `const bunUrl = ... || 'http://localhost:3002'` (fallback default, not hardcoded test URL)
 
 ### Validation
 
