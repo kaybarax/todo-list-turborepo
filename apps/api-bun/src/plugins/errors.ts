@@ -37,7 +37,7 @@ export class ConflictError extends Error {
 
 import { logger } from './logging';
 
-function getStatusCode(code: string, error: unknown, status: unknown) {
+function getStatusCode(code: string | number, error: unknown, status: unknown) {
   switch (code) {
     case 'BAD_REQUEST':
     case 'VALIDATION':

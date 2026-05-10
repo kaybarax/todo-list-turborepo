@@ -26,6 +26,11 @@ type Env = Static<typeof EnvSchema>;
 function validateEnv(): Env {
   const env: Record<string, unknown> = { ...process.env };
 
+  if (env.NODE_ENV !== 'production') {
+    env.MONGODB_URI ??= 'mongodb://admin:password@localhost:27017/todo-app?authSource=admin';
+    env.JWT_SECRET ??= 'dev-jwt-secret';
+  }
+
   if (env.PORT) {
     env.PORT = parseInt(env.PORT as string, 10);
   } else {

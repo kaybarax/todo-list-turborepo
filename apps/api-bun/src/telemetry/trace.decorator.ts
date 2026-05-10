@@ -31,15 +31,13 @@ function getErrorDetails(error: unknown) {
  * Simple trace decorator for method tracing
  * This provides functional parity with the NestJS Trace decorator.
  */
-export function Trace(operationName: string) {
-  return function (_target: unknown, propertyName: string, descriptor: PropertyDescriptor) {
-    const method = descriptor.value;
-
-    descriptor.value = async function (...args: unknown[]) {
+export function Trace(operationName: string): MethodDecorator {
+  const wrap = (method: (...args: unknown[]) => unknown, propertyName: string | symbol) => {
+    return async function (this: unknown, ...args: unknown[]) {
       const start = performance.now();
       logger.debug(`[TRACE] Starting operation: ${operationName}`, {
         operation: operationName,
-        method: propertyName,
+        method: String(propertyName),
         args: args.length > 0 ? '[HIDDEN]' : undefined, // Hide args to avoid leaking sensitive info
       });
 
@@ -72,4 +70,28 @@ export function Trace(operationName: string) {
       }
     };
   };
+
+  const decorator = function (
+    targetOrMethod: unknown,
+    propertyNameOrContext: string | symbol | { name?: string | symbol },
+    descriptor?: PropertyDescriptor,
+  ) {
+    if (descriptor) {
+      descriptor.value = wrap(descriptor.value, propertyNameOrContext as string | symbol);
+      return descriptor;
+    }
+
+    if (typeof targetOrMethod === 'function') {
+      return wrap(
+        targetOrMethod as (...args: unknown[]) => unknown,
+        typeof propertyNameOrContext === 'object'
+          ? (propertyNameOrContext.name ?? operationName)
+          : propertyNameOrContext,
+      );
+    }
+
+    return undefined;
+  };
+
+  return decorator as MethodDecorator;
 }
