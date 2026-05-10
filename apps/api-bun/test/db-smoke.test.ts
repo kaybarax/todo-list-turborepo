@@ -13,12 +13,12 @@ describe('Database Smoke Test', () => {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
     await mongoose.connect(uri);
-  });
+  }, 30000);
 
   afterAll(async () => {
     await mongoose.disconnect();
-    await mongod.stop();
-  });
+    await mongod?.stop();
+  }, 30000);
 
   it('should create and save a user with hashed password', async () => {
     const userData = {

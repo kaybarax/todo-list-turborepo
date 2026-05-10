@@ -1,9 +1,11 @@
-import { createApiLogger } from '@todo/utils/logging';
 import { type Elysia } from 'elysia';
 
-const apiLogger = createApiLogger({
-  service: 'api-bun',
-});
+const apiLogger = {
+  info: (message: string, meta?: unknown) => console.info(message, meta ?? ''),
+  warn: (message: string, meta?: unknown) => console.warn(message, meta ?? ''),
+  error: (message: string, meta?: unknown) => console.error(message, meta ?? ''),
+  debug: (message: string, meta?: unknown) => console.debug(message, meta ?? ''),
+};
 
 /**
  * Redacts sensitive information from objects (deep clone with redaction)
@@ -12,15 +14,18 @@ function redact(obj: unknown): unknown {
   if (!obj || typeof obj !== 'object') return obj;
 
   const sensitiveKeys = ['password', 'token', 'access_token', 'refreshToken', 'secret'];
-  const redacted: Record<string, unknown> | unknown[] = Array.isArray(obj) ? [] : {};
+  if (Array.isArray(obj)) {
+    return obj.map(item => redact(item));
+  }
 
+  const redacted: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (sensitiveKeys.includes(key.toLowerCase())) {
-      redacted[key as keyof typeof redacted] = '[REDACTED]';
+      redacted[key] = '[REDACTED]';
     } else if (value && typeof value === 'object') {
-      redacted[key as keyof typeof redacted] = redact(value);
+      redacted[key] = redact(value);
     } else {
-      redacted[key as keyof typeof redacted] = value;
+      redacted[key] = value;
     }
   }
 
