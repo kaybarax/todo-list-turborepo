@@ -31,21 +31,83 @@ jobs:
       )
     runs-on: [self-hosted, macOS, ARM64]
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check local Ollama
         run: |
           curl --fail --silent http://localhost:11434/api/tags >/dev/null
           ollama list | grep -F "qwen2.5-coder:32b"
 
-      - name: Run PR-Agent
-        uses: qodo-ai/pr-agent@main
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PR-Agent CLI
+        run: |
+          python -m venv "$RUNNER_TEMP/pr-agent-venv"
+          "$RUNNER_TEMP/pr-agent-venv/bin/python" -m pip install --upgrade pip
+          "$RUNNER_TEMP/pr-agent-venv/bin/python" -m pip install pr-agent
+
+      - name: Resolve PR-Agent command
+        id: pr-agent-command
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body || '' }}
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "pr_url=${{ github.event.pull_request.html_url }}" >> "$GITHUB_OUTPUT"
+            {
+              echo "commands<<EOF"
+              echo "describe"
+              echo "review"
+              echo "improve"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          pr_url="https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}"
+          command="${COMMENT_BODY%%[[:space:]]*}"
+          command="${command#/}"
+
+          case "$command" in
+            describe|review|improve|ask|update_changelog|add_docs)
+              echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+              {
+                echo "commands<<EOF"
+                echo "$command"
+                echo "EOF"
+              } >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported PR-Agent command: /$command"
+              echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+              echo "commands=" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
+      - name: Run PR-Agent CLI
+        if: steps.pr-agent-command.outputs.commands != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          config.model: "ollama/qwen2.5-coder:32b"
-          config.fallback_models: '["ollama/qwen2.5-coder:32b"]'
-          config.custom_model_max_tokens: "32768"
-          config.duplicate_examples: "true"
-          OLLAMA.API_BASE: "http://localhost:11434"
-          github_action_config.auto_review: "true"
-          github_action_config.auto_describe: "true"
-          github_action_config.auto_improve: "true"
-          github_action_config.pr_actions: '["opened", "reopened", "ready_for_review", "synchronize", "review_requested"]'
+          GITHUB.USER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OLLAMA.API_BASE: http://localhost:11434
+          CONFIG.MODEL: ollama/qwen2.5-coder:32b
+          CONFIG.FALLBACK_MODELS: '["ollama/qwen2.5-coder:32b"]'
+          CONFIG.CUSTOM_MODEL_MAX_TOKENS: '32768'
+          CONFIG.DUPLICATE_EXAMPLES: 'true'
+          PR_AGENT_COMMANDS: ${{ steps.pr-agent-command.outputs.commands }}
+          PR_AGENT_PR_URL: ${{ steps.pr-agent-command.outputs.pr_url }}
+        run: |
+          set -euo pipefail
+
+          printf '%s\n' "$PR_AGENT_COMMANDS" | while IFS= read -r command; do
+            [ -n "$command" ] || continue
+            "$RUNNER_TEMP/pr-agent-venv/bin/pr-agent" \
+              --pr_url "$PR_AGENT_PR_URL" \
+              "$command"
+          done
