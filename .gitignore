@@ -76,6 +76,8 @@ web-build/
 # Hardhat / Blockchain
 artifacts/
 cache/
+!apps/api/src/cache/
+!apps/api/src/cache/**
 typechain/
 typechain-types/
 target/

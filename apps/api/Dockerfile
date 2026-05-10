@@ -6,8 +6,8 @@ WORKDIR /app
 # Development stage
 FROM base AS development
 
-# Install pnpm for development
-RUN npm install -g pnpm
+# Install native build tooling and pnpm for development
+RUN apk add --no-cache python3 make g++ linux-headers eudev-dev bash && npm install -g pnpm
 
 # Copy source code and install deps
 COPY . .
@@ -25,8 +25,8 @@ CMD ["pnpm", "dev:api"]
 # Production dependencies stage
 FROM base AS prod-deps
 
-# Install pnpm temporarily for dependency installation
-RUN npm install -g pnpm
+# Install native build tooling and pnpm temporarily for dependency installation
+RUN apk add --no-cache python3 make g++ linux-headers eudev-dev bash && npm install -g pnpm
 
 # Copy full workspace and install only production dependencies
 COPY . .
@@ -35,8 +35,8 @@ RUN pnpm install --no-frozen-lockfile --prod
 # Production build stage
 FROM base AS build
 
-# Install pnpm for build
-RUN npm install -g pnpm
+# Install native build tooling and pnpm for build
+RUN apk add --no-cache python3 make g++ linux-headers eudev-dev bash && npm install -g pnpm
 
 # Copy source code and install deps
 COPY . .
