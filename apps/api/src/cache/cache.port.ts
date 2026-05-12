@@ -1,4 +1,4 @@
-import { InjectionToken } from '@nestjs/common';
+import { type InjectionToken } from '@nestjs/common';
 
 export const CACHE_PORT: InjectionToken = 'CACHE_PORT';
 
