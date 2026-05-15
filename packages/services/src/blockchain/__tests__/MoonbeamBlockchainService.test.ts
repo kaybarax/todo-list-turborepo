@@ -76,7 +76,8 @@ describe('MoonbeamBlockchainService', () => {
   beforeEach(() => {
     service = new MoonbeamBlockchainService(mockOptions);
     // Directly mock monitorTransaction on the service instance
-    jest.spyOn(service as any, 'monitorTransaction').mockImplementation((txHash: string) => {
+    jest.spyOn(service as any, 'monitorTransaction').mockImplementation((...args: unknown[]) => {
+      const txHash = args[0] as string;
       if (txHash.endsWith('4')) {
         return Promise.resolve({
           transactionHash: txHash,

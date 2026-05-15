@@ -67,7 +67,7 @@ describe('BaseApiClient', () => {
     it('should perform GET request', async () => {
       const spy = jest.spyOn(client as any, 'request').mockResolvedValue({ success: true });
       await client.get('/test');
-      expect(spy).toHaveBeenCalledWith('GET', '/test', undefined, undefined);
+      expect(spy).toHaveBeenCalledWith('GET', '/test', undefined, undefined, undefined);
     });
 
     it('should perform POST request', async () => {

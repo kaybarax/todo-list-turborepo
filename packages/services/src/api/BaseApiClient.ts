@@ -44,7 +44,7 @@ export class BaseApiClient {
       },
     });
 
-    if (this.client) {
+    if (this.client != null) {
       this.setupInterceptors();
     }
   }
@@ -103,8 +103,12 @@ export class BaseApiClient {
    * @param url - Request URL
    * @param config - Request configuration
    */
-  async get<T>(url: string, config?: Partial<InternalAxiosRequestConfig>): Promise<ApiResponse<T>> {
-    return this.request<T>('GET', url, undefined, config);
+  async get<T>(
+    url: string,
+    config?: Partial<InternalAxiosRequestConfig>,
+    retryConfig?: Partial<RetryConfig>,
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>('GET', url, undefined, config, retryConfig);
   }
 
   /**
@@ -159,7 +163,7 @@ export class BaseApiClient {
     url: string,
     data?: unknown,
     config?: Partial<InternalAxiosRequestConfig>,
-    retryConfig?: RetryConfig,
+    retryConfig?: Partial<RetryConfig>,
   ): Promise<ApiResponse<T>> {
     const retry = {
       attempts: this.config.retryAttempts,
