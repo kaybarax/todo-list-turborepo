@@ -11,7 +11,7 @@ on:
       max_iterations:
         description: Max OpenHands iterations.
         required: false
-        default: "30"
+        default: '30'
 
 permissions:
   contents: read
@@ -87,9 +87,9 @@ jobs:
           prompt: /tmp/agent-prompt.md
           repository: ${{ github.repository }}
           selected-branch: main
-          poll: "true"
-          timeout-seconds: "3600"
-          poll-interval-seconds: "30"
+          poll: 'true'
+          timeout-seconds: '3600'
+          poll-interval-seconds: '30'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           openhands-api-key: ${{ secrets.OPENHANDS_API_KEY }}
 

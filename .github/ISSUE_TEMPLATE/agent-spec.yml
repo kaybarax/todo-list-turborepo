@@ -1,6 +1,6 @@
 name: Agent Spec
 description: Hand a fully scoped implementation spec to the autonomous agent workflow.
-title: "[agent-spec]: "
+title: '[agent-spec]: '
 labels:
   - agent:ready
   - agent:spec

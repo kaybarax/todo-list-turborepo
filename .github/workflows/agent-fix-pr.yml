@@ -87,8 +87,8 @@ jobs:
           prompt: /tmp/agent-fix-prompt.md
           repository: ${{ github.repository }}
           selected-branch: ${{ steps.prompt.outputs.head_ref }}
-          poll: "true"
-          timeout-seconds: "3600"
-          poll-interval-seconds: "30"
+          poll: 'true'
+          timeout-seconds: '3600'
+          poll-interval-seconds: '30'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           openhands-api-key: ${{ secrets.OPENHANDS_API_KEY }}
