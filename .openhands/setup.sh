@@ -20,7 +20,7 @@ echo "  node: $(command -v node 2>/dev/null || echo 'not found')"
 
 if [ -f "pnpm-lock.yaml" ]; then
   corepack enable 2>/dev/null || true
-  pnpm install --frozen-lockfile
+  pnpm install --frozen-lockfile 2>/dev/null || true
 fi
 
 echo "OpenHands sandbox is ready."
