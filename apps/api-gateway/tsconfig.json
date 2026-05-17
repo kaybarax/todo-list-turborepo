@@ -1,0 +1,11 @@
+{
+  "extends": "@todo/config-ts/bun.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "types": ["bun"],
+    "strict": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

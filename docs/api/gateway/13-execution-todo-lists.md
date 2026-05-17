@@ -124,48 +124,48 @@ Create a runnable `apps/api-gateway` workspace app using Bun + Elysia.
 - [x] Add `apps/api-gateway/package.json`.
 - [x] Set package name to `@todo/api-gateway`.
 - [ ] Add scripts:
-  - [ ] `dev`
-  - [ ] `start`
-  - [ ] `build`
-  - [ ] `start:prod`
-  - [ ] `typecheck`
-  - [ ] `test`
+  - [x] `dev`
+  - [x] `start`
+  - [x] `build`
+  - [x] `start:prod`
+  - [x] `typecheck`
+  - [x] `test`
   - [ ] `lint`
   - [ ] `openapi:export`
 - [ ] Add runtime dependencies:
-  - [ ] `elysia`
-  - [ ] `@elysiajs/cors`
+  - [x] `elysia`
+  - [x] `@elysiajs/cors`
   - [ ] `@elysiajs/openapi`
-  - [ ] `@elysiajs/bearer`
-  - [ ] `@elysiajs/jwt`
+  - [x] `@elysiajs/bearer`
+  - [x] `@elysiajs/jwt`
   - [ ] `elysia-helmet`
   - [ ] `elysia-rate-limit`
-  - [ ] `@sinclair/typebox`
-  - [ ] `ioredis`
+  - [x] `@sinclair/typebox`
+  - [x] `ioredis`
 - [ ] Add optional GraphQL dependencies only if implementing GraphQL in this phase:
   - [ ] `graphql`
   - [ ] `graphql-yoga`
   - [ ] `@graphql-tools/schema`
-- [ ] Add dev dependencies:
-  - [ ] `@types/bun`
-  - [ ] `typescript`
-  - [ ] `eslint`
-  - [ ] `@todo/config-eslint`
-  - [ ] `@todo/config-ts`
-- [ ] Add `apps/api-gateway/tsconfig.json`.
+- [x] Add dev dependencies:
+  - [x] `@types/bun`
+  - [x] `typescript`
+  - [x] `eslint`
+  - [x] `@todo/config-eslint`
+  - [x] `@todo/config-ts`
+- [x] Add `apps/api-gateway/tsconfig.json`.
 - [ ] Add `apps/api-gateway/eslint.config.js`.
-- [ ] Add `apps/api-gateway/.env.example`.
-- [ ] Add `apps/api-gateway/src/index.ts`.
-- [ ] Add `apps/api-gateway/src/app.ts`.
-- [ ] Add `apps/api-gateway/src/config/env.ts`.
-- [ ] Add `apps/api-gateway/src/routes/index.route.ts`.
-- [ ] Add `GET /api/v1` returning gateway metadata.
-- [ ] Add graceful shutdown handling.
-- [ ] Add root package scripts:
-  - [ ] `dev:api-gateway`
-  - [ ] `build:api-gateway`
-  - [ ] `test:api-gateway`
-- [ ] Confirm workspace discovery with `pnpm --filter @todo/api-gateway`.
+- [x] Add `apps/api-gateway/.env.example`.
+- [x] Add `apps/api-gateway/src/index.ts`.
+- [x] Add `apps/api-gateway/src/app.ts`.
+- [x] Add `apps/api-gateway/src/config/env.ts`.
+- [x] Add `apps/api-gateway/src/routes/index.route.ts`.
+- [x] Add `GET /api/v1` returning gateway metadata.
+- [x] Add graceful shutdown handling.
+- [x] Add root package scripts:
+  - [x] `dev:api-gateway`
+  - [x] `build:api-gateway`
+  - [x] `test:api-gateway`
+- [x] Confirm workspace discovery with `pnpm --filter @todo/api-gateway`.
 
 ### Validation
 
