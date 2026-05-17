@@ -133,7 +133,10 @@
     "release": "./scripts/build-production.sh && changeset publish",
     "validate-packages": "./scripts/validate-packages.sh",
     "verify-dependencies": "./scripts/verify-dependencies.sh",
-    "publish-packages": "./scripts/publish-packages.sh"
+    "publish-packages": "./scripts/publish-packages.sh",
+    "dev:api-gateway": "turbo run dev --filter=@todo/api-gateway",
+    "build:api-gateway": "turbo run build --filter=@todo/api-gateway",
+    "test:api-gateway": "turbo run test --filter=@todo/api-gateway"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.6",

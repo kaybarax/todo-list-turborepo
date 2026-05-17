@@ -1,0 +1,28 @@
+{
+  "name": "@todo/api-gateway",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "bun build src/index.ts --target=bun --outdir=dist",
+    "start:prod": "bun dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "elysia": "latest",
+    "@elysiajs/cors": "latest",
+    "@elysiajs/bearer": "latest",
+    "@elysiajs/jwt": "latest",
+    "@sinclair/typebox": "latest",
+    "ioredis": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.0.0",
+    "eslint": "latest",
+    "@todo/config-eslint": "workspace:*",
+    "@todo/config-ts": "workspace:*"
+  }
+}
