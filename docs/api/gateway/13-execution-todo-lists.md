@@ -123,19 +123,19 @@ Create a runnable `apps/api-gateway` workspace app using Bun + Elysia.
 - [x] Create `apps/api-gateway/`.
 - [x] Add `apps/api-gateway/package.json`.
 - [x] Set package name to `@todo/api-gateway`.
-- [ ] Add scripts:
+- [x] Add scripts:
   - [x] `dev`
   - [x] `start`
   - [x] `build`
   - [x] `start:prod`
   - [x] `typecheck`
   - [x] `test`
-  - [ ] `lint`
-  - [ ] `openapi:export`
+  - [x] `lint`
+  - [x] `openapi:export`
 - [ ] Add runtime dependencies:
   - [x] `elysia`
   - [x] `@elysiajs/cors`
-  - [ ] `@elysiajs/openapi`
+  - [x] `@elysiajs/openapi`
   - [x] `@elysiajs/bearer`
   - [x] `@elysiajs/jwt`
   - [ ] `elysia-helmet`
@@ -153,7 +153,7 @@ Create a runnable `apps/api-gateway` workspace app using Bun + Elysia.
   - [x] `@todo/config-eslint`
   - [x] `@todo/config-ts`
 - [x] Add `apps/api-gateway/tsconfig.json`.
-- [ ] Add `apps/api-gateway/eslint.config.js`.
+- [x] Add `apps/api-gateway/eslint.config.js`.
 - [x] Add `apps/api-gateway/.env.example`.
 - [x] Add `apps/api-gateway/src/index.ts`.
 - [x] Add `apps/api-gateway/src/app.ts`.

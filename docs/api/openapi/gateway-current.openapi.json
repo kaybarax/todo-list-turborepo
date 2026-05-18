@@ -1,0 +1,24 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Gateway",
+    "description": "Unified API Gateway for the Todo application",
+    "version": "0.0.1"
+  },
+  "tags": [
+    {
+      "name": "Gateway",
+      "description": "Gateway general endpoints"
+    }
+  ],
+  "paths": {
+    "/api/v1": {
+      "get": {
+        "operationId": "getApiV1"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
