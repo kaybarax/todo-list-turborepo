@@ -40,4 +40,4 @@ if [[ $status -ne 0 ]] && grep -qi "no such command: \`+solana\`" "$TMP_LOG"; th
 fi
 
 rm -f "$TMP_LOG"
-exit $status
+exit "$status"
