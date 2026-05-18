@@ -8,21 +8,24 @@
     "build": "bun build src/index.ts --target=bun --outdir=dist",
     "start:prod": "bun dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "test": "bun test",
+    "lint": "eslint \"src/**/*.ts\" \"scripts/**/*.ts\"",
+    "openapi:export": "bun scripts/export-openapi.ts"
   },
   "dependencies": {
-    "elysia": "latest",
-    "@elysiajs/cors": "latest",
     "@elysiajs/bearer": "latest",
+    "@elysiajs/cors": "latest",
     "@elysiajs/jwt": "latest",
+    "@elysiajs/openapi": "1.4.15",
     "@sinclair/typebox": "latest",
+    "elysia": "latest",
     "ioredis": "latest"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "^5.0.0",
-    "eslint": "latest",
     "@todo/config-eslint": "workspace:*",
-    "@todo/config-ts": "workspace:*"
+    "@todo/config-ts": "workspace:*",
+    "@types/bun": "latest",
+    "eslint": "^9.0.0",
+    "typescript": "^5.0.0"
   }
 }
