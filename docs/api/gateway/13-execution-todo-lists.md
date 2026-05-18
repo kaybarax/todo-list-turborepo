@@ -132,14 +132,14 @@ Create a runnable `apps/api-gateway` workspace app using Bun + Elysia.
   - [x] `test`
   - [x] `lint`
   - [x] `openapi:export`
-- [ ] Add runtime dependencies:
+- [x] Add runtime dependencies:
   - [x] `elysia`
   - [x] `@elysiajs/cors`
   - [x] `@elysiajs/openapi`
   - [x] `@elysiajs/bearer`
   - [x] `@elysiajs/jwt`
-  - [ ] `elysia-helmet`
-  - [ ] `elysia-rate-limit`
+  - [x] `elysia-helmet`
+  - [x] `elysia-rate-limit`
   - [x] `@sinclair/typebox`
   - [x] `ioredis`
 - [ ] Add optional GraphQL dependencies only if implementing GraphQL in this phase:
