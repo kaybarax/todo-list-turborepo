@@ -7,6 +7,7 @@ import { parseBoolean, parsePositiveInt, parseURL, requireNonEmpty } from '../co
 // Config helpers used across integration tests
 // ---------------------------------------------------------------------------
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 type ConfigModule = typeof import('../config/env');
 
 const ORIGINAL_ENV = { ...process.env };
