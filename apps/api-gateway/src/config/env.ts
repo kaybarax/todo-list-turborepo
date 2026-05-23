@@ -26,7 +26,7 @@ export { parseBoolean, parsePositiveInt, parseURL, requireNonEmpty };
 export const config: Config = {
   server: {
     port: parsePositiveInt('PORT', process.env.PORT, 3003),
-    publicPrefix: process.env.PUBLIC_API_PREFIX || '/api/v1',
+    publicPrefix: process.env.PUBLIC_API_PREFIX ?? '/api/v1',
   },
   upstreams: {
     nestApiUrl: parseURL('NEST_API_URL', process.env.NEST_API_URL, 'http://localhost:3001'),
