@@ -1,7 +1,7 @@
 import { app } from './app';
-import { PORT } from './config/env';
+import { config } from './config/env';
 
-app.listen(PORT, () => {
+app.listen(config.server.port, () => {
   console.log('Gateway started');
 });
 
