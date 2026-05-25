@@ -40,7 +40,7 @@ jobs:
           ollama list | grep -F "qwen2.5-coder:32b"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
