@@ -1,5 +1,5 @@
 # Multi-stage build for NestJS API
-FROM node:22-alpine AS base
+FROM node:26-alpine AS base
 
 WORKDIR /app
 
@@ -46,7 +46,7 @@ RUN pnpm install --no-frozen-lockfile
 RUN pnpm build:api
 
 # Production stage
-FROM node:22-alpine AS production
+FROM node:26-alpine AS production
 
 # Install curl for health checks (ECS requires a reliable health check)
 RUN apk add --no-cache curl
