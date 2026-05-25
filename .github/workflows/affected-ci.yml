@@ -41,7 +41,7 @@ jobs:
           REDIS_URI: redis://localhost:6379
 
       - name: Upload Turbo summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: affected-ci-turbo-summary

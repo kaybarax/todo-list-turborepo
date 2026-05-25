@@ -61,13 +61,13 @@ jobs:
           NODE_ENV: test
 
       - name: Upload OpenAPI Spec
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bun-api-openapi-spec
           path: docs/BUN_ELYSIA_API_CURRENT_OPENAPI.json
 
       - name: Upload Turbo summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: full-ci-turbo-summary

@@ -42,7 +42,7 @@ jobs:
         run: pnpm --filter @todo/ui-mobile build-storybook
 
       - name: Upload Static Storybook Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: storybook-mobile-static
           path: packages/ui-mobile/storybook-static
@@ -58,14 +58,14 @@ jobs:
 
       - name: Upload Playwright Reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: a11y-report
           path: packages/ui-mobile/accessibility-report
 
       - name: Upload Accessibility JSON/JUnit
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: a11y-raw-results
           path: |
