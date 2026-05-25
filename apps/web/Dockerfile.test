@@ -1,5 +1,5 @@
 # Test Dockerfile for Next.js Web Application
-FROM node:18-alpine
+FROM node:26-alpine
 
 # Install pnpm
 RUN npm install -g pnpm
