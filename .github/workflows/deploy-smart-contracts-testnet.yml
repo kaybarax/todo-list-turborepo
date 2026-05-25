@@ -53,7 +53,7 @@ jobs:
           pnpm --filter @todo/smart-contracts deploy:solana:devnet
 
       - name: Upload Contract Addresses Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: contract-addresses-testnet
           path: apps/smart-contracts/**/deployments/**/*.json
