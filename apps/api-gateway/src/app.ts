@@ -1,6 +1,7 @@
 import { openapi } from '@elysiajs/openapi';
 import { Elysia } from 'elysia';
 
+import { requestId } from './plugins/request-id';
 import { indexRoute } from './routes/index.route';
 
 export const app = new Elysia()
@@ -20,4 +21,5 @@ export const app = new Elysia()
       },
     }),
   )
+  .use(requestId)
   .use(indexRoute);
