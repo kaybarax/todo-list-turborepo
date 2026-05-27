@@ -1,0 +1,6 @@
+{
+  "name": "@todo/dummy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A minimal dummy workspace package for development and testing"
+}
